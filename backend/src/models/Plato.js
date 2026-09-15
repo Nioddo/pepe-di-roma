@@ -9,4 +9,4 @@ class Plato {
     }
 }
 
-export default Plato;
+module.exports = Plato;

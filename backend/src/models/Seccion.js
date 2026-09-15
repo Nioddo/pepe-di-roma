@@ -7,4 +7,4 @@ class Seccion {
     }
 }
 
-export default Seccion;
+module.exports = Seccion;

@@ -8,4 +8,4 @@ class Mesa {
     }
 }
 
-export default Mesa;
+module.exports = Mesa;

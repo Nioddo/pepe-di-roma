@@ -11,4 +11,4 @@ class Reserva {
     }
 }
 
-export default Reserva;
+module.exports = Reserva;

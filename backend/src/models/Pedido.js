@@ -13,4 +13,4 @@ class Pedido {
     }
 }
 
-export default Pedido;
+module.exports = Pedido;

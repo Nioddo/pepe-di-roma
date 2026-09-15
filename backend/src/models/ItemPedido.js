@@ -7,4 +7,4 @@ class ItemPedido {
     }
 }
 
-export default ItemPedido;
+module.exports = ItemPedido;

@@ -8,9 +8,9 @@ const { createIdGenerator } = require('../utils/idGenerator');
  */
 
 const reservas = [
-    new Reserva(1, 10, '2026-09-20', '21:00', 2, 1, EstadoReserva.CONFIRMADA),
-    new Reserva(2, 11, '2026-09-20', '22:00', 4, 2, EstadoReserva.PENDIENTE),
-    new Reserva(3, 12, '2026-09-21', '20:30', 6, 3, EstadoReserva.PENDIENTE)
+    new Reserva(1, 1, '2026-09-20', '21:00', 2, 1, EstadoReserva.CONFIRMADA),
+    new Reserva(2, 2, '2026-09-20', '22:00', 4, 2, EstadoReserva.PENDIENTE),
+    new Reserva(3, 1, '2026-09-21', '20:30', 6, 3, EstadoReserva.PENDIENTE)
 ];
 
 const nextId = createIdGenerator(reservas.length + 1);
@@ -26,6 +26,16 @@ function findById(id) {
 /** Reservas de una mesa en una fecha dada. La usa el service para ver solapamientos. */
 function findByMesaAndFecha(mesaId, fecha) {
     return reservas.filter((reserva) => reserva.mesaId === mesaId && reserva.fecha === fecha);
+}
+
+/** Reservas de una mesa. La usa MesaService antes de borrar. */
+function findByMesaId(mesaId) {
+    return reservas.filter((reserva) => reserva.mesaId === mesaId);
+}
+
+/** Reservas de un cliente. La usa UsuarioService antes de borrar. */
+function findByClienteId(clienteId) {
+    return reservas.filter((reserva) => reserva.clienteId === clienteId);
 }
 
 function create(datos) {
@@ -74,6 +84,8 @@ module.exports = {
     findAll,
     findById,
     findByMesaAndFecha,
+    findByMesaId,
+    findByClienteId,
     create,
     update,
     remove

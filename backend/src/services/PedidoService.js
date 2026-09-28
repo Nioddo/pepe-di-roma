@@ -1,6 +1,7 @@
 const PedidoRepository = require('../repositories/PedidoRepository');
+const ItemPedidoRepository = require('../repositories/ItemPedidoRepository');
 const PlatoRepository = require('../repositories/PlatoRepository');
-const ItemPedido = require('../models/ItemPedido');
+const UsuarioRepository = require('../repositories/UsuarioRepository');
 const Messages = require('../enums/Messages');
 const EstadoPedido = require('../enums/EstadoPedido');
 const Modalidad = require('../enums/Modalidad');
@@ -10,9 +11,12 @@ const { BadRequestError, NotFoundError } = require('../exceptions/AppError');
 /**
  * Logica de negocio de Pedidos.
  * Reglas que hace cumplir:
- *  - los platos pedidos tienen que existir,
+ *  - el cliente y los platos pedidos tienen que existir,
  *  - el precio total y el tiempo estimado los calcula el backend (no el cliente),
  *  - delivery exige direccion.
+ *
+ * Los items se guardan en ItemPedidoRepository; este service los adjunta a
+ * cada pedido que devuelve, asi el cliente sigue viendo el pedido completo.
  */
 
 const TIEMPO_BASE_MIN = 15;
@@ -32,6 +36,11 @@ function validarClienteId(clienteId) {
     if (!Number.isInteger(numero) || numero <= 0) {
         throw new BadRequestError(Messages.PEDIDO_CLIENTE_REQUIRED);
     }
+
+    if (!UsuarioRepository.findById(numero)) {
+        throw new NotFoundError(Messages.USUARIO_NOT_FOUND);
+    }
+
     return numero;
 }
 
@@ -77,9 +86,10 @@ function validarDireccion(modalidad, direccion) {
 }
 
 /**
- * Convierte los items que manda el cliente ({ platoId, cantidad }) en
- * ItemPedido completos, tomando nombre y precio del catalogo de platos.
- * Asi el precio nunca lo define el cliente.
+ * Convierte los items que manda el cliente ({ platoId, cantidad }) en los
+ * datos completos de cada item, tomando nombre y precio del catalogo de
+ * platos. Asi el precio nunca lo define el cliente.
+ * Solo valida: la escritura en ItemPedidoRepository la hace quien la llama.
  */
 function construirItems(items) {
     if (!Array.isArray(items) || items.length === 0) {
@@ -106,7 +116,12 @@ function construirItems(items) {
             throw new NotFoundError(Messages.PLATO_NOT_FOUND);
         }
 
-        return new ItemPedido(plato.id, plato.nombre, plato.precio, cantidad);
+        return {
+            platoId: plato.id,
+            nombre: plato.nombre,
+            precioUnitario: plato.precio,
+            cantidad
+        };
     });
 }
 
@@ -121,11 +136,18 @@ function calcularTiempoEstimado(items, modalidad) {
     return modalidad === Modalidad.DELIVERY ? preparacion + RECARGO_DELIVERY_MIN : preparacion;
 }
 
-function obtenerTodos() {
-    return PedidoRepository.findAll();
+/** Devuelve una copia del pedido con sus items actuales adjuntos. */
+function conItems(pedido) {
+    return { ...pedido, items: ItemPedidoRepository.findByPedidoId(pedido.id) };
 }
 
-function obtenerPorId(id) {
+/** Guarda los items de un pedido recien creado o con items reemplazados. */
+function guardarItems(pedidoId, items) {
+    items.forEach((item) => ItemPedidoRepository.create({ ...item, pedidoId }));
+}
+
+/** Pedido tal cual esta en el repository (sin items), o 404. */
+function buscarPedido(id) {
     const pedidoId = parsearId(id);
     const pedido = PedidoRepository.findById(pedidoId);
 
@@ -134,6 +156,28 @@ function obtenerPorId(id) {
     }
 
     return pedido;
+}
+
+/**
+ * Recalcula precio total y tiempo estimado a partir de los items guardados.
+ * La usa ItemPedidoService cada vez que agrega, cambia o borra un item.
+ */
+function recalcularTotales(pedidoId) {
+    const pedido = buscarPedido(pedidoId);
+    const items = ItemPedidoRepository.findByPedidoId(pedido.id);
+
+    return PedidoRepository.update(pedido.id, {
+        precioTotal: calcularPrecioTotal(items),
+        tiempoEstimadoMin: calcularTiempoEstimado(items, pedido.modalidad)
+    });
+}
+
+function obtenerTodos() {
+    return PedidoRepository.findAll().map(conItems);
+}
+
+function obtenerPorId(id) {
+    return conItems(buscarPedido(id));
 }
 
 function crear(body) {
@@ -150,17 +194,19 @@ function crear(body) {
     const pagoRecibido =
         body.pagoRecibido === undefined ? false : validarPagoRecibido(body.pagoRecibido);
 
-    return PedidoRepository.create({
+    const pedido = PedidoRepository.create({
         clienteId,
         modalidad,
         metodoPago,
         direccion,
-        items,
         estado,
         precioTotal: calcularPrecioTotal(items),
         tiempoEstimadoMin: calcularTiempoEstimado(items, modalidad),
         pagoRecibido
     });
+
+    guardarItems(pedido.id, items);
+    return conItems(pedido);
 }
 
 /**
@@ -168,7 +214,7 @@ function crear(body) {
  * precio total y tiempo estimado sobre el resultado final.
  */
 function modificar(id, body) {
-    const pedido = obtenerPorId(id);
+    const pedido = buscarPedido(id);
 
     if (!body || typeof body !== 'object') {
         throw new BadRequestError(Messages.INVALID_DATA);
@@ -185,9 +231,6 @@ function modificar(id, body) {
     if (body.metodoPago !== undefined) {
         cambios.metodoPago = validarMetodoPago(body.metodoPago);
     }
-    if (body.items !== undefined) {
-        cambios.items = construirItems(body.items);
-    }
     if (body.estado !== undefined) {
         cambios.estado = validarEstado(body.estado);
     }
@@ -195,6 +238,8 @@ function modificar(id, body) {
         cambios.pagoRecibido = validarPagoRecibido(body.pagoRecibido);
     }
 
+    // Los items nuevos se validan todos antes de tocar nada guardado.
+    const itemsNuevos = body.items !== undefined ? construirItems(body.items) : null;
     const modalidadFinal = cambios.modalidad || pedido.modalidad;
 
     // La direccion se revalida si cambio la modalidad o si la mandaron de nuevo:
@@ -205,16 +250,25 @@ function modificar(id, body) {
         cambios.direccion = validarDireccion(modalidadFinal, direccionCandidata);
     }
 
-    const itemsFinales = cambios.items || pedido.items;
+    if (itemsNuevos) {
+        ItemPedidoRepository.removeByPedidoId(pedido.id);
+        guardarItems(pedido.id, itemsNuevos);
+    }
+
+    const itemsFinales = ItemPedidoRepository.findByPedidoId(pedido.id);
     cambios.precioTotal = calcularPrecioTotal(itemsFinales);
     cambios.tiempoEstimadoMin = calcularTiempoEstimado(itemsFinales, modalidadFinal);
 
-    return PedidoRepository.update(pedido.id, cambios);
+    return conItems(PedidoRepository.update(pedido.id, cambios));
 }
 
+/** Al borrar un pedido se borran tambien sus items. */
 function eliminar(id) {
-    const pedido = obtenerPorId(id);
-    return PedidoRepository.remove(pedido.id);
+    const pedido = buscarPedido(id);
+    const items = ItemPedidoRepository.removeByPedidoId(pedido.id);
+    const eliminado = PedidoRepository.remove(pedido.id);
+
+    return { ...eliminado, items };
 }
 
 module.exports = {
@@ -222,5 +276,6 @@ module.exports = {
     obtenerPorId,
     crear,
     modificar,
-    eliminar
+    eliminar,
+    recalcularTotales
 };

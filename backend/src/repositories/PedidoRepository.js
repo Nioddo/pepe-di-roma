@@ -1,5 +1,4 @@
 const Pedido = require('../models/Pedido');
-const ItemPedido = require('../models/ItemPedido');
 const EstadoPedido = require('../enums/EstadoPedido');
 const Modalidad = require('../enums/Modalidad');
 const MetodoPago = require('../enums/MetodoPago');
@@ -7,17 +6,20 @@ const { createIdGenerator } = require('../utils/idGenerator');
 
 /**
  * Persistencia en memoria de Pedidos.
+ * Los items NO se guardan aca: viven en ItemPedidoRepository (con su pedidoId)
+ * y PedidoService los adjunta al devolver cada pedido. Por eso el campo items
+ * del pedido almacenado queda siempre vacio.
  * CRUD puro sobre el array: no valida ni decide nada de negocio.
  */
 
 const pedidos = [
     new Pedido(
         1,
-        10,
+        1,
         Modalidad.DELIVERY,
         MetodoPago.EFECTIVO,
         'Av. Siempreviva 742',
-        [new ItemPedido(1, 'Milanesa napolitana', 9500, 2)],
+        [],
         EstadoPedido.EN_CAMINO,
         19000,
         45,
@@ -25,14 +27,14 @@ const pedidos = [
     ),
     new Pedido(
         2,
-        11,
+        2,
         Modalidad.TAKEAWAY,
         MetodoPago.DEBITO,
         null,
-        [new ItemPedido(2, 'Ravioles de ricota', 8700, 1)],
+        [],
         EstadoPedido.PENDIENTE,
-        8700,
-        20,
+        15100,
+        25,
         true
     )
 ];
@@ -47,6 +49,11 @@ function findById(id) {
     return pedidos.find((pedido) => pedido.id === id) || null;
 }
 
+/** Pedidos de un cliente. La usa UsuarioService antes de borrar. */
+function findByClienteId(clienteId) {
+    return pedidos.filter((pedido) => pedido.clienteId === clienteId);
+}
+
 function create(datos) {
     const pedido = new Pedido(
         nextId(),
@@ -54,7 +61,7 @@ function create(datos) {
         datos.modalidad,
         datos.metodoPago,
         datos.direccion,
-        datos.items,
+        [],
         datos.estado,
         datos.precioTotal,
         datos.tiempoEstimadoMin,
@@ -95,6 +102,7 @@ function remove(id) {
 module.exports = {
     findAll,
     findById,
+    findByClienteId,
     create,
     update,
     remove

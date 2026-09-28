@@ -21,7 +21,15 @@ app.get('/', (req, res) => {
         success: true,
         data: {
             app: 'Pepe Di Roma API',
-            endpoints: ['/api/platos', '/api/reservas', '/api/pedidos']
+            endpoints: [
+                '/api/usuarios',
+                '/api/secciones',
+                '/api/platos',
+                '/api/mesas',
+                '/api/reservas',
+                '/api/pedidos',
+                '/api/items-pedido'
+            ]
         }
     });
 });

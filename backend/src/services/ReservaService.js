@@ -1,5 +1,6 @@
 const ReservaRepository = require('../repositories/ReservaRepository');
 const MesaRepository = require('../repositories/MesaRepository');
+const UsuarioRepository = require('../repositories/UsuarioRepository');
 const Messages = require('../enums/Messages');
 const EstadoReserva = require('../enums/EstadoReserva');
 const { BadRequestError, NotFoundError, ConflictError } = require('../exceptions/AppError');
@@ -7,6 +8,7 @@ const { BadRequestError, NotFoundError, ConflictError } = require('../exceptions
 /**
  * Logica de negocio de Reservas.
  * Reglas que hace cumplir:
+ *  - el cliente tiene que existir,
  *  - la mesa tiene que existir y entrar la cantidad de integrantes,
  *  - no se puede pisar otra reserva de la misma mesa en el mismo horario.
  */
@@ -30,6 +32,11 @@ function validarClienteId(clienteId) {
     if (!Number.isInteger(numero) || numero <= 0) {
         throw new BadRequestError(Messages.RESERVA_CLIENTE_REQUIRED);
     }
+
+    if (!UsuarioRepository.findById(numero)) {
+        throw new NotFoundError(Messages.USUARIO_NOT_FOUND);
+    }
+
     return numero;
 }
 

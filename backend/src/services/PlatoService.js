@@ -1,4 +1,5 @@
 const PlatoRepository = require('../repositories/PlatoRepository');
+const SeccionRepository = require('../repositories/SeccionRepository');
 const Messages = require('../enums/Messages');
 const { BadRequestError, NotFoundError, ConflictError } = require('../exceptions/AppError');
 
@@ -113,8 +114,14 @@ function modificar(id, body) {
     return PlatoRepository.update(plato.id, cambios);
 }
 
+/** Un plato que todavia figura en alguna seccion de la carta no se puede borrar. */
 function eliminar(id) {
     const plato = obtenerPorId(id);
+
+    if (SeccionRepository.findByPlatoId(plato.id).length > 0) {
+        throw new ConflictError(Messages.PLATO_EN_SECCION);
+    }
+
     return PlatoRepository.remove(plato.id);
 }
 

@@ -2,12 +2,6 @@ const PlatoService = require('../services/PlatoService');
 const { successResponse } = require('../responses/apiResponse');
 const { asyncHandler } = require('../utils/asyncHandler');
 
-/**
- * Controller de Platos.
- * Solo traduce HTTP <-> service: lee req, delega, responde.
- * No valida ni toca el array. Los errores suben al errorHandler via asyncHandler.
- */
-
 const obtenerTodos = asyncHandler((req, res) => {
     const platos = PlatoService.obtenerTodos();
     return successResponse(res, platos);

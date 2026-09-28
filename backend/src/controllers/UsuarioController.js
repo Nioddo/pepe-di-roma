@@ -2,11 +2,6 @@ const UsuarioService = require('../services/UsuarioService');
 const { successResponse } = require('../responses/apiResponse');
 const { asyncHandler } = require('../utils/asyncHandler');
 
-/**
- * Controller de Usuarios.
- * Solo traduce HTTP <-> service: lee req, delega, responde.
- */
-
 const obtenerTodos = asyncHandler((req, res) => {
     const usuarios = UsuarioService.obtenerTodos();
     return successResponse(res, usuarios);

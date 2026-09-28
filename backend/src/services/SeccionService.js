@@ -3,13 +3,6 @@ const PlatoRepository = require('../repositories/PlatoRepository');
 const Messages = require('../enums/Messages');
 const { BadRequestError, NotFoundError, ConflictError } = require('../exceptions/AppError');
 
-/**
- * Logica de negocio de Secciones de la carta.
- * Reglas que hace cumplir:
- *  - titulo obligatorio y unico,
- *  - los platos listados tienen que existir y no repetirse.
- */
-
 function parsearId(id) {
     const numero = Number(id);
     if (!Number.isInteger(numero) || numero <= 0) {
@@ -33,7 +26,6 @@ function validarOrden(orden) {
     return numero;
 }
 
-/** Lista de IDs de platos: sin repetidos y todos existentes en el catalogo. */
 function validarPlatos(platos) {
     if (!Array.isArray(platos)) {
         throw new BadRequestError(Messages.SECCION_PLATOS_INVALID);
@@ -54,7 +46,6 @@ function validarPlatos(platos) {
     return ids;
 }
 
-/** Corta si ya hay otra seccion con el mismo titulo. */
 function validarTituloDisponible(titulo, idAExcluir = null) {
     const existente = SeccionRepository.findByTitulo(titulo);
     if (existente && existente.id !== idAExcluir) {
@@ -91,7 +82,6 @@ function crear(body) {
     return SeccionRepository.create({ titulo, orden, platos });
 }
 
-/** Modificacion parcial: solo se valida y actualiza lo que viene en el body. */
 function modificar(id, body) {
     const seccion = obtenerPorId(id);
 

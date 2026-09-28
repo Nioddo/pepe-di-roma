@@ -1,12 +1,6 @@
 const Seccion = require('../models/Seccion');
 const { createIdGenerator } = require('../utils/idGenerator');
 
-/**
- * Persistencia en memoria de Secciones de la carta.
- * Cada seccion guarda la lista de IDs de los platos que agrupa.
- * CRUD puro sobre el array: no valida ni decide nada de negocio.
- */
-
 const secciones = [
     new Seccion(1, 'Principales', 1, [1]),
     new Seccion(2, 'Pastas', 2, [2]),
@@ -28,7 +22,6 @@ function findByTitulo(titulo) {
     return secciones.find((seccion) => seccion.titulo.toLowerCase() === buscado) || null;
 }
 
-/** Secciones que incluyen un plato dado. La usa PlatoService antes de borrar. */
 function findByPlatoId(platoId) {
     return secciones.filter((seccion) => seccion.platos.includes(platoId));
 }
@@ -40,10 +33,6 @@ function create(datos) {
     return seccion;
 }
 
-/**
- * Sobrescribe solo las claves presentes en datos.
- * @returns {Seccion|null} la seccion actualizada, o null si no existe
- */
 function update(id, datos) {
     const seccion = findById(id);
     if (!seccion) {
@@ -54,9 +43,6 @@ function update(id, datos) {
     return seccion;
 }
 
-/**
- * @returns {Seccion|null} la seccion eliminada, o null si no existe
- */
 function remove(id) {
     const indice = secciones.findIndex((seccion) => seccion.id === id);
     if (indice === -1) {

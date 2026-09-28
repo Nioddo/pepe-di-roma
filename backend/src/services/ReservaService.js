@@ -5,15 +5,6 @@ const Messages = require('../enums/Messages');
 const EstadoReserva = require('../enums/EstadoReserva');
 const { BadRequestError, NotFoundError, ConflictError } = require('../exceptions/AppError');
 
-/**
- * Logica de negocio de Reservas.
- * Reglas que hace cumplir:
- *  - el cliente tiene que existir,
- *  - la mesa tiene que existir y entrar la cantidad de integrantes,
- *  - no se puede pisar otra reserva de la misma mesa en el mismo horario.
- */
-
-/** Duracion fija de una reserva, igual a la que fija el modelo Reserva. */
 const DURACION_MIN = 120;
 
 const FORMATO_FECHA = /^\d{4}-\d{2}-\d{2}$/;
@@ -40,7 +31,6 @@ function validarClienteId(clienteId) {
     return numero;
 }
 
-/** Valida formato YYYY-MM-DD y que sea una fecha real del calendario. */
 function validarFecha(fecha) {
     if (typeof fecha !== 'string' || !FORMATO_FECHA.test(fecha)) {
         throw new BadRequestError(Messages.RESERVA_FECHA_INVALID);
@@ -83,7 +73,6 @@ function validarEstado(estado) {
     return estado;
 }
 
-/** La mesa debe existir; se devuelve para poder chequear su capacidad. */
 function obtenerMesa(mesaId) {
     const numero = Number(mesaId);
     if (!Number.isInteger(numero) || numero <= 0) {
@@ -98,17 +87,11 @@ function obtenerMesa(mesaId) {
     return mesa;
 }
 
-/** "21:30" -> 1290 minutos, para poder comparar intervalos. */
 function aMinutos(hora) {
     const [horas, minutos] = hora.split(':').map(Number);
     return horas * 60 + minutos;
 }
 
-/**
- * Corta si la mesa ya esta tomada en ese rango horario.
- * Las reservas canceladas no ocupan la mesa. Al modificar, la propia reserva
- * se excluye de la comparacion.
- */
 function validarDisponibilidad({ mesaId, fecha, horaInicio, idAExcluir = null }) {
     const inicio = aMinutos(horaInicio);
     const fin = inicio + DURACION_MIN;
@@ -172,10 +155,6 @@ function crear(body) {
     });
 }
 
-/**
- * Modificacion parcial. Las reglas de capacidad y disponibilidad se revalidan
- * sobre el resultado de mezclar la reserva actual con los cambios pedidos.
- */
 function modificar(id, body) {
     const reserva = obtenerPorId(id);
 

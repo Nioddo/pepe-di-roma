@@ -8,17 +8,6 @@ const Modalidad = require('../enums/Modalidad');
 const MetodoPago = require('../enums/MetodoPago');
 const { BadRequestError, NotFoundError } = require('../exceptions/AppError');
 
-/**
- * Logica de negocio de Pedidos.
- * Reglas que hace cumplir:
- *  - el cliente y los platos pedidos tienen que existir,
- *  - el precio total y el tiempo estimado los calcula el backend (no el cliente),
- *  - delivery exige direccion.
- *
- * Los items se guardan en ItemPedidoRepository; este service los adjunta a
- * cada pedido que devuelve, asi el cliente sigue viendo el pedido completo.
- */
-
 const TIEMPO_BASE_MIN = 15;
 const TIEMPO_POR_ITEM_MIN = 5;
 const RECARGO_DELIVERY_MIN = 20;
@@ -72,7 +61,6 @@ function validarPagoRecibido(pagoRecibido) {
     return pagoRecibido;
 }
 
-/** Solo delivery necesita direccion; en salon o takeaway se guarda null. */
 function validarDireccion(modalidad, direccion) {
     if (modalidad !== Modalidad.DELIVERY) {
         return null;
@@ -85,12 +73,6 @@ function validarDireccion(modalidad, direccion) {
     return direccion.trim();
 }
 
-/**
- * Convierte los items que manda el cliente ({ platoId, cantidad }) en los
- * datos completos de cada item, tomando nombre y precio del catalogo de
- * platos. Asi el precio nunca lo define el cliente.
- * Solo valida: la escritura en ItemPedidoRepository la hace quien la llama.
- */
 function construirItems(items) {
     if (!Array.isArray(items) || items.length === 0) {
         throw new BadRequestError(Messages.PEDIDO_ITEMS_REQUIRED);
@@ -136,17 +118,14 @@ function calcularTiempoEstimado(items, modalidad) {
     return modalidad === Modalidad.DELIVERY ? preparacion + RECARGO_DELIVERY_MIN : preparacion;
 }
 
-/** Devuelve una copia del pedido con sus items actuales adjuntos. */
 function conItems(pedido) {
     return { ...pedido, items: ItemPedidoRepository.findByPedidoId(pedido.id) };
 }
 
-/** Guarda los items de un pedido recien creado o con items reemplazados. */
 function guardarItems(pedidoId, items) {
     items.forEach((item) => ItemPedidoRepository.create({ ...item, pedidoId }));
 }
 
-/** Pedido tal cual esta en el repository (sin items), o 404. */
 function buscarPedido(id) {
     const pedidoId = parsearId(id);
     const pedido = PedidoRepository.findById(pedidoId);
@@ -158,10 +137,6 @@ function buscarPedido(id) {
     return pedido;
 }
 
-/**
- * Recalcula precio total y tiempo estimado a partir de los items guardados.
- * La usa ItemPedidoService cada vez que agrega, cambia o borra un item.
- */
 function recalcularTotales(pedidoId) {
     const pedido = buscarPedido(pedidoId);
     const items = ItemPedidoRepository.findByPedidoId(pedido.id);
@@ -209,10 +184,6 @@ function crear(body) {
     return conItems(pedido);
 }
 
-/**
- * Modificacion parcial. Si cambian los items o la modalidad, se recalculan
- * precio total y tiempo estimado sobre el resultado final.
- */
 function modificar(id, body) {
     const pedido = buscarPedido(id);
 
@@ -238,12 +209,9 @@ function modificar(id, body) {
         cambios.pagoRecibido = validarPagoRecibido(body.pagoRecibido);
     }
 
-    // Los items nuevos se validan todos antes de tocar nada guardado.
     const itemsNuevos = body.items !== undefined ? construirItems(body.items) : null;
     const modalidadFinal = cambios.modalidad || pedido.modalidad;
 
-    // La direccion se revalida si cambio la modalidad o si la mandaron de nuevo:
-    // pasar a delivery obliga a tener direccion, y salir de delivery la limpia.
     if (body.direccion !== undefined || cambios.modalidad !== undefined) {
         const direccionCandidata =
             body.direccion !== undefined ? body.direccion : pedido.direccion;
@@ -262,7 +230,6 @@ function modificar(id, body) {
     return conItems(PedidoRepository.update(pedido.id, cambios));
 }
 
-/** Al borrar un pedido se borran tambien sus items. */
 function eliminar(id) {
     const pedido = buscarPedido(id);
     const items = ItemPedidoRepository.removeByPedidoId(pedido.id);

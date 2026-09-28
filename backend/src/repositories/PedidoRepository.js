@@ -4,14 +4,6 @@ const Modalidad = require('../enums/Modalidad');
 const MetodoPago = require('../enums/MetodoPago');
 const { createIdGenerator } = require('../utils/idGenerator');
 
-/**
- * Persistencia en memoria de Pedidos.
- * Los items NO se guardan aca: viven en ItemPedidoRepository (con su pedidoId)
- * y PedidoService los adjunta al devolver cada pedido. Por eso el campo items
- * del pedido almacenado queda siempre vacio.
- * CRUD puro sobre el array: no valida ni decide nada de negocio.
- */
-
 const pedidos = [
     new Pedido(
         1,
@@ -49,7 +41,6 @@ function findById(id) {
     return pedidos.find((pedido) => pedido.id === id) || null;
 }
 
-/** Pedidos de un cliente. La usa UsuarioService antes de borrar. */
 function findByClienteId(clienteId) {
     return pedidos.filter((pedido) => pedido.clienteId === clienteId);
 }
@@ -72,10 +63,6 @@ function create(datos) {
     return pedido;
 }
 
-/**
- * Sobrescribe solo las claves presentes en datos.
- * @returns {Pedido|null} el pedido actualizado, o null si no existe
- */
 function update(id, datos) {
     const pedido = findById(id);
     if (!pedido) {
@@ -86,9 +73,6 @@ function update(id, datos) {
     return pedido;
 }
 
-/**
- * @returns {Pedido|null} el pedido eliminado, o null si no existe
- */
 function remove(id) {
     const indice = pedidos.findIndex((pedido) => pedido.id === id);
     if (indice === -1) {

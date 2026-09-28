@@ -4,15 +4,6 @@ const Messages = require('../enums/Messages');
 const EstadoReserva = require('../enums/EstadoReserva');
 const { BadRequestError, NotFoundError, ConflictError } = require('../exceptions/AppError');
 
-/**
- * Logica de negocio de Mesas.
- * Reglas que hace cumplir:
- *  - numero de mesa unico,
- *  - no se puede achicar una mesa por debajo de sus reservas activas,
- *  - no se borra una mesa con reservas activas.
- */
-
-/** Estados en los que una reserva todavia ocupa la mesa. */
 const ESTADOS_ACTIVOS = [EstadoReserva.PENDIENTE, EstadoReserva.CONFIRMADA];
 
 function parsearId(id) {
@@ -46,7 +37,6 @@ function validarPosicion(posicion) {
     return posicion;
 }
 
-/** Corta si ya hay otra mesa con el mismo numero. */
 function validarNumeroDisponible(numero, idAExcluir = null) {
     const existente = MesaRepository.findByNumero(numero);
     if (existente && existente.id !== idAExcluir) {
@@ -90,7 +80,6 @@ function crear(body) {
     return MesaRepository.create({ numero, capacidad, posicionX, posicionY });
 }
 
-/** Modificacion parcial: solo se valida y actualiza lo que viene en el body. */
 function modificar(id, body) {
     const mesa = obtenerPorId(id);
 

@@ -2,11 +2,6 @@ const Reserva = require('../models/Reserva');
 const EstadoReserva = require('../enums/EstadoReserva');
 const { createIdGenerator } = require('../utils/idGenerator');
 
-/**
- * Persistencia en memoria de Reservas.
- * CRUD puro sobre el array: no valida ni decide nada de negocio.
- */
-
 const reservas = [
     new Reserva(1, 1, '2026-09-20', '21:00', 2, 1, EstadoReserva.CONFIRMADA),
     new Reserva(2, 2, '2026-09-20', '22:00', 4, 2, EstadoReserva.PENDIENTE),
@@ -23,17 +18,14 @@ function findById(id) {
     return reservas.find((reserva) => reserva.id === id) || null;
 }
 
-/** Reservas de una mesa en una fecha dada. La usa el service para ver solapamientos. */
 function findByMesaAndFecha(mesaId, fecha) {
     return reservas.filter((reserva) => reserva.mesaId === mesaId && reserva.fecha === fecha);
 }
 
-/** Reservas de una mesa. La usa MesaService antes de borrar. */
 function findByMesaId(mesaId) {
     return reservas.filter((reserva) => reserva.mesaId === mesaId);
 }
 
-/** Reservas de un cliente. La usa UsuarioService antes de borrar. */
 function findByClienteId(clienteId) {
     return reservas.filter((reserva) => reserva.clienteId === clienteId);
 }
@@ -53,10 +45,6 @@ function create(datos) {
     return reserva;
 }
 
-/**
- * Sobrescribe solo las claves presentes en datos.
- * @returns {Reserva|null} la reserva actualizada, o null si no existe
- */
 function update(id, datos) {
     const reserva = findById(id);
     if (!reserva) {
@@ -67,9 +55,6 @@ function update(id, datos) {
     return reserva;
 }
 
-/**
- * @returns {Reserva|null} la reserva eliminada, o null si no existe
- */
 function remove(id) {
     const indice = reservas.findIndex((reserva) => reserva.id === id);
     if (indice === -1) {

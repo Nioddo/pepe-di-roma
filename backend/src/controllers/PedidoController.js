@@ -2,11 +2,6 @@ const PedidoService = require('../services/PedidoService');
 const { successResponse } = require('../responses/apiResponse');
 const { asyncHandler } = require('../utils/asyncHandler');
 
-/**
- * Controller de Pedidos.
- * Solo traduce HTTP <-> service: lee req, delega, responde.
- */
-
 const obtenerTodos = asyncHandler((req, res) => {
     const pedidos = PedidoService.obtenerTodos();
     return successResponse(res, pedidos);

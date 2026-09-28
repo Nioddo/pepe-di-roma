@@ -2,11 +2,6 @@ const SeccionService = require('../services/SeccionService');
 const { successResponse } = require('../responses/apiResponse');
 const { asyncHandler } = require('../utils/asyncHandler');
 
-/**
- * Controller de Secciones.
- * Solo traduce HTTP <-> service: lee req, delega, responde.
- */
-
 const obtenerTodas = asyncHandler((req, res) => {
     const secciones = SeccionService.obtenerTodas();
     return successResponse(res, secciones);

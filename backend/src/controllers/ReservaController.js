@@ -2,11 +2,6 @@ const ReservaService = require('../services/ReservaService');
 const { successResponse } = require('../responses/apiResponse');
 const { asyncHandler } = require('../utils/asyncHandler');
 
-/**
- * Controller de Reservas.
- * Solo traduce HTTP <-> service: lee req, delega, responde.
- */
-
 const obtenerTodas = asyncHandler((req, res) => {
     const reservas = ReservaService.obtenerTodas();
     return successResponse(res, reservas);

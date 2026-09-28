@@ -3,12 +3,6 @@ const SeccionRepository = require('../repositories/SeccionRepository');
 const Messages = require('../enums/Messages');
 const { BadRequestError, NotFoundError, ConflictError } = require('../exceptions/AppError');
 
-/**
- * Logica de negocio de Platos: valida las entradas y lanza AppError cuando
- * algo no cumple. Nunca toca el array directamente, siempre via repository.
- */
-
-/** Convierte el id que llega por la URL en entero, o lanza 400. */
 function parsearId(id) {
     const numero = Number(id);
     if (!Number.isInteger(numero) || numero <= 0) {
@@ -45,7 +39,6 @@ function validarImageUrl(imageUrl) {
     return imageUrl;
 }
 
-/** Corta si ya hay otro plato con el mismo nombre. */
 function validarNombreDisponible(nombre, idAExcluir = null) {
     const existente = PlatoRepository.findByNombre(nombre);
     if (existente && existente.id !== idAExcluir) {
@@ -84,7 +77,6 @@ function crear(body) {
     return PlatoRepository.create({ nombre, precio, vegano, sinTacc, imageUrl });
 }
 
-/** Modificacion parcial: solo se valida y actualiza lo que viene en el body. */
 function modificar(id, body) {
     const plato = obtenerPorId(id);
 
@@ -114,7 +106,6 @@ function modificar(id, body) {
     return PlatoRepository.update(plato.id, cambios);
 }
 
-/** Un plato que todavia figura en alguna seccion de la carta no se puede borrar. */
 function eliminar(id) {
     const plato = obtenerPorId(id);
 

@@ -2,11 +2,6 @@ const MesaService = require('../services/MesaService');
 const { successResponse } = require('../responses/apiResponse');
 const { asyncHandler } = require('../utils/asyncHandler');
 
-/**
- * Controller de Mesas.
- * Solo traduce HTTP <-> service: lee req, delega, responde.
- */
-
 const obtenerTodas = asyncHandler((req, res) => {
     const mesas = MesaService.obtenerTodas();
     return successResponse(res, mesas);

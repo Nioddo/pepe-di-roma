@@ -5,13 +5,6 @@ const Messages = require('../enums/Messages');
 const Rol = require('../enums/Rol');
 const { BadRequestError, NotFoundError, ConflictError } = require('../exceptions/AppError');
 
-/**
- * Logica de negocio de Usuarios.
- * Reglas que hace cumplir:
- *  - email y DNI validos y unicos,
- *  - no se borra un usuario que tiene reservas o pedidos asociados.
- */
-
 const FORMATO_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const FORMATO_DNI = /^\d{7,8}$/;
 
@@ -30,7 +23,6 @@ function validarEmail(email) {
     return email.trim().toLowerCase();
 }
 
-/** Acepta el DNI como texto o numero, y lo guarda siempre como texto. */
 function validarDni(dni) {
     const texto = typeof dni === 'number' ? String(dni) : dni;
     if (typeof texto !== 'string' || !FORMATO_DNI.test(texto.trim())) {
@@ -46,7 +38,6 @@ function validarRol(rol) {
     return rol;
 }
 
-/** Corta si otro usuario ya usa ese email. */
 function validarEmailDisponible(email, idAExcluir = null) {
     const existente = UsuarioRepository.findByEmail(email);
     if (existente && existente.id !== idAExcluir) {
@@ -54,7 +45,6 @@ function validarEmailDisponible(email, idAExcluir = null) {
     }
 }
 
-/** Corta si otro usuario ya usa ese DNI. */
 function validarDniDisponible(dni, idAExcluir = null) {
     const existente = UsuarioRepository.findByDni(dni);
     if (existente && existente.id !== idAExcluir) {
@@ -92,7 +82,6 @@ function crear(body) {
     return UsuarioRepository.create({ email, dni, rol });
 }
 
-/** Modificacion parcial: solo se valida y actualiza lo que viene en el body. */
 function modificar(id, body) {
     const usuario = obtenerPorId(id);
 

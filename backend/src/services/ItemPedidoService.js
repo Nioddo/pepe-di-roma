@@ -5,15 +5,6 @@ const PedidoService = require('./PedidoService');
 const Messages = require('../enums/Messages');
 const { BadRequestError, NotFoundError, ConflictError } = require('../exceptions/AppError');
 
-/**
- * Logica de negocio de los Items de Pedido.
- * Reglas que hace cumplir:
- *  - el pedido y el plato tienen que existir,
- *  - nombre y precio unitario salen del catalogo de platos, no del cliente,
- *  - un item no cambia de pedido y un pedido nunca queda sin items,
- *  - despues de cada cambio se recalculan los totales del pedido.
- */
-
 function parsearId(id) {
     const numero = Number(id);
     if (!Number.isInteger(numero) || numero <= 0) {
@@ -22,7 +13,6 @@ function parsearId(id) {
     return numero;
 }
 
-/** El pedido debe existir; se devuelve su id ya parseado. */
 function validarPedido(pedidoId) {
     const numero = Number(pedidoId);
     if (!Number.isInteger(numero) || numero <= 0) {
@@ -36,7 +26,6 @@ function validarPedido(pedidoId) {
     return numero;
 }
 
-/** El plato debe existir; se devuelve para copiar su nombre y precio. */
 function obtenerPlato(platoId) {
     const numero = Number(platoId);
     if (!Number.isInteger(numero) || numero <= 0) {
@@ -95,7 +84,6 @@ function crear(body) {
     return item;
 }
 
-/** Modificacion parcial: se puede cambiar el plato y/o la cantidad. */
 function modificar(id, body) {
     const item = obtenerPorId(id);
 

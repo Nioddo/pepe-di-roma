@@ -1,11 +1,6 @@
 const Mesa = require('../models/Mesa');
 const { createIdGenerator } = require('../utils/idGenerator');
 
-/**
- * Persistencia en memoria de Mesas.
- * CRUD puro sobre el array: no valida ni decide nada de negocio.
- */
-
 const mesas = [
     new Mesa(1, 1, 2, 0, 0),
     new Mesa(2, 2, 4, 1, 0),
@@ -40,10 +35,6 @@ function create(datos) {
     return mesa;
 }
 
-/**
- * Sobrescribe solo las claves presentes en datos.
- * @returns {Mesa|null} la mesa actualizada, o null si no existe
- */
 function update(id, datos) {
     const mesa = findById(id);
     if (!mesa) {
@@ -54,9 +45,6 @@ function update(id, datos) {
     return mesa;
 }
 
-/**
- * @returns {Mesa|null} la mesa eliminada, o null si no existe
- */
 function remove(id) {
     const indice = mesas.findIndex((mesa) => mesa.id === id);
     if (indice === -1) {

@@ -1,11 +1,6 @@
 const Plato = require('../models/Plato');
 const { createIdGenerator } = require('../utils/idGenerator');
 
-/**
- * Persistencia en memoria de Platos.
- * CRUD puro sobre el array: no valida ni decide nada de negocio.
- */
-
 const platos = [
     new Plato(1, 'Milanesa napolitana', 9500, false, false, '/img/milanesa.jpg'),
     new Plato(2, 'Ravioles de ricota', 8700, true, false, '/img/ravioles.jpg'),
@@ -41,10 +36,6 @@ function create(datos) {
     return plato;
 }
 
-/**
- * Sobrescribe solo las claves presentes en datos.
- * @returns {Plato|null} el plato actualizado, o null si no existe
- */
 function update(id, datos) {
     const plato = findById(id);
     if (!plato) {
@@ -55,9 +46,6 @@ function update(id, datos) {
     return plato;
 }
 
-/**
- * @returns {Plato|null} el plato eliminado, o null si no existe
- */
 function remove(id) {
     const indice = platos.findIndex((plato) => plato.id === id);
     if (indice === -1) {

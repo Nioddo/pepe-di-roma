@@ -6,7 +6,9 @@ const Messages = require('../enums/Messages');
 const EstadoPedido = require('../enums/EstadoPedido');
 const Modalidad = require('../enums/Modalidad');
 const MetodoPago = require('../enums/MetodoPago');
-const { BadRequestError, NotFoundError } = require('../exceptions/AppError');
+const Rol = require('../enums/Rol');
+const { telefonoValido } = require('../utils/telefono');
+const { BadRequestError, NotFoundError, ForbiddenError } = require('../exceptions/AppError');
 
 const TIEMPO_BASE_MIN = 15;
 const TIEMPO_POR_ITEM_MIN = 5;
@@ -71,6 +73,36 @@ function validarDireccion(modalidad, direccion) {
     }
 
     return direccion.trim();
+}
+
+function validarTelefono(telefono) {
+    if (!telefonoValido(telefono)) {
+        throw new BadRequestError(Messages.PEDIDO_TELEFONO_INVALID);
+    }
+    return telefono.trim();
+}
+
+function validarIndicaciones(indicaciones) {
+    if (indicaciones === undefined || indicaciones === null) {
+        return null;
+    }
+    if (typeof indicaciones !== 'string' || indicaciones.trim().length > 300) {
+        throw new BadRequestError(Messages.PEDIDO_INDICACIONES_INVALID);
+    }
+    return indicaciones.trim() || null;
+}
+
+function validarQueSeaCliente(clienteId) {
+    const usuario = UsuarioRepository.findById(clienteId);
+    if (usuario && usuario.rol !== Rol.CLIENTE) {
+        throw new ForbiddenError(Messages.PEDIDO_SOLO_CLIENTES);
+    }
+}
+
+function ahora() {
+    const d = new Date();
+    const dos = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${dos(d.getMonth() + 1)}-${dos(d.getDate())}T${dos(d.getHours())}:${dos(d.getMinutes())}`;
 }
 
 function construirItems(items) {
@@ -161,7 +193,10 @@ function crear(body) {
     }
 
     const clienteId = validarClienteId(body.clienteId);
+    validarQueSeaCliente(clienteId);
     const modalidad = validarModalidad(body.modalidad);
+    const telefono = validarTelefono(body.telefono);
+    const indicaciones = validarIndicaciones(body.indicaciones);
     const metodoPago = validarMetodoPago(body.metodoPago);
     const direccion = validarDireccion(modalidad, body.direccion);
     const items = construirItems(body.items);
@@ -177,7 +212,10 @@ function crear(body) {
         estado,
         precioTotal: calcularPrecioTotal(items),
         tiempoEstimadoMin: calcularTiempoEstimado(items, modalidad),
-        pagoRecibido
+        pagoRecibido,
+        telefono,
+        indicaciones,
+        creadoEn: ahora()
     });
 
     guardarItems(pedido.id, items);
@@ -207,6 +245,12 @@ function modificar(id, body) {
     }
     if (body.pagoRecibido !== undefined) {
         cambios.pagoRecibido = validarPagoRecibido(body.pagoRecibido);
+    }
+    if (body.telefono !== undefined) {
+        cambios.telefono = validarTelefono(body.telefono);
+    }
+    if (body.indicaciones !== undefined) {
+        cambios.indicaciones = validarIndicaciones(body.indicaciones);
     }
 
     const itemsNuevos = body.items !== undefined ? construirItems(body.items) : null;

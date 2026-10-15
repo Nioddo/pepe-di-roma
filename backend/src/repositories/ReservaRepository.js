@@ -1,14 +1,18 @@
 const Reserva = require('../models/Reserva');
 const EstadoReserva = require('../enums/EstadoReserva');
 const { createIdGenerator } = require('../utils/idGenerator');
+const historial = require('../data/historialSeed');
 
 const reservas = [
-    new Reserva(1, 1, '2026-09-20', '21:00', 2, 1, EstadoReserva.CONFIRMADA),
-    new Reserva(2, 2, '2026-09-20', '22:00', 4, 2, EstadoReserva.PENDIENTE),
-    new Reserva(3, 1, '2026-09-21', '20:30', 6, 3, EstadoReserva.PENDIENTE)
+    new Reserva(1, 1, '2026-10-24', '21:00', 2, 1, EstadoReserva.CONFIRMADA, 'Cliente de prueba', '+54 9 11 5000-1234'),
+    new Reserva(2, 2, '2026-10-24', '21:00', 4, 2, EstadoReserva.PENDIENTE, 'Martín Pérez', '+54 9 11 6021-7788'),
+    new Reserva(3, 1, '2026-10-31', '20:30', 8, null, EstadoReserva.PENDIENTE, 'Cliente de prueba', '+54 9 11 5000-1234'),
+    ...historial.reservas.map(
+        (r) => new Reserva(r.id, r.clienteId, r.fecha, r.horaInicio, r.cantidadIntegrantes, r.mesaId, r.estado, r.nombre, r.telefono)
+    )
 ];
 
-const nextId = createIdGenerator(reservas.length + 1);
+const nextId = createIdGenerator(Math.max(...reservas.map((r) => r.id)) + 1);
 
 function findAll() {
     return reservas;
@@ -38,7 +42,9 @@ function create(datos) {
         datos.horaInicio,
         datos.cantidadIntegrantes,
         datos.mesaId,
-        datos.estado
+        datos.estado,
+        datos.nombre,
+        datos.telefono
     );
 
     reservas.push(reserva);

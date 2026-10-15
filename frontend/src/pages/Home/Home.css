@@ -1,0 +1,551 @@
+/* =================== HERO: el arco gigante =================== */
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: clamp(560px, 86svh, 860px);
+  overflow: hidden;
+}
+
+.hero__in {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.hero__copy {
+  max-width: min(580px, 44vw);
+}
+
+.hero h1 {
+  margin-bottom: 22px;
+}
+
+.hero h1:focus {
+  outline: none;
+}
+
+.hero__lead {
+  max-width: min(46ch, 36vw);
+  margin-bottom: 32px;
+  font-size: var(--lead);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 13px;
+}
+
+/* el arco entra por la derecha a escala enorme: muestra su curva y corre fuera por abajo */
+.hero__arch,
+.hero__arch-back {
+  position: absolute;
+  top: clamp(28px, 7vh, 72px);
+  left: 78%;
+  width: min(100vh, 820px);
+  aspect-ratio: 3 / 4;
+  border-radius: var(--arch);
+  transform: translateX(-50%);
+}
+
+.hero__arch {
+  z-index: 1;
+  overflow: hidden;
+}
+
+.hero__arch img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: hero-drift 22s ease-in-out infinite alternate;
+}
+
+/* el par real de la marca: un arco rojo plano corrido detrás */
+.hero__arch-back {
+  z-index: 0;
+  background: var(--red);
+  transform: translateX(-50%) translate(26px, 26px);
+}
+
+@keyframes hero-drift {
+  from {
+    transform: scale(1.02);
+  }
+  to {
+    transform: scale(1.1) translate(-1.5%, -1%);
+  }
+}
+
+/* =================== SECCIONES =================== */
+.section {
+  padding-block: var(--section);
+}
+
+/* una banda de punta a punta: el papel de la caja separa este bloque de sus vecinos */
+.banda {
+  padding-block: var(--section);
+}
+
+.section--tight {
+  padding-block: clamp(24px, 4vw, 64px) var(--section);
+}
+
+/* =================== ÍNDICE CON VISTA PREVIA =================== */
+.index__heading {
+  margin-bottom: clamp(22px, 2.4vw, 34px);
+  color: var(--red);
+}
+
+.index {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: clamp(30px, 5vw, 80px);
+}
+
+.index__list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.index__item button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 7px 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-family: var(--f-display);
+  font-size: var(--head);
+  letter-spacing: -0.02em;
+  line-height: 1.14;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--t-ui) ease;
+}
+
+/* el medio arco marca el elegido: crece desde la izquierda */
+.index__item button::before {
+  content: '';
+  flex: none;
+  width: 0.5em;
+  height: 0.25em;
+  margin-right: 0.4em;
+  border-radius: var(--arch);
+  background: var(--red);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--t-ui) var(--ease-out);
+}
+
+.index__item button[aria-current='true'] {
+  color: var(--ink);
+}
+
+.index__item button[aria-current='true']::before {
+  transform: scaleX(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .index__item button:hover {
+    color: var(--red);
+  }
+}
+
+.index__fact {
+  max-width: 44ch;
+  margin-top: 22px;
+}
+
+.index__precio {
+  margin-bottom: 6px;
+  font-family: var(--f-display);
+  font-size: 28px;
+  color: var(--red);
+  font-variant-numeric: tabular-nums;
+}
+
+/* =================== NUESTRAS CARTAS =================== */
+.cartas-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 32px;
+  margin-bottom: clamp(24px, 3vw, 40px);
+}
+
+.cartas-cabecera p {
+  max-width: 40ch;
+  font-size: var(--lead);
+}
+
+.cartas-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cartas-lista__item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px 24px;
+  padding: clamp(20px, 2.6vw, 30px) clamp(8px, 1.6vw, 20px);
+  border-radius: var(--radius-lg);
+  color: var(--red);
+  text-decoration: none;
+  transition:
+    background-color var(--t-ui) ease,
+    color var(--t-ui) ease;
+}
+
+.cartas-lista li + li .cartas-lista__item {
+  margin-top: 6px;
+}
+
+.cartas-lista__nombre {
+  font-family: var(--f-carta);
+  font-size: clamp(30px, 4vw, 54px);
+  line-height: 1;
+}
+
+.cartas-lista__uso {
+  color: var(--ink);
+  font-size: var(--lead);
+}
+
+.cartas-lista__flecha {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--rosa);
+  transition:
+    transform var(--t-ui) var(--ease-out),
+    background-color var(--t-ui) ease,
+    color var(--t-ui) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cartas-lista__item:hover {
+    background: var(--rosa);
+  }
+
+  .cartas-lista__item:hover .cartas-lista__flecha {
+    background: var(--red);
+    color: var(--white);
+    transform: translateX(4px) rotate(-45deg);
+  }
+}
+
+.index__cta {
+  margin-top: 28px;
+}
+
+.index__frame {
+  position: relative;
+  aspect-ratio: 4 / 5;
+}
+
+.index__image {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--arch-md);
+  opacity: 0;
+  transition: opacity 240ms var(--ease-out);
+}
+
+.index__image[data-on='true'] {
+  opacity: 1;
+}
+
+/* =================== SOBRE NOSOTROS: el rojo plano del packaging =================== */
+.about {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  align-items: end;
+  gap: clamp(28px, 5vw, 80px);
+  min-height: min(92svh, 820px);
+  padding: clamp(32px, 5vw, 72px) clamp(24px, 5vw, 72px) 0;
+  overflow: hidden;
+  border-radius: 24px;
+  background: var(--red);
+  color: var(--white);
+}
+
+.about :focus-visible {
+  outline-color: var(--white);
+}
+
+.about__text {
+  align-self: start;
+  padding-bottom: clamp(32px, 5vw, 72px);
+}
+
+.about h2 {
+  margin-bottom: 12px;
+}
+
+.about__tagline {
+  margin-bottom: 22px;
+  color: var(--rosa);
+  font-size: var(--lead);
+  font-weight: 600;
+}
+
+.about__body {
+  max-width: 44ch;
+  margin-bottom: 30px;
+}
+
+.about__media {
+  position: relative;
+  align-self: end;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--arch);
+  background: var(--red-dark);
+}
+
+.about__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.05);
+  transition:
+    opacity 600ms var(--ease-out),
+    transform 6s linear;
+}
+
+.about__media img[data-on='true'] {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.carousel-ctrl {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 44px;
+}
+
+.round-btn {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--white);
+  cursor: pointer;
+  transition:
+    background-color var(--t-ui) ease,
+    color var(--t-ui) ease,
+    transform var(--t-press) var(--ease-out);
+}
+
+.round-btn:active {
+  transform: scale(0.94);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .round-btn:hover {
+    background: var(--white);
+    color: var(--red);
+  }
+}
+
+.carousel-caption {
+  margin-left: 8px;
+  color: var(--rosa);
+}
+
+.carousel-count {
+  margin-right: 8px;
+  color: var(--white);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* =================== BANDA: una palabra es el botón =================== */
+.cta-band {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: clamp(340px, 60svh, 640px);
+  padding: clamp(120px, 12vw, 180px) 0 clamp(16px, 2vw, 24px);
+  overflow: hidden;
+  border-radius: 160px 160px 0 0;
+  background: var(--rosa);
+  color: var(--red);
+  text-decoration: none;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.cta-band:hover,
+.cta-band:focus-visible {
+  background: var(--red);
+  color: var(--white);
+}
+
+.cta-band:focus-visible {
+  outline-offset: -6px;
+}
+
+.cta-band__word {
+  font-family: var(--f-display);
+  font-size: clamp(84px, 22vw, 300px);
+  letter-spacing: -0.04em;
+  line-height: 0.8;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.cta-band__note {
+  position: absolute;
+  top: clamp(40px, 5vw, 72px);
+  left: clamp(40px, 8vw, 150px);
+  max-width: 30ch;
+  font-size: var(--lead);
+  line-height: 1.35;
+}
+
+.cta-band__arrow {
+  position: absolute;
+  top: clamp(40px, 5vw, 72px);
+  right: clamp(40px, 8vw, 150px);
+}
+
+/* =================== RESPONSIVE =================== */
+@media (max-width: 1100px) {
+  .hero {
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
+    padding-top: clamp(40px, 8vw, 72px);
+  }
+
+  .hero__copy {
+    max-width: 100%;
+  }
+
+  .hero__lead {
+    max-width: 46ch;
+  }
+
+  .hero__media {
+    position: relative;
+    width: 100%;
+    height: clamp(300px, 74vw, 620px);
+    margin-top: 44px;
+    overflow: hidden;
+  }
+
+  .hero__arch,
+  .hero__arch-back {
+    top: 0;
+    left: 50%;
+    width: min(86vw, 560px);
+    height: calc(100% + 40px);
+    aspect-ratio: auto;
+  }
+
+  .hero__arch-back {
+    transform: translateX(-50%) translate(18px, 18px);
+  }
+}
+
+@media (max-width: 900px) {
+  .index,
+  .about {
+    grid-template-columns: 1fr;
+  }
+
+  .about {
+    min-height: 0;
+  }
+
+  .about__media {
+    justify-self: center;
+    width: 100%;
+    max-width: 520px;
+  }
+
+  .index__frame {
+    max-width: 520px;
+  }
+}
+
+@media (max-width: 700px) {
+  .cartas-lista__item {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .cartas-lista__uso {
+    grid-column: 1;
+    font-size: var(--body);
+  }
+
+  .cartas-lista__flecha {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    width: 44px;
+    height: 44px;
+  }
+
+  .cta-band {
+    min-height: clamp(300px, 46svh, 420px);
+    padding-top: 150px;
+    border-radius: 80px 80px 0 0;
+  }
+
+  .cta-band__note {
+    top: 54px;
+    left: 28px;
+    right: 76px;
+    font-size: var(--body);
+  }
+
+  .cta-band__arrow {
+    top: 54px;
+    right: 28px;
+  }
+
+  .hero__actions .btn {
+    flex: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__arch img {
+    animation: none;
+  }
+
+  .about__media img {
+    transform: none;
+  }
+
+  .index__item button::before {
+    transition: none;
+  }
+}

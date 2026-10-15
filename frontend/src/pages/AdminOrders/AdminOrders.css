@@ -1,0 +1,19 @@
+.cell-note {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--small);
+  color: var(--muted);
+}
+
+.cell-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cell-badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}

@@ -1,5 +1,5 @@
 class Pedido {
-    constructor(id, clienteId, modalidad, metodoPago, direccion, items, estado, precioTotal, tiempoEstimadoMin, pagoRecibido) {
+    constructor(id, clienteId, modalidad, metodoPago, direccion, items, estado, precioTotal, tiempoEstimadoMin, pagoRecibido, telefono = null, indicaciones = null, creadoEn = null) {
         this.id = id;
         this.clienteId = clienteId;
         this.modalidad = modalidad;
@@ -10,6 +10,9 @@ class Pedido {
         this.precioTotal = precioTotal;
         this.tiempoEstimadoMin = tiempoEstimadoMin;
         this.pagoRecibido = pagoRecibido;
+        this.telefono = telefono;
+        this.indicaciones = indicaciones;
+        this.creadoEn = creadoEn;
     }
 }
 

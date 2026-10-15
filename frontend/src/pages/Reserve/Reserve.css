@@ -1,0 +1,22 @@
+.salon__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.salon__head h2 {
+  font-size: clamp(24px, 2.2vw, 32px);
+}
+
+.salon__note {
+  margin-top: 18px;
+  font-size: var(--small);
+  color: var(--muted);
+}
+
+.reserve__discard {
+  margin-top: 8px;
+}

@@ -1,14 +1,16 @@
 const Usuario = require('../models/Usuario');
 const Rol = require('../enums/Rol');
 const { createIdGenerator } = require('../utils/idGenerator');
+const historial = require('../data/historialSeed');
 
 const usuarios = [
-    new Usuario(1, 'lucia.gomez@mail.com', '38123456', Rol.CLIENTE),
+    new Usuario(1, 'cliente@pepediroma.com.ar', '38123456', Rol.CLIENTE),
     new Usuario(2, 'martin.perez@mail.com', '40987654', Rol.CLIENTE),
-    new Usuario(3, 'admin@pepediroma.com', '30111222', Rol.ADMIN)
+    new Usuario(3, 'admin@pepediroma.com.ar', '30111222', Rol.ADMIN),
+    ...historial.usuarios.map((u) => new Usuario(u.id, u.email, u.dni, u.rol))
 ];
 
-const nextId = createIdGenerator(usuarios.length + 1);
+const nextId = createIdGenerator(Math.max(...usuarios.map((u) => u.id)) + 1);
 
 function findAll() {
     return usuarios;

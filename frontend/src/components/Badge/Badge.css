@@ -1,0 +1,39 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 13px;
+  border-radius: var(--pill);
+  font-size: var(--small);
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.badge--brand,
+.badge--tacc,
+.badge--danger {
+  background: var(--rosa);
+  color: var(--red-dark);
+}
+
+.badge--veg,
+.badge--ok {
+  background: var(--ok-field);
+  color: var(--ok);
+}
+
+.badge--warn {
+  background: var(--warn-field);
+  color: var(--warn);
+}
+
+.badge--info {
+  background: var(--info-field);
+  color: var(--info);
+}
+
+.badge--off {
+  background: var(--off-field);
+  color: var(--off);
+}

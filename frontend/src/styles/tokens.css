@@ -1,0 +1,60 @@
+/* =====================================================================
+   PEPE DI ROMA — TOKENS DEL SISTEMA DE DISEÑO
+   Motivo: el arco de medio punto sobre astas rectas. Cada letra del
+   logotipo está construida con él y el monograma "DI" es un pórtico.
+   ===================================================================== */
+
+:root {
+  /* Color: identidad fija (justificaciones-identidad-visual.pdf) */
+  --white: #ffffff;
+  --rosa: #fce8e8;
+  --rosa-deep: #f7d6d6;
+  --red: #ce1320;
+  --red-dark: #a80e18;
+  --red-press: #860a12;
+  --ink: #1a1a1a;
+  --muted: #5c5050;
+
+  /* Estados (solo en badges y avisos) */
+  --ok: #1f7a3d;
+  --ok-field: #e3f3e8;
+  --warn: #7a5a00;
+  --warn-field: #fbf0d9;
+  --info: #1b4f96;
+  --info-field: #e4ecf7;
+  --off: #4a4040;
+  --off-field: #eeeaea;
+
+  /* El motivo, a cuatro escalas */
+  --arch: 999px 999px 0 0;
+  --arch-md: 160px 160px 0 0;
+  --arch-sm: 999px 999px 8px 8px;
+  --pill: 999px;
+  --radius: 14px;
+  --radius-lg: 20px;
+
+  /* Tipografía: dos familias, cinco pasos */
+  --f-display: 'Anton', Impact, 'Arial Narrow', sans-serif;
+  --f-text: 'Poppins', system-ui, sans-serif;
+  /* Solo dentro de la carta: la letra geométrica de las cartas impresas */
+  --f-carta: 'Baumans', 'Poppins', system-ui, sans-serif;
+  --carta-red: #c21f2d;
+  --display: clamp(56px, 6.4vw, 104px);
+  --head: clamp(30px, 3.4vw, 52px);
+  --lead: 19px;
+  --body: 16px;
+  --small: 13px;
+
+  /* Ritmo */
+  --gutter: clamp(16px, 4vw, 72px);
+  --section: clamp(88px, 11vw, 180px);
+  --maxw: 1320px;
+  --header-h: 84px;
+
+  /* Motion (Emil Kowalski): curvas fuertes, duraciones cortas */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --t-press: 160ms;
+  --t-ui: 200ms;
+  --t-enter: 420ms;
+}

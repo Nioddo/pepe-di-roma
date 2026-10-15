@@ -1,0 +1,136 @@
+/* La mesa: el rojo plano del packaging, con la hoja de la carta apoyada encima */
+.mesa {
+  padding-block: clamp(28px, 4vw, 48px) var(--section);
+  background: var(--red);
+  color: var(--white);
+}
+
+.mesa :focus-visible {
+  outline-color: var(--white);
+}
+
+.mesa__layout {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(24px, 4vw, 56px);
+  margin-top: clamp(28px, 4vw, 48px);
+}
+
+.mesa__indice {
+  position: sticky;
+  top: calc(var(--header-h) + 16px);
+}
+
+.mesa__indice-titulo {
+  margin-bottom: 12px;
+  font-size: var(--small);
+  font-weight: 600;
+  color: var(--rosa);
+}
+
+.mesa__secciones {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 28px;
+  padding: 0;
+  list-style: none;
+}
+
+.mesa__secciones a {
+  display: block;
+  padding: 6px 12px;
+  margin-left: -12px;
+  border-radius: 10px;
+  color: var(--white);
+  font-family: var(--f-carta);
+  font-size: 17px;
+  line-height: 1.25;
+  text-decoration: none;
+  transition: background-color var(--t-ui) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .mesa__secciones a:hover {
+    background: rgba(255, 255, 255, 0.14);
+  }
+}
+
+.mesa__leyenda {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 18px 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  list-style: none;
+  font-size: var(--small);
+}
+
+.mesa__leyenda li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mesa__hoja {
+  min-width: 0;
+}
+
+.mesa__hoja .empty {
+  color: var(--ink);
+}
+
+/* hoja vacía mientras carga */
+.carta--cargando {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.carta-sk__logo {
+  width: 220px;
+  height: 110px;
+  margin: 0 auto 30px;
+}
+
+.carta-sk__linea {
+  display: grid;
+  grid-template-columns: 1fr 64px;
+  gap: 40px;
+}
+
+.carta-sk__linea .skeleton {
+  height: 18px;
+}
+
+@media (max-width: 900px) {
+  .mesa__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .mesa__indice {
+    position: static;
+  }
+
+  .mesa__secciones {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .mesa__secciones a {
+    margin-left: 0;
+    padding: 7px 12px;
+    background: rgba(255, 255, 255, 0.12);
+    font-size: 15px;
+  }
+
+  .mesa__leyenda {
+    flex-direction: row;
+    gap: 18px;
+    padding-top: 14px;
+  }
+}

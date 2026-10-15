@@ -6,6 +6,8 @@ const mesaRoutes = require('./mesaRoutes');
 const reservaRoutes = require('./reservaRoutes');
 const pedidoRoutes = require('./pedidoRoutes');
 const itemPedidoRoutes = require('./itemPedidoRoutes');
+const contenidoRoutes = require('./contenidoRoutes');
+const calificacionRoutes = require('./calificacionRoutes');
 
 const router = express.Router();
 
@@ -16,5 +18,7 @@ router.use('/mesas', mesaRoutes);
 router.use('/reservas', reservaRoutes);
 router.use('/pedidos', pedidoRoutes);
 router.use('/items-pedido', itemPedidoRoutes);
+router.use('/contenido', contenidoRoutes);
+router.use('/calificaciones', calificacionRoutes);
 
 module.exports = router;

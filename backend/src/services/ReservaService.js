@@ -3,9 +3,12 @@ const MesaRepository = require('../repositories/MesaRepository');
 const UsuarioRepository = require('../repositories/UsuarioRepository');
 const Messages = require('../enums/Messages');
 const EstadoReserva = require('../enums/EstadoReserva');
+const { telefonoValido } = require('../utils/telefono');
 const { BadRequestError, NotFoundError, ConflictError } = require('../exceptions/AppError');
 
 const DURACION_MIN = 120;
+const MAX_ELIGE_MESA = 4;
+const MAX_ONLINE = 12;
 
 const FORMATO_FECHA = /^\d{4}-\d{2}-\d{2}$/;
 const FORMATO_HORA = /^([01]\d|2[0-3]):([0-5]\d)$/;
@@ -63,6 +66,9 @@ function validarIntegrantes(cantidad) {
     if (!Number.isInteger(numero) || numero <= 0) {
         throw new BadRequestError(Messages.RESERVA_INTEGRANTES_INVALID);
     }
+    if (numero > MAX_ONLINE) {
+        throw new BadRequestError(Messages.RESERVA_GRUPO_EXCEDIDO);
+    }
     return numero;
 }
 
@@ -85,6 +91,23 @@ function obtenerMesa(mesaId) {
     }
 
     return mesa;
+}
+
+function validarMesaSegunGrupo(mesaId, cantidadIntegrantes) {
+    const sinMesa = mesaId === null || mesaId === undefined;
+
+    if (cantidadIntegrantes <= MAX_ELIGE_MESA) {
+        if (sinMesa) {
+            throw new BadRequestError(Messages.RESERVA_MESA_REQUERIDA);
+        }
+        const mesa = obtenerMesa(mesaId);
+        if (mesa.capacidad < cantidadIntegrantes) {
+            throw new ConflictError(Messages.MESA_CAPACIDAD_INSUFICIENTE);
+        }
+        return mesa.id;
+    }
+
+    return sinMesa ? null : obtenerMesa(mesaId).id;
 }
 
 function aMinutos(hora) {
@@ -127,6 +150,20 @@ function obtenerPorId(id) {
     return reserva;
 }
 
+function validarNombre(nombre) {
+    if (typeof nombre !== 'string' || !nombre.trim() || nombre.trim().length > 60) {
+        throw new BadRequestError(Messages.RESERVA_NOMBRE_REQUIRED);
+    }
+    return nombre.trim();
+}
+
+function validarTelefonoReserva(telefono) {
+    if (!telefonoValido(telefono)) {
+        throw new BadRequestError(Messages.RESERVA_TELEFONO_INVALID);
+    }
+    return telefono.trim();
+}
+
 function crear(body) {
     if (!body || typeof body !== 'object') {
         throw new BadRequestError(Messages.INVALID_DATA);
@@ -136,22 +173,24 @@ function crear(body) {
     const fecha = validarFecha(body.fecha);
     const horaInicio = validarHora(body.horaInicio);
     const cantidadIntegrantes = validarIntegrantes(body.cantidadIntegrantes);
-    const mesa = obtenerMesa(body.mesaId);
+    const mesaId = validarMesaSegunGrupo(body.mesaId, cantidadIntegrantes);
     const estado = body.estado === undefined ? EstadoReserva.PENDIENTE : validarEstado(body.estado);
+    const nombre = validarNombre(body.nombre);
+    const telefono = validarTelefonoReserva(body.telefono);
 
-    if (mesa.capacidad < cantidadIntegrantes) {
-        throw new ConflictError(Messages.MESA_CAPACIDAD_INSUFICIENTE);
+    if (mesaId !== null) {
+        validarDisponibilidad({ mesaId, fecha, horaInicio });
     }
-
-    validarDisponibilidad({ mesaId: mesa.id, fecha, horaInicio });
 
     return ReservaRepository.create({
         clienteId,
         fecha,
         horaInicio,
         cantidadIntegrantes,
-        mesaId: mesa.id,
-        estado
+        mesaId,
+        estado,
+        nombre,
+        telefono
     });
 }
 
@@ -177,20 +216,25 @@ function modificar(id, body) {
         cambios.cantidadIntegrantes = validarIntegrantes(body.cantidadIntegrantes);
     }
     if (body.mesaId !== undefined) {
-        cambios.mesaId = obtenerMesa(body.mesaId).id;
+        cambios.mesaId = body.mesaId;
     }
     if (body.estado !== undefined) {
         cambios.estado = validarEstado(body.estado);
     }
-
-    const resultado = Object.assign({}, reserva, cambios);
-    const mesa = obtenerMesa(resultado.mesaId);
-
-    if (mesa.capacidad < resultado.cantidadIntegrantes) {
-        throw new ConflictError(Messages.MESA_CAPACIDAD_INSUFICIENTE);
+    if (body.nombre !== undefined) {
+        cambios.nombre = validarNombre(body.nombre);
+    }
+    if (body.telefono !== undefined) {
+        cambios.telefono = validarTelefonoReserva(body.telefono);
     }
 
-    if (resultado.estado !== EstadoReserva.CANCELADA) {
+    const resultado = Object.assign({}, reserva, cambios);
+    resultado.mesaId = validarMesaSegunGrupo(resultado.mesaId, resultado.cantidadIntegrantes);
+    if (cambios.mesaId !== undefined || cambios.cantidadIntegrantes !== undefined) {
+        cambios.mesaId = resultado.mesaId;
+    }
+
+    if (resultado.estado !== EstadoReserva.CANCELADA && resultado.mesaId !== null) {
         validarDisponibilidad({
             mesaId: resultado.mesaId,
             fecha: resultado.fecha,

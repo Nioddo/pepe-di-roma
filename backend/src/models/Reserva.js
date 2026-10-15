@@ -1,5 +1,5 @@
 class Reserva {
-    constructor(id, clienteId, fecha, horaInicio, cantidadIntegrantes, mesaId, estado) {
+    constructor(id, clienteId, fecha, horaInicio, cantidadIntegrantes, mesaId, estado, nombre = null, telefono = null) {
         this.id = id;
         this.clienteId = clienteId;
         this.fecha = fecha;
@@ -8,6 +8,8 @@ class Reserva {
         this.cantidadIntegrantes = cantidadIntegrantes;
         this.mesaId = mesaId;
         this.estado = estado;
+        this.nombre = nombre;
+        this.telefono = telefono;
     }
 }
 

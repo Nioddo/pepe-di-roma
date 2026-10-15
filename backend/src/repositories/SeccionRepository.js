@@ -1,11 +1,6 @@
 const Seccion = require('../models/Seccion');
 const { createIdGenerator } = require('../utils/idGenerator');
-
-const secciones = [
-    new Seccion(1, 'Principales', 1, [1]),
-    new Seccion(2, 'Pastas', 2, [2]),
-    new Seccion(3, 'Ensaladas', 3, [3])
-];
+const { secciones } = require('../data/cartaSeed');
 
 const nextId = createIdGenerator(secciones.length + 1);
 
@@ -17,9 +12,9 @@ function findById(id) {
     return secciones.find((seccion) => seccion.id === id) || null;
 }
 
-function findByTitulo(titulo) {
+function findByTitulo(titulo, carta) {
     const buscado = titulo.trim().toLowerCase();
-    return secciones.find((seccion) => seccion.titulo.toLowerCase() === buscado) || null;
+    return secciones.find((seccion) => seccion.titulo.toLowerCase() === buscado && seccion.carta === carta) || null;
 }
 
 function findByPlatoId(platoId) {
@@ -27,7 +22,16 @@ function findByPlatoId(platoId) {
 }
 
 function create(datos) {
-    const seccion = new Seccion(nextId(), datos.titulo, datos.orden, datos.platos);
+    const seccion = new Seccion(
+        nextId(),
+        datos.titulo,
+        datos.orden,
+        datos.platos,
+        datos.carta,
+        datos.grupo,
+        datos.subtitulo,
+        datos.nota
+    );
 
     secciones.push(seccion);
     return seccion;

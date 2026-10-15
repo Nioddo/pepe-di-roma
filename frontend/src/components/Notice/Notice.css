@@ -1,0 +1,57 @@
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 22px;
+  padding: 18px 20px;
+  border-radius: var(--radius);
+  background: var(--rosa);
+  animation: notice-in 240ms var(--ease-out);
+}
+
+@keyframes notice-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.notice strong {
+  font-weight: 600;
+}
+
+/* la marca del aviso es el arco del logotipo */
+.notice__mark {
+  flex: none;
+  width: 22px;
+  height: 11px;
+  margin-top: 7px;
+  border-radius: var(--arch);
+  background: var(--red);
+}
+
+.notice--info {
+  background: var(--info-field);
+}
+
+.notice--info .notice__mark {
+  background: var(--info);
+}
+
+.notice--stop {
+  background: var(--red);
+  color: var(--white);
+}
+
+.notice--stop .notice__mark {
+  background: var(--white);
+}
+
+.notice--stop a {
+  color: var(--white);
+  font-weight: 600;
+}
+
+.notice--stop :focus-visible {
+  outline-color: var(--white);
+}

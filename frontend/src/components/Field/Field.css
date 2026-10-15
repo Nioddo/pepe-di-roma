@@ -1,0 +1,95 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 22px;
+}
+
+.field label {
+  font-size: var(--small);
+  font-weight: 600;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 13px 16px;
+  border: 2px solid var(--rosa-deep);
+  border-radius: 10px;
+  background: var(--white);
+  font-size: var(--body);
+  transition: border-color var(--t-ui) ease;
+}
+
+.field select {
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .field input:hover,
+  .field select:hover {
+    border-color: #e8b9b9;
+  }
+}
+
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--red);
+}
+
+.field[data-invalid] input,
+.field[data-invalid] select {
+  border-color: var(--red-dark);
+}
+
+.field__hint {
+  font-size: var(--small);
+  color: var(--muted);
+}
+
+.field__error {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: var(--small);
+  font-weight: 600;
+  color: var(--red-dark);
+}
+
+.field__error svg {
+  flex: none;
+  margin-top: 4px;
+}
+
+.field__error--block {
+  margin-top: 12px;
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+}
+
+.check input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--red);
+  cursor: pointer;
+}
+
+fieldset {
+  min-width: 0;
+  margin: 0 0 22px;
+  padding: 0;
+  border: 0;
+}
+
+legend {
+  margin-bottom: 9px;
+  padding: 0;
+  font-size: var(--small);
+  font-weight: 600;
+}

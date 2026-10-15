@@ -1,13 +1,23 @@
 const ItemPedido = require('../models/ItemPedido');
+const Carta = require('../enums/Carta');
 const { createIdGenerator } = require('../utils/idGenerator');
+const { platoDeCarta } = require('../data/cartaSeed');
+const historial = require('../data/historialSeed');
+
+function itemSemilla(id, pedidoId, nombre, cantidad) {
+    const plato = platoDeCarta(Carta.PER_PORTARE_VIA, nombre);
+    return new ItemPedido(id, pedidoId, plato.id, plato.nombre, plato.precio, cantidad);
+}
 
 const items = [
-    new ItemPedido(1, 1, 1, 'Milanesa napolitana', 9500, 2),
-    new ItemPedido(2, 2, 2, 'Ravioles de ricota', 8700, 1),
-    new ItemPedido(3, 2, 3, 'Ensalada Cesar', 6400, 1)
+    itemSemilla(1, 1, 'Cappelacci', 2),
+    itemSemilla(2, 1, 'Pomodoro', 1),
+    itemSemilla(3, 2, 'Tiramisù', 1),
+    itemSemilla(4, 2, 'Cornetto', 2),
+    ...historial.items.map((i) => new ItemPedido(i.id, i.pedidoId, i.platoId, i.nombre, i.precioUnitario, i.cantidad))
 ];
 
-const nextId = createIdGenerator(items.length + 1);
+const nextId = createIdGenerator(Math.max(...items.map((i) => i.id)) + 1);
 
 function findAll() {
     return items;

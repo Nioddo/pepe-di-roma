@@ -1,0 +1,46 @@
+/* La banda del encabezado: el papel de la caja de punta a punta */
+.page-band {
+  padding-block: clamp(40px, 6vw, 84px) clamp(32px, 4.4vw, 56px);
+}
+
+.page-band--app {
+  padding-block: clamp(28px, 3.4vw, 44px);
+  background: var(--rosa);
+}
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px 32px;
+}
+
+.page-header h1:focus {
+  outline: none;
+}
+
+.page-band--app h1 {
+  font-size: var(--head);
+}
+
+.page-header__lead {
+  max-width: 56ch;
+  margin-top: 14px;
+  font-size: var(--lead);
+}
+
+.page-band--app .page-header__lead {
+  margin-top: 8px;
+  font-size: var(--body);
+}
+
+.page-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.page-header--inline {
+  margin-bottom: 26px;
+}

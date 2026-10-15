@@ -1,0 +1,73 @@
+.carta-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  padding: 6px;
+  border-radius: 22px;
+  background: var(--white);
+}
+
+.carta-tabs__tab {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 14px 18px;
+  border: 0;
+  border-radius: 16px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color var(--t-ui) ease,
+    color var(--t-ui) ease,
+    transform var(--t-press) var(--ease-out);
+}
+
+.carta-tabs__tab:active {
+  transform: scale(0.98);
+}
+
+.carta-tabs__nombre {
+  font-family: var(--f-carta);
+  font-size: clamp(19px, 2vw, 24px);
+  line-height: 1.1;
+}
+
+.carta-tabs__uso {
+  font-size: var(--small);
+  color: var(--muted);
+  transition: color var(--t-ui) ease;
+}
+
+.carta-tabs__tab[aria-selected='true'] {
+  background: var(--red);
+  color: var(--white);
+}
+
+.carta-tabs__tab[aria-selected='true'] .carta-tabs__uso {
+  color: var(--rosa);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .carta-tabs__tab[aria-selected='false']:hover {
+    background: var(--rosa);
+  }
+}
+
+@media (max-width: 700px) {
+  .carta-tabs {
+    grid-template-columns: 1fr;
+  }
+
+  .carta-tabs__tab {
+    padding: 11px 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carta-tabs__tab:active {
+    transform: none;
+  }
+}

@@ -39,11 +39,14 @@ function validarImageUrl(imageUrl) {
     return imageUrl;
 }
 
-function validarNombreDisponible(nombre, idAExcluir = null) {
-    const existente = PlatoRepository.findByNombre(nombre);
-    if (existente && existente.id !== idAExcluir) {
-        throw new ConflictError(Messages.PLATO_DUPLICATED);
+function validarTextoOpcional(valor) {
+    if (valor === null || valor === undefined) {
+        return null;
     }
+    if (typeof valor !== 'string') {
+        throw new BadRequestError(Messages.PLATO_TEXTO_INVALID);
+    }
+    return valor.trim() || null;
 }
 
 function obtenerTodos() {
@@ -70,11 +73,13 @@ function crear(body) {
     const precio = validarPrecio(body.precio);
     const vegano = body.vegano === undefined ? false : validarFlag(body.vegano);
     const sinTacc = body.sinTacc === undefined ? false : validarFlag(body.sinTacc);
-    const imageUrl = body.imageUrl === undefined ? null : validarImageUrl(body.imageUrl);
+    const imageUrl = body.imageUrl === undefined || body.imageUrl === null ? null : validarImageUrl(body.imageUrl);
+    const descripcion = validarTextoOpcional(body.descripcion);
+    const medida = validarTextoOpcional(body.medida);
+    const picante = body.picante === undefined ? false : validarFlag(body.picante);
+    const destacado = body.destacado === undefined ? false : validarFlag(body.destacado);
 
-    validarNombreDisponible(nombre);
-
-    return PlatoRepository.create({ nombre, precio, vegano, sinTacc, imageUrl });
+    return PlatoRepository.create({ nombre, precio, vegano, sinTacc, imageUrl, descripcion, medida, picante, destacado });
 }
 
 function modificar(id, body) {
@@ -88,7 +93,6 @@ function modificar(id, body) {
 
     if (body.nombre !== undefined) {
         cambios.nombre = validarNombre(body.nombre);
-        validarNombreDisponible(cambios.nombre, plato.id);
     }
     if (body.precio !== undefined) {
         cambios.precio = validarPrecio(body.precio);
@@ -101,6 +105,18 @@ function modificar(id, body) {
     }
     if (body.imageUrl !== undefined) {
         cambios.imageUrl = body.imageUrl === null ? null : validarImageUrl(body.imageUrl);
+    }
+    if (body.descripcion !== undefined) {
+        cambios.descripcion = validarTextoOpcional(body.descripcion);
+    }
+    if (body.medida !== undefined) {
+        cambios.medida = validarTextoOpcional(body.medida);
+    }
+    if (body.picante !== undefined) {
+        cambios.picante = validarFlag(body.picante);
+    }
+    if (body.destacado !== undefined) {
+        cambios.destacado = validarFlag(body.destacado);
     }
 
     return PlatoRepository.update(plato.id, cambios);

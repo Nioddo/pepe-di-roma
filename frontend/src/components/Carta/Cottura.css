@@ -1,0 +1,104 @@
+.cottura {
+  margin-top: clamp(48px, 7vw, 80px);
+  padding-top: clamp(28px, 4vw, 40px);
+  border-top: 1px solid rgba(194, 31, 45, 0.4);
+}
+
+/* en la carta impresa estos rótulos van en una sans geométrica gruesa */
+.carta .cottura__titulo {
+  margin-bottom: clamp(32px, 5vw, 52px);
+  font-family: var(--f-text);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.cottura__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(28px, 4vw, 44px) clamp(12px, 3vw, 32px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cottura__forma {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  text-align: center;
+}
+
+.cottura__forma img {
+  width: auto;
+  max-width: 100%;
+  height: clamp(70px, 11vw, 120px);
+  object-fit: contain;
+  transition: transform 300ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cottura__forma:hover img {
+    transform: rotate(-6deg) scale(1.05);
+  }
+}
+
+.cottura__forma figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 14px;
+  font-size: clamp(14px, 1.7vw, 18px);
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.cottura__forma b {
+  font-family: var(--f-text);
+  font-size: 0.9em;
+  font-weight: 600;
+  text-transform: none;
+}
+
+.cottura__consejos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(20px, 4vw, 40px);
+  margin: clamp(40px, 6vw, 64px) 0 0;
+}
+
+.cottura__consejo {
+  padding-block: 18px;
+  border-top: 1px solid rgba(194, 31, 45, 0.4);
+}
+
+.cottura__consejo dt {
+  margin-bottom: 6px;
+  font-family: var(--f-text);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.cottura__consejo dd {
+  margin: 0;
+  font-family: var(--f-text);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+@media (max-width: 560px) {
+  .cottura__consejos {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cottura__forma:hover img {
+    transform: none;
+  }
+}

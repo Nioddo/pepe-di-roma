@@ -1,0 +1,79 @@
+/* Wireframe: la misma estructura que el mockup, en baja fidelidad.
+   Escala de grises, letra de boceto, cajas tachadas en lugar de fotos.
+   Todo vive bajo html[data-wireframe]: en el mockup no aplica nada. */
+
+html[data-wireframe] {
+  filter: grayscale(1) contrast(0.92);
+  scrollbar-color: #999 #e6e3dd;
+}
+
+html[data-wireframe] body {
+  background: #f3f1ec;
+}
+
+html[data-wireframe] *,
+html[data-wireframe] *::before,
+html[data-wireframe] *::after {
+  font-family: 'Patrick Hand', 'Comic Sans MS', cursive !important;
+  letter-spacing: 0 !important;
+  -webkit-text-stroke: 0 !important;
+  box-shadow: none !important;
+}
+
+/* las fotos y el arte pasan a ser cajas tachadas del mismo tamaño */
+html[data-wireframe] img {
+  object-position: 99999px 99999px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M0 0L100 100M100 0L0 100' stroke='%23999' stroke-width='0.6' vector-effect='non-scaling-stroke' fill='none'/%3E%3C/svg%3E")
+      center / 100% 100% no-repeat,
+    #d9d6d0;
+  outline: 2px solid #999;
+  outline-offset: -2px;
+}
+
+html[data-wireframe] .paper,
+html[data-wireframe] .arch-image__fallback {
+  background-image: none;
+}
+
+/* superficies grandes: en gris claro con borde de boceto, no en bloques oscuros */
+html[data-wireframe] .mesa,
+html[data-wireframe] .about,
+html[data-wireframe] .caja,
+html[data-wireframe] .site-footer,
+html[data-wireframe] .cta-band,
+html[data-wireframe] .page-band,
+html[data-wireframe] .banda {
+  background: #e6e3dd !important;
+  color: #333 !important;
+}
+
+html[data-wireframe] .mesa *,
+html[data-wireframe] .about *,
+html[data-wireframe] .caja *,
+html[data-wireframe] .site-footer * {
+  color: #333 !important;
+}
+
+html[data-wireframe] .about,
+html[data-wireframe] .caja,
+html[data-wireframe] .carta,
+html[data-wireframe] .panel,
+html[data-wireframe] .panel-form,
+html[data-wireframe] .record,
+html[data-wireframe] .empty {
+  border: 2px dashed #999 !important;
+}
+
+html[data-wireframe] .btn,
+html[data-wireframe] .badge,
+html[data-wireframe] .table-btn,
+html[data-wireframe] .carta-tabs__tab[aria-selected='true'] {
+  border: 2px solid #555 !important;
+}
+
+html[data-wireframe] .footer-mark span {
+  background: #fff !important;
+  border: 2px solid #999;
+  color: #555 !important;
+}

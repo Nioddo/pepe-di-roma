@@ -1,11 +1,6 @@
 const Plato = require('../models/Plato');
 const { createIdGenerator } = require('../utils/idGenerator');
-
-const platos = [
-    new Plato(1, 'Milanesa napolitana', 9500, false, false, '/img/milanesa.jpg'),
-    new Plato(2, 'Ravioles de ricota', 8700, true, false, '/img/ravioles.jpg'),
-    new Plato(3, 'Ensalada Cesar', 6400, false, true, '/img/cesar.jpg')
-];
+const { platos } = require('../data/cartaSeed');
 
 const nextId = createIdGenerator(platos.length + 1);
 
@@ -29,7 +24,11 @@ function create(datos) {
         datos.precio,
         datos.vegano,
         datos.sinTacc,
-        datos.imageUrl
+        datos.imageUrl,
+        datos.descripcion,
+        datos.medida,
+        datos.picante,
+        datos.destacado
     );
 
     platos.push(plato);

@@ -1,0 +1,92 @@
+.toast-region {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(380px, calc(100vw - 40px));
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px 17px;
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: 0 14px 34px rgba(26, 10, 10, 0.18);
+  /* transición (no keyframes): si llegan varios seguidos, se reacomodan sin saltos */
+  transition:
+    transform 260ms var(--ease-out),
+    opacity 260ms var(--ease-out);
+}
+
+/* entra desde abajo y sale por el mismo lado */
+.toast[data-fase='enter'] {
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+.toast[data-fase='leave'] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition-duration: 200ms;
+}
+
+/* el tipo (éxito o error) lo marca el ícono: mismo componente, cambia color e ícono */
+.toast__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: var(--ok);
+  color: var(--white);
+}
+
+.toast[data-tipo='error'] .toast__icon {
+  background: var(--red);
+}
+
+.toast__msg {
+  font-size: var(--small);
+  line-height: 1.5;
+}
+
+.toast__close {
+  display: grid;
+  place-items: center;
+  margin-left: auto;
+  padding: 2px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .toast__close:hover {
+    color: var(--ink);
+  }
+}
+
+@media (max-width: 560px) {
+  .toast-region {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast[data-fase='enter'],
+  .toast[data-fase='leave'] {
+    transform: none;
+  }
+}

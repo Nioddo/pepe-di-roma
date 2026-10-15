@@ -1,0 +1,90 @@
+/* Piezas de composición que comparten varias páginas */
+
+.panel {
+  padding: clamp(22px, 2.6vw, 34px);
+  border-radius: var(--radius-lg);
+  background: var(--rosa);
+}
+
+.panel > h2 {
+  margin-bottom: 20px;
+  font-size: clamp(22px, 2vw, 28px);
+}
+
+.panel .field input,
+.panel .field select {
+  border-color: var(--white);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: start;
+  gap: clamp(28px, 4vw, 64px);
+}
+
+.split--reverse {
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+}
+
+.split--admin {
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 18px;
+  font-size: clamp(22px, 2vw, 28px);
+}
+
+.count {
+  margin-left: 12px;
+  padding: 3px 10px;
+  border-radius: var(--pill);
+  background: var(--rosa);
+  color: var(--muted);
+  font-family: var(--f-text);
+  font-size: var(--small);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+
+.empty-inline {
+  padding: 18px 20px;
+  border-radius: var(--radius);
+  background: var(--rosa);
+  color: var(--muted);
+}
+
+@media (max-width: 1080px) {
+  .split--admin {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .split,
+  .split--reverse {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

@@ -20,7 +20,9 @@ app.get('/', (req, res) => {
                 '/api/mesas',
                 '/api/reservas',
                 '/api/pedidos',
-                '/api/items-pedido'
+                '/api/items-pedido',
+                '/api/contenido',
+                '/api/calificaciones'
             ]
         }
     });

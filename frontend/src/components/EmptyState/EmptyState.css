@@ -1,0 +1,24 @@
+.empty {
+  padding: 62px 28px;
+  border-radius: var(--arch-md);
+  background: var(--rosa);
+  text-align: center;
+}
+
+.empty__title {
+  margin-bottom: 8px;
+  font-family: var(--f-display);
+  font-size: 26px;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.empty__text {
+  max-width: 42ch;
+  margin: 0 auto 22px;
+  color: var(--muted);
+}
+
+.empty__text:last-child {
+  margin-bottom: 0;
+}

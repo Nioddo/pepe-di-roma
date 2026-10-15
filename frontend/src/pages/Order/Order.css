@@ -1,0 +1,158 @@
+.pedido {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+  align-items: start;
+  gap: clamp(28px, 4vw, 56px);
+}
+
+.pedido__carta {
+  min-width: 0;
+}
+
+.pedido__carta .carta-tabs {
+  background: var(--rosa);
+}
+
+/* la carta, en versión de pedido: misma letra, misma columna de precio, + / − al final */
+.pedido__hoja {
+  margin-top: clamp(24px, 3vw, 36px);
+  padding: clamp(24px, 3.4vw, 44px);
+  border: 2px solid var(--rosa-deep);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+}
+
+/* ===================== LA CAJA ===================== */
+.caja {
+  position: sticky;
+  top: calc(var(--header-h) + 12px);
+  padding: clamp(24px, 2.6vw, 34px);
+  border-radius: var(--arch-md);
+  border-top-left-radius: 120px;
+  border-top-right-radius: 120px;
+  background: var(--red);
+  color: var(--white);
+}
+
+.caja :focus-visible {
+  outline-color: var(--white);
+}
+
+.caja__titulo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0 18px;
+  font-size: clamp(28px, 2.6vw, 36px);
+}
+
+.caja__cuenta {
+  display: grid;
+  place-items: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: var(--pill);
+  background: var(--white);
+  color: var(--red);
+  font-family: var(--f-text);
+  font-size: var(--small);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.caja__lineas {
+  max-height: 240px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  scrollbar-color: var(--rosa) transparent;
+}
+
+.caja__lineas li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+}
+
+.caja__lineas li span:last-child {
+  flex: none;
+  font-weight: 600;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.caja__vacia {
+  color: var(--rosa);
+}
+
+.caja__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding: 16px 0 18px;
+  border-top: 2px solid rgba(255, 255, 255, 0.35);
+}
+
+.caja__total span:first-child {
+  font-weight: 600;
+}
+
+.caja__total span:last-child {
+  font-family: var(--f-display);
+  font-size: 38px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.caja__form {
+  margin-top: 8px;
+}
+
+.caja legend,
+.caja .field label {
+  color: var(--white);
+}
+
+.caja .field__hint,
+.caja__nota {
+  color: var(--rosa);
+}
+
+.caja__nota {
+  margin: -6px 0 18px;
+  font-size: var(--small);
+}
+
+.caja .field input {
+  border-color: var(--white);
+}
+
+/* sobre el rojo, el error se lee en blanco y el campo se marca con un borde grueso */
+.caja .field__error {
+  color: var(--white);
+}
+
+.caja .field[data-invalid] input {
+  border-color: var(--red-press);
+  box-shadow: 0 0 0 3px var(--white);
+}
+
+@media (max-width: 1000px) {
+  .pedido {
+    grid-template-columns: 1fr;
+  }
+
+  .caja {
+    position: static;
+  }
+}
+
+@media (max-width: 560px) {
+  .pedido__hoja {
+    padding: 18px 14px;
+  }
+}

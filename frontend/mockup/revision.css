@@ -1,0 +1,67 @@
+.revision {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 70;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: calc(100vw - 32px);
+  font-family: var(--f-text);
+}
+
+.revision button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.revision__abrir {
+  padding: 9px 16px;
+  border: 0;
+  border-radius: var(--pill);
+  background: var(--ink);
+  color: var(--white);
+  font-size: var(--small);
+  font-weight: 600;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.revision__panel {
+  width: min(420px, calc(100vw - 32px));
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--ink);
+  color: var(--white);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3);
+}
+
+.revision__panel p {
+  margin: 0 0 8px;
+  font-size: var(--small);
+  color: #b9a8a8;
+}
+
+.revision__fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.revision__fila:last-child {
+  margin-bottom: 0;
+}
+
+.revision__fila button {
+  padding: 7px 13px;
+  border: 0;
+  border-radius: var(--pill);
+  background: #2e2626;
+  color: var(--white);
+  font-size: var(--small);
+}
+
+.revision__fila button[aria-pressed='true'] {
+  background: var(--red);
+}

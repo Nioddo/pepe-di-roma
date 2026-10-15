@@ -1,6 +1,7 @@
 const UsuarioRepository = require('../repositories/UsuarioRepository');
 const ReservaRepository = require('../repositories/ReservaRepository');
 const PedidoRepository = require('../repositories/PedidoRepository');
+const CalificacionRepository = require('../repositories/CalificacionRepository');
 const Messages = require('../enums/Messages');
 const Rol = require('../enums/Rol');
 const { BadRequestError, NotFoundError, ConflictError } = require('../exceptions/AppError');
@@ -111,8 +112,9 @@ function eliminar(id) {
 
     const tieneReservas = ReservaRepository.findByClienteId(usuario.id).length > 0;
     const tienePedidos = PedidoRepository.findByClienteId(usuario.id).length > 0;
+    const tieneCalificaciones = CalificacionRepository.findByUsuarioId(usuario.id).length > 0;
 
-    if (tieneReservas || tienePedidos) {
+    if (tieneReservas || tienePedidos || tieneCalificaciones) {
         throw new ConflictError(Messages.USUARIO_CON_REFERENCIAS);
     }
 

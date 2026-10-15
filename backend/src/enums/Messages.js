@@ -24,7 +24,7 @@ const Messages = Object.freeze({
     PLATO_NOT_FOUND: 'El plato solicitado no existe',
     PLATO_DUPLICATED: 'Ya existe un plato con ese nombre',
     PLATO_NOMBRE_REQUIRED: 'El nombre del plato es obligatorio',
-    PLATO_PRECIO_INVALID: 'El precio del plato debe ser un numero mayor a 0',
+    PLATO_PRECIO_INVALID: 'El precio del plato debe ser un numero entero mayor a 0',
     PLATO_FLAG_INVALID: 'Los campos vegano, sinTacc, picante y destacado deben ser booleanos',
     PLATO_TEXTO_INVALID: 'La descripcion y la medida del plato deben ser textos',
     PLATO_IMAGE_INVALID: 'La imageUrl debe ser un texto',

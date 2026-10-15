@@ -19,7 +19,7 @@ function validarNombre(nombre) {
 }
 
 function validarPrecio(precio) {
-    if (typeof precio !== 'number' || !Number.isFinite(precio) || precio <= 0) {
+    if (!Number.isInteger(precio) || precio <= 0) {
         throw new BadRequestError(Messages.PLATO_PRECIO_INVALID);
     }
     return precio;

@@ -59,6 +59,11 @@ src/
 └── main.tsx       Punto de entrada
 ```
 
+### Diferencias con la estructura sugerida
+
+- **`App.tsx` y `main.tsx` en lugar de `App.jsx` y `main.jsx`:** el proyecto usa TypeScript, que es JavaScript con tipos. Cumplen exactamente el mismo rol que pide la consigna (`App` organiza la aplicación y la navegación; `main` es el punto de entrada). Lo elegimos porque los tipos de `types/` copian los modelos del backend, y así el compilador avisa si una pantalla usa un campo que la API no devuelve o le manda un dato con el formato equivocado.
+- **Carpetas extra (`context/`, `hooks/`, `types/`, `content/`):** separan responsabilidades que no entran en las carpetas sugeridas. `context/` tiene los estados compartidos por toda la app (sesión, notificaciones y confirmación). `hooks/` tiene la lógica reutilizable de React, como `useApi`, que maneja la carga y los errores de todas las pantallas. `types/` tiene los tipos del dominio y `content/`, lo fijo de las cartas impresas. Las carpetas sugeridas están todas y cumplen su función.
+
 ### Servicios
 
 `services/api.ts` es el único lugar donde se usa `fetch`: arma la URL, procesa la respuesta `{ success, data | message }` del backend y lanza un `ApiError` con el mensaje cuando algo falla. Cada recurso tiene su archivo (`platosService`, `seccionesService`, `mesasService`, `reservasService`, `pedidosService`, `usuariosService`, `contenidoService`, `calificacionesService`) y las páginas solo llaman a esas funciones.

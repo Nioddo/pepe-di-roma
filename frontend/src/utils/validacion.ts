@@ -33,7 +33,7 @@ export function validarRequerido(valor: string, mensaje: string): string {
 export function validarPrecio(valor: string): string {
   if (!valor.trim()) return 'Indicá el precio.';
   const n = Number(valor);
-  if (!Number.isFinite(n) || n <= 0) return 'El precio tiene que ser un número mayor a 0.';
+  if (!Number.isInteger(n) || n <= 0) return 'El precio tiene que ser un número entero mayor a 0.';
   return '';
 }
 

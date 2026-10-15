@@ -115,7 +115,7 @@ export function AdminHistory() {
             {plural(r.reservas, 'reserva')} · {plural(r.personas, 'persona')} · {plural(r.pedidos, 'pedido')} · {formatearPrecio(r.facturacion)} vendidos
           </p>
 
-          <div className="calendario__grilla" role="grid" aria-label={`Calendario de ${nombreDeMes(mes)}`}>
+          <div key={mes} className="calendario__grilla" role="grid" aria-label={`Calendario de ${nombreDeMes(mes)}`}>
             <div role="row" className="calendario__semana">
               {DIAS_CORTOS.map((d, i) => (
                 <span key={d} role="columnheader" className="calendario__dia-semana" aria-label={DIAS_SEMANA[i]}>
@@ -160,7 +160,7 @@ export function AdminHistory() {
           <p className="calendario__ayuda">Con el teclado: flechas para moverte de día, arriba y abajo para cambiar de semana.</p>
         </section>
 
-        <section className="jornada" aria-labelledby="dia-titulo" aria-live="polite">
+        <section key={dia} className="jornada" aria-labelledby="dia-titulo" aria-live="polite">
           <h2 id="dia-titulo" className="jornada__titulo">
             {fechaLarga(dia)}
           </h2>

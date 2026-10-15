@@ -570,3 +570,123 @@
   align-items: center;
   gap: 12px;
 }
+
+/* =================== MOVIMIENTO =================== */
+/* Portada: cada renglón del título sube detrás de una máscara, uno tras otro.
+   Se ve una sola vez al entrar: es el momento que puede tener un poco de ceremonia. */
+.hero__linea {
+  overflow: hidden;
+  /* margen para los acentos de las mayúsculas, que la máscara no los corte */
+  margin-block: -0.14em -0.04em;
+  padding-block: 0.14em 0.04em;
+}
+
+.hero__linea-texto {
+  display: block;
+  animation: linea-sube 900ms var(--ease-out) both;
+  animation-delay: calc(140ms + var(--l, 0) * 120ms);
+}
+
+@keyframes linea-sube {
+  from {
+    transform: translateY(105%);
+  }
+}
+
+/* la foto se descubre de abajo hacia arriba dentro del arco, y el arco rojo se corre detrás */
+.hero__arch {
+  animation: arco-descubre 1100ms var(--ease-out) 120ms both;
+}
+
+@keyframes arco-descubre {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.hero__arch-back {
+  animation: arco-sombra 900ms var(--ease-out) 520ms both;
+}
+
+@keyframes arco-sombra {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translate(0, 0);
+  }
+}
+
+/* Productos estrella: la foto nueva se asienta y el dato cambia con un fundido corto */
+.index__image {
+  transform: scale(1.04);
+  transition:
+    opacity 320ms var(--ease-out),
+    transform 900ms var(--ease-out);
+}
+
+.index__image[data-on='true'] {
+  transform: scale(1);
+}
+
+.index__cambia {
+  animation: dato-cambia 260ms var(--ease-out);
+}
+
+@keyframes dato-cambia {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* Nuestras cartas: el nombre se corre apenas hacia la flecha */
+.cartas-lista__nombre {
+  transition: transform var(--t-ui) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cartas-lista__item:hover .cartas-lista__nombre {
+    transform: translateX(6px);
+  }
+
+  /* la banda Reservar: la flecha se adelanta en diagonal, hacia donde lleva */
+  .cta-band:hover .cta-band__arrow {
+    transform: translate(8px, -8px);
+  }
+}
+
+.cta-band__arrow {
+  transition: transform 260ms var(--ease-out);
+}
+
+/* la palabra grande sube más que el resto al aparecer */
+.js .cta-band__word.reveal {
+  transform: translateY(40%);
+  transition-duration: 900ms;
+}
+
+.js .cta-band__word.reveal.is-in {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__linea-texto,
+  .hero__arch,
+  .hero__arch-back,
+  .index__cambia {
+    animation: none;
+  }
+
+  .index__image,
+  .index__image[data-on='true'],
+  .js .cta-band__word.reveal {
+    transform: none;
+  }
+
+  .cartas-lista__nombre,
+  .cta-band__arrow {
+    transition: none;
+  }
+}

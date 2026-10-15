@@ -22,3 +22,15 @@
 .empty__text:last-child {
   margin-bottom: 0;
 }
+
+/* Movimiento: el arco del estado vacío sube suave, en vez de aparecer de golpe tras la carga */
+.empty {
+  animation: vacio-entra 420ms var(--ease-out);
+}
+
+@keyframes vacio-entra {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+}

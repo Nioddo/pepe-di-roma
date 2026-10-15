@@ -428,3 +428,22 @@
   font-size: var(--small);
   font-weight: 600;
 }
+
+/* Movimiento: los indicadores entran en escalones al abrir el panel (los gráficos no se mueven:
+   son datos que se leen) */
+.tile {
+  animation: tile-entra 420ms var(--ease-out) both;
+}
+
+.tile:nth-child(2) { animation-delay: 50ms; }
+.tile:nth-child(3) { animation-delay: 100ms; }
+.tile:nth-child(4) { animation-delay: 150ms; }
+.tile:nth-child(5) { animation-delay: 200ms; }
+.tile:nth-child(6) { animation-delay: 250ms; }
+
+@keyframes tile-entra {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}

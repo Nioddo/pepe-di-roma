@@ -1,4 +1,6 @@
+import { useRef, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
+import { useReveal } from '../../hooks/useReveal';
 import { useContenido } from '../../context/ContenidoContext';
 import { useContacto } from '../../hooks/useSitio';
 import './Footer.css';
@@ -11,13 +13,15 @@ const ANIO = new Date().getFullYear();
 export function Footer() {
   const { texto } = useContenido();
   const contacto = useContacto();
+  const raiz = useRef<HTMLElement>(null);
+  useReveal(raiz);
 
   return (
-    <footer className="site-footer">
+    <footer className="site-footer" ref={raiz}>
       <div className="wrap">
-        <div className="footer-mark" aria-hidden="true">
+        <div className="footer-mark reveal" aria-hidden="true">
           {LETRAS.map((letra, i) => (
-            <span key={i} style={{ height: `${ALTURAS[i]}%` }}>
+            <span key={i} style={{ height: `${ALTURAS[i]}%`, '--i': i } as CSSProperties}>
               {letra}
             </span>
           ))}

@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { useApi } from '../../hooks/useApi';
-import { useReveal } from '../../hooks/useReveal';
 import { useContenido } from '../../context/ContenidoContext';
 import { useAuth } from '../../context/AuthContext';
 import { esPersonal } from '../../utils/sesion';
@@ -69,8 +68,14 @@ function ProductosEstrella() {
           ))}
         </ul>
         <div className="index__fact reveal" aria-live="polite">
-          <p className="index__precio">{formatearPrecio(seleccion.precio)}</p>
-          {seleccion.descripcion && <p>{seleccion.descripcion}</p>}
+          <p key={`p${seleccion.id}`} className="index__precio index__cambia">
+            {formatearPrecio(seleccion.precio)}
+          </p>
+          {seleccion.descripcion && (
+            <p key={`d${seleccion.id}`} className="index__cambia">
+              {seleccion.descripcion}
+            </p>
+          )}
         </div>
         <div className="reveal index__cta">
           <ButtonLink to="/menu">{texto('estrella.boton')}</ButtonLink>
@@ -183,7 +188,6 @@ export function Home() {
   const fotoHero = useFoto('portada.foto');
   const raiz = useRef<HTMLDivElement>(null);
   const titulo = useRef<HTMLHeadingElement>(null);
-  useReveal(raiz);
 
   useEffect(() => {
     document.title = 'Pepe Di Roma · Fábrica de pastas artesanales';
@@ -199,8 +203,8 @@ export function Home() {
               {texto('portada.titulo')
                 .split('\n')
                 .map((linea, i) => (
-                  <span key={i} className="hero__linea">
-                    {linea}
+                  <span key={i} className="hero__linea" style={{ '--l': i } as CSSProperties}>
+                    <span className="hero__linea-texto">{linea}</span>
                   </span>
                 ))}
             </h1>
@@ -262,7 +266,7 @@ export function Home() {
         <span className="cta-band__arrow">
           <Icon name="arrow" size={48} />
         </span>
-        <span className="cta-band__word">{texto('reservar.palabra')}</span>
+        <span className="cta-band__word reveal">{texto('reservar.palabra')}</span>
       </Link>
     </div>
   );

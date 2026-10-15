@@ -136,6 +136,7 @@ export function Order() {
   } else {
     carta = (
       <CartaSheet
+        key={elegida}
         compacta
         carta={cartaInfo(elegida)}
         secciones={secciones}
@@ -173,7 +174,8 @@ export function Order() {
         <div className="pedido">
           <div className="pedido__carta">
             <CartaTabs value={elegida} onChange={cambiarCarta} panelId={PANEL} cantidades={cantidadesPorCarta(data)} />
-            <div id={PANEL} role="tabpanel" aria-labelledby={`tab-${elegida}`} className="pedido__hoja">
+            {/* la carta se desplaza adentro de su recuadro: la caja con "Confirmar" queda siempre a la vista */}
+            <div id={PANEL} role="tabpanel" aria-labelledby={`tab-${elegida}`} className="pedido__hoja" tabIndex={0}>
               {carta}
             </div>
           </div>
@@ -188,7 +190,7 @@ export function Order() {
             {lineas.length > 0 ? (
               <ul className="caja__lineas">
                 {lineas.map((p) => (
-                  <li key={p.id}>
+                  <li key={p.id} className="caja__linea">
                     <span>
                       {cantidades[p.id]}× {p.nombre}
                     </span>
@@ -202,7 +204,9 @@ export function Order() {
 
             <div className="caja__total" aria-live="polite">
               <span>Total</span>
-              <span>{formatearPrecio(total)}</span>
+              <span key={total} className="caja__monto">
+                {formatearPrecio(total)}
+              </span>
             </div>
             {errores.carrito && <InlineError>{errores.carrito}</InlineError>}
 
@@ -256,7 +260,7 @@ export function Order() {
         <div className="pedido-barra" role="region" aria-label="Resumen de tu pedido">
           <p className="pedido-barra__resumen">
             <span>{plural(unidades, 'plato')}</span>
-            <b>{formatearPrecio(total)}</b>
+            <b key={total} className="pedido-barra__monto">{formatearPrecio(total)}</b>
           </p>
           <Button variant="inverse" size="sm" onClick={irACaja}>
             Ver pedido

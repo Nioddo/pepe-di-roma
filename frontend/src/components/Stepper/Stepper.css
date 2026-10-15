@@ -45,3 +45,19 @@
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
+
+/* Movimiento: el número late al cambiar, para confirmar que se sumó o se restó */
+.stepper__valor {
+  display: inline-block;
+}
+
+.stepper__valor[data-cambio] {
+  animation: cantidad-late 220ms var(--ease-out);
+}
+
+@keyframes cantidad-late {
+  from {
+    transform: scale(1.35);
+    color: var(--red);
+  }
+}

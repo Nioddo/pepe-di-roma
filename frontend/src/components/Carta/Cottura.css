@@ -102,3 +102,20 @@
     transform: none;
   }
 }
+
+/* Movimiento: las siluetas de pasta entran una tras otra; la pasta se asienta con un leve giro */
+.js .cottura__grid li.reveal .cottura__forma img {
+  transform: rotate(-8deg) scale(0.9);
+  transition: transform 700ms var(--ease-out);
+  transition-delay: inherit;
+}
+
+.js .cottura__grid li.reveal.is-in .cottura__forma img {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .cottura__grid li.reveal .cottura__forma img {
+    transform: none;
+  }
+}

@@ -44,3 +44,39 @@
 .page-header--inline {
   margin-bottom: 26px;
 }
+
+/* Movimiento: al entrar a cada pantalla el título sube y se descubre, y la bajada lo sigue.
+   Corto (se ve en cada cambio de pantalla) y nunca bloquea: es una entrada, no una espera. */
+.page-header h1 {
+  animation: titulo-entra 620ms var(--ease-out) both;
+}
+
+.page-header__lead {
+  animation: bajada-entra 520ms var(--ease-out) 120ms both;
+}
+
+.page-header__actions {
+  animation: bajada-entra 520ms var(--ease-out) 200ms both;
+}
+
+.page-band--app h1 {
+  animation-duration: 440ms;
+}
+
+@keyframes titulo-entra {
+  from {
+    clip-path: inset(100% 0 0 0);
+    transform: translateY(24%);
+  }
+  to {
+    clip-path: inset(-20% 0 -20% 0);
+    transform: none;
+  }
+}
+
+@keyframes bajada-entra {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}

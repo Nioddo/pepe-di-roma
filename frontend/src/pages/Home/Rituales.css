@@ -108,3 +108,35 @@
     margin-top: 0;
   }
 }
+
+/* Movimiento: cada foto se descubre de abajo hacia arriba dentro de su arco,
+   con el mismo escalonado de su columna (transition-delay heredado del .reveal) */
+.js .ritual .ritual__foto {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 900ms var(--ease-out);
+  transition-delay: inherit;
+}
+
+.js .ritual .ritual__foto img {
+  transform: scale(1.12);
+  transition: transform 1200ms var(--ease-out);
+  transition-delay: inherit;
+}
+
+.js .ritual.is-in .ritual__foto {
+  clip-path: inset(0 0 0 0);
+}
+
+.js .ritual.is-in .ritual__foto img {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .ritual .ritual__foto {
+    clip-path: none;
+  }
+
+  .js .ritual .ritual__foto img {
+    transform: none;
+  }
+}

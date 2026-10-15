@@ -242,9 +242,9 @@ export function Survey() {
     <>
       <PageHeader title={texto('encuesta.titulo')} lead={texto('encuesta.bajada')} />
       <div className="wrap page split split--reverse">
-        <div>{formulario}</div>
+        <div className="reveal">{formulario}</div>
 
-        <section className="encuesta-mias" aria-labelledby="mias-titulo">
+        <section className="encuesta-mias reveal" aria-labelledby="mias-titulo">
           <h2 id="mias-titulo" className="section-title">
             {usuario ? 'Tus opiniones' : 'Lo que dicen otros'}
             {usuario && mias.length > 0 && <span className="count">{mias.length}</span>}

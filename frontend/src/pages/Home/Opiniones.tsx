@@ -96,7 +96,7 @@ function Carrusel({ opiniones, platoDe }: { opiniones: Calificacion[]; platoDe: 
         onScroll={medir}
       >
         {opiniones.map((o) => (
-          <li key={o.id} className="carrusel__item">
+          <li key={o.id} className="carrusel__item reveal">
             <TarjetaOpinion opinion={o} plato={platoDe(o.platoId)} />
           </li>
         ))}

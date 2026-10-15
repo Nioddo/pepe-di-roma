@@ -78,7 +78,7 @@ export function Menu() {
   } else if (secciones.length === 0) {
     hoja = <EmptyState title="Esta carta está vacía" text="Todavía no hay secciones cargadas. Volvé pronto." />;
   } else {
-    hoja = <CartaSheet carta={carta} secciones={secciones} />;
+    hoja = <CartaSheet key={carta.id} carta={carta} secciones={secciones} />;
   }
 
   return (

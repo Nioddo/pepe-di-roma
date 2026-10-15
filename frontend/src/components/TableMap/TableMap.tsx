@@ -1,4 +1,5 @@
 import { estiloPlano, useSalon } from '../../hooks/useSalon';
+import type { CSSProperties } from 'react';
 import type { Mesa } from '../../types';
 import './TableMap.css';
 
@@ -32,7 +33,7 @@ export function TableMap({ mesas, estadoDe, onElegir }: TableMapProps) {
           {cocina}
         </div>
       )}
-      {mesas.map((mesa) => {
+      {mesas.map((mesa, i) => {
         const estado = estadoDe(mesa);
         const inactiva = estado === 'ocupada' || estado === 'bloqueada';
         return (
@@ -41,7 +42,7 @@ export function TableMap({ mesas, estadoDe, onElegir }: TableMapProps) {
             type="button"
             className="table-btn"
             data-estado={estado}
-            style={{ gridColumn: mesa.posicionX + 1, gridRow: mesa.posicionY + 2 }}
+            style={{ gridColumn: mesa.posicionX + 1, gridRow: mesa.posicionY + 2, '--i': i } as CSSProperties}
             aria-pressed={estado === 'elegida'}
             aria-disabled={inactiva || undefined}
             aria-label={`Mesa ${mesa.numero}, para ${mesa.capacidad} personas, ${DESCRIPCION[estado]}`}

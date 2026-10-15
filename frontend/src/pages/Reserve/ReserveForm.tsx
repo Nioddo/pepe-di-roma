@@ -133,7 +133,7 @@ export function ReserveForm({ usuario, mesas, reservas, editando, onError }: Res
 
   return (
     <div className="split">
-      <form ref={formRef} onSubmit={enviar} noValidate className="panel-form">
+      <form ref={formRef} onSubmit={enviar} noValidate className="panel-form reveal">
         {editando && (
           <Notice>
             Estás modificando la reserva del <strong>{formatearFecha(editando.fecha)} a las {editando.horaInicio} h</strong>.
@@ -227,7 +227,7 @@ export function ReserveForm({ usuario, mesas, reservas, editando, onError }: Res
         )}
       </form>
 
-      <section className="panel salon" aria-labelledby="salon-titulo">
+      <section className="panel salon reveal" aria-labelledby="salon-titulo">
         <div className="salon__head">
           <h2 id="salon-titulo">Mapa del salón</h2>
           <TableLegend />

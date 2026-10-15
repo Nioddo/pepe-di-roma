@@ -81,7 +81,7 @@ export function CartaSheet({ carta, secciones, accion, compacta = false }: Carta
 
             <section
               id={idSeccion(carta, s)}
-              className={`carta__seccion${esVino ? ' carta__seccion--sub' : ''}${nuevoGrupo ? ' carta__seccion--primera' : ''}`}
+              className={`carta__seccion reveal${esVino ? ' carta__seccion--sub' : ''}${nuevoGrupo ? ' carta__seccion--primera' : ''}`}
               aria-labelledby={`${idSeccion(carta, s)}-titulo`}
             >
               <h2 className="carta__seccion-titulo" id={`${idSeccion(carta, s)}-titulo`}>

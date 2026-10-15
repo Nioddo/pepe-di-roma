@@ -81,7 +81,7 @@ Labels visibles asociados a cada input, errores vinculados con `aria-describedby
 
 ### La carta
 
-El menú reproduce las tres cartas impresas del local (`diseño/cartas`): Il Ristorante, Per portare via y Colazione e merenda. Los platos, precios, descripciones y secciones vienen de la API; el componente `components/Carta` los dibuja como la hoja impresa (con la letra Baumans, solo ahí) y lo reutiliza "Hacer pedido" con un + / − en cada línea.
+El menú reproduce las tres cartas impresas del local (`diseño/cartas`): Il Ristorante, Per portare via y Colazione e merenda. Los platos, precios, descripciones y secciones vienen de la API; el componente `components/Carta` los dibuja como la hoja impresa (con la letra Baumans, solo ahí) y lo reutiliza "Hacer pedido" con un + / − en cada línea. En "Hacer pedido" la carta tiene su propio scroll, así que la caja y su botón de confirmar quedan siempre a mano.
 
 ### Encuesta y calificaciones
 

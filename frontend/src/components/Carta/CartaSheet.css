@@ -199,3 +199,15 @@
     margin-top: 8px;
   }
 }
+
+/* Movimiento: al cambiar de carta, la hoja nueva entra subiendo en vez de aparecer de golpe */
+.carta {
+  animation: hoja-entra 320ms var(--ease-out);
+}
+
+@keyframes hoja-entra {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}

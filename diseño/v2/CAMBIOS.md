@@ -101,6 +101,9 @@ En la primera versión del rediseño todo quedaba en un mismo plano blanco y no 
 - **Se arma desde la carta misma**: cada línea suma un `+` / `−`. Es el mismo componente que el menú, reutilizado.
 - **El carrito es la caja roja**, con el total en grande. Si el envío es a domicilio, la dirección es obligatoria y el error aparece debajo del campo.
 - **Los cuatro medios de pago que acepta el backend**: efectivo, débito, crédito y transferencia.
+- **Dos desplazamientos**: la carta tiene su propio scroll, así que el botón **Confirmar pedido** no queda al final de 100 platos.
+  - En computadora, la carta y la caja ocupan el alto de la pantalla; la carta se recorre adentro y la caja también, con el botón fijo en su base.
+  - En teléfono y tablet, la carta tiene altura fija con scroll propio y la caja queda justo debajo.
 
 ### Encuesta: "¿Qué te pareció?" (nueva)
 - **No hace falta cuenta para opinar.** Solo Reservar y Hacer pedido piden iniciar sesión; el resto del sitio, la encuesta incluida, es abierto.
@@ -223,7 +226,7 @@ Se revisó cada pantalla a 390, 768, 1024 y 1440 px, con un control automático 
 - **Header**: el logotipo en letras (el de las cartas, en rojo y más grande) reemplaza al logo chico. En el teléfono queda en una sola fila con el menú; los botones de cuenta viajan adentro del menú desplegable.
 - **Pestañas de las cartas**: en el teléfono pasan a una fila que se desliza, solo con los nombres.
 - **Menú**: el índice de secciones queda **pegado arriba** mientras se baja por 260 platos, marca la sección que se está leyendo y se desliza solo para mostrarla. Las referencias (picante, vegano) quedan arriba de la hoja.
-- **Hacer pedido**: en el teléfono la caja queda al final de 100 platos, así que una **barra fija abajo**, al alcance del pulgar, muestra cuántos platos y el total, con "Ver pedido". Se oculta cuando la caja ya está a la vista.
+- **Hacer pedido**: en el teléfono la carta tiene su propio scroll y la caja va debajo; además una **barra fija abajo**, al alcance del pulgar, muestra cuántos platos y el total, con "Ver pedido". Se oculta cuando la caja ya está a la vista.
 - **Tablas de gestión**: en el teléfono cada fila pasa a ser una tarjeta con el nombre de cada dato arriba.
 - **Grids**: todas las columnas únicas usan `minmax(0, 1fr)`, para que un contenido que se desliza (pestañas, índice) no ensanche la página.
 
@@ -264,7 +267,14 @@ Todos están en `frontend/src/components`, cada uno con su CSS:
 - **Curvas**: fuertes y de salida rápida (`cubic-bezier(.23, 1, .32, 1)`). Nunca `ease-in`, nunca duraciones de más de 300 ms en la interfaz.
 - **Modal**: escala desde 0,95, nunca desde 0, y desde el centro, porque no tiene un disparador fijo.
 - **Notificaciones**: entran y salen por el mismo lado, con transiciones (no keyframes) para que varias seguidas se acomoden sin saltos. Se pausan con el mouse.
-- **Entradas escalonadas** (70 ms entre elementos) solo en Inicio. Las pantallas de gestión no se animan al cargar: el que trabaja no quiere mirar una coreografía. *impeccable*
+- **Entradas escalonadas** (70 ms entre elementos) en todas las pantallas: los bloques suben y aparecen a medida que entran en la vista.
+  - **Encabezados**: el título de cada pantalla sube detrás de una máscara y la bajada lo sigue.
+  - **Carta**: cada sección entra al bajar, y en "Tempo di cottura" las pastas se asientan con un leve giro.
+  - **Reservar**: las mesas aparecen una tras otra, como si se armara el salón, y la mesa elegida late una vez.
+  - **Mis reservas y Mis pedidos**: las tarjetas entran escalonadas y el arco de la fecha se asienta un instante después.
+  - **Ingresar y Registrarse**: la foto se descubre dentro del arco y el formulario entra en escalones.
+  - **Hacer pedido**: cada plato que se suma entra a la caja y el total late al cambiar.
+  - **Gestión**: solo entradas cortas (indicadores, paneles y bloques de texto). Los gráficos no se mueven, porque son datos que se leen. *impeccable*
 - **Hover** solo en dispositivos con mouse, y todo respeta "reducir movimiento".
 - **Puntaje**: los arcos se llenan en cascada al subir el puntaje y se vacían todos juntos al bajarlo (lento donde el usuario decide, rápido donde el sistema responde).
 - **Arrastrar mesas**: la mesa se levanta (escala 1,04 y una sombra, porque de verdad flota) y la baldosa de destino se marca mientras se arrastra.

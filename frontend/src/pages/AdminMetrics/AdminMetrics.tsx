@@ -47,7 +47,7 @@ const ESCALA = ['#EC9A9E', '#DC5F68', '#CE1320', '#9E0D17', '#650610'];
 
 function Panel({ titulo, bajada, children, ancho = false, tabla }: { titulo: string; bajada?: string; children: ReactNode; ancho?: boolean; tabla?: ReactNode }) {
   return (
-    <section className={`metrica${ancho ? ' metrica--ancha' : ''}`} aria-label={titulo}>
+    <section className={`metrica reveal${ancho ? ' metrica--ancha' : ''}`} aria-label={titulo}>
       <header className="metrica__cabecera">
         <h2>{titulo}</h2>
         {bajada && <p>{bajada}</p>}

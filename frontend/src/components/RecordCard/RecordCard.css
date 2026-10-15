@@ -99,3 +99,20 @@
     font-size: 26px;
   }
 }
+
+/* Movimiento: el arco de la fecha se asienta un instante después de la tarjeta */
+.js .record.reveal .record__date {
+  transform: translateY(10px);
+  transition: transform 520ms var(--ease-out);
+  transition-delay: inherit;
+}
+
+.js .record.reveal.is-in .record__date {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .record.reveal .record__date {
+    transform: none;
+  }
+}

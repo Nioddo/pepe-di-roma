@@ -336,3 +336,19 @@
     transform: none;
   }
 }
+
+/* Movimiento: al elegir otro día, el detalle cambia con un fundido corto (es una herramienta: nada más) */
+.jornada {
+  animation: jornada-cambia 180ms ease-out;
+}
+
+@keyframes jornada-cambia {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Movimiento: al cambiar de mes, la grilla entra con un fundido corto */
+.calendario__grilla {
+  animation: jornada-cambia 200ms ease-out;
+}

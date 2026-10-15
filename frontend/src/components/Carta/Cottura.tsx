@@ -15,7 +15,7 @@ export function Cottura() {
         {cottura.formas
           .filter((f) => f.tiempo)
           .map((f) => (
-            <li key={f.clave}>
+            <li key={f.clave} className="reveal">
               <figure className="cottura__forma">
                 <img src={f.img} alt="" loading="lazy" />
                 <figcaption>

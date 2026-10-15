@@ -170,7 +170,7 @@
   display: none;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
   .pedido {
     padding-bottom: 72px;
   }
@@ -230,5 +230,88 @@
 @media (prefers-reduced-motion: reduce) {
   .pedido-barra {
     animation: none;
+  }
+}
+
+/* Movimiento: el total late cuando cambia */
+.caja__monto,
+.pedido-barra__monto {
+  display: inline-block;
+  animation: total-late 260ms var(--ease-out);
+}
+
+@keyframes total-late {
+  from {
+    transform: scale(1.08);
+  }
+}
+
+/* ===================== DOS SCROLLS: LA PÁGINA Y LA CARTA =====================
+   La carta tiene más de 100 platos: se desplaza adentro de su propio recuadro
+   y la caja con "Confirmar pedido" no queda nunca al final de todo. */
+.pedido__hoja {
+  overflow-y: auto;
+  scrollbar-color: var(--rosa-deep) transparent;
+}
+
+.pedido__hoja:focus-visible {
+  outline-offset: -4px;
+}
+
+@media (min-width: 1001px) {
+  /* escritorio: el bloque del pedido mide la pantalla; carta y caja se desplazan cada una por su lado */
+  .pedido {
+    align-items: stretch;
+    height: calc(100svh - var(--header-h) - 24px);
+    min-height: 560px;
+    scroll-margin-top: calc(var(--header-h) + 12px);
+  }
+
+  .pedido__carta {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .pedido__hoja {
+    flex: 1 1 auto;
+    min-height: 0;
+    overscroll-behavior: contain;
+  }
+
+  .caja {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-color: var(--rosa) transparent;
+  }
+
+  /* el botón de confirmar queda pegado abajo de la caja aunque la caja se desplace */
+  .caja__form > .btn[type='submit'] {
+    position: sticky;
+    bottom: 0;
+    box-shadow: 0 0 0 14px var(--red);
+  }
+}
+
+@media (max-width: 1000px) {
+  /* teléfono y tablet: la carta en un recuadro con su scroll; la caja queda justo debajo */
+  .pedido__hoja {
+    max-height: 62svh;
+  }
+}
+
+/* Movimiento: cada plato que se suma entra a la caja desde la izquierda */
+.caja__linea {
+  animation: linea-caja 260ms var(--ease-out);
+}
+
+@keyframes linea-caja {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
   }
 }

@@ -162,3 +162,31 @@
   color: var(--muted);
   font-size: var(--small);
 }
+
+/* Movimiento: el mapa y la puerta suben dentro de su arco al aparecer.
+   El contenedor queda visible (es lo que se observa para saber si entró en pantalla);
+   lo que se descubre es lo de adentro. */
+.js .ubicacion__mapa.reveal,
+.js .ubicacion__puerta.reveal {
+  opacity: 1;
+  transform: none;
+}
+
+.js .ubicacion__mapa.reveal iframe,
+.js .ubicacion__puerta.reveal img {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1000ms var(--ease-out);
+  transition-delay: inherit;
+}
+
+.js .ubicacion__mapa.reveal.is-in iframe,
+.js .ubicacion__puerta.reveal.is-in img {
+  clip-path: inset(0 0 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .ubicacion__mapa.reveal iframe,
+  .js .ubicacion__puerta.reveal img {
+    clip-path: none;
+  }
+}

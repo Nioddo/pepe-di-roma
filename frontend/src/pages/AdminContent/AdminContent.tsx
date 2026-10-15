@@ -76,7 +76,7 @@ function FormGrupo({ grupo, items }: { grupo: Grupo; items: Contenido[] }) {
   if (campos.length === 0) return null;
 
   return (
-    <form id={grupo.id} className="contenido-grupo" onSubmit={enviar} aria-labelledby={`${grupo.id}-titulo`} noValidate>
+    <form id={grupo.id} className="contenido-grupo reveal" onSubmit={enviar} aria-labelledby={`${grupo.id}-titulo`} noValidate>
       <div className="contenido-grupo__cabecera">
         <div>
           <h2 id={`${grupo.id}-titulo`}>{grupo.titulo}</h2>

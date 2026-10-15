@@ -95,3 +95,30 @@
     font-size: clamp(16px, 5vw, 30px);
   }
 }
+
+/* Movimiento: los arcos del nombre suben desde la base, uno tras otro (70 ms entre letras).
+   Se observa la fila entera (visible); las letras arrancan escondidas debajo de su borde. */
+.footer-mark {
+  overflow: hidden;
+}
+
+.js .footer-mark.reveal {
+  opacity: 1;
+  transform: none;
+}
+
+.js .footer-mark.reveal span {
+  transform: translateY(101%);
+  transition: transform 800ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+
+.js .footer-mark.reveal.is-in span {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .footer-mark.reveal span {
+    transform: none;
+  }
+}

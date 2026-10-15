@@ -1,12 +1,13 @@
-import { useEffect, type RefObject } from 'react';
+import { useEffect, type DependencyList, type RefObject } from 'react';
 
 /**
  * Entradas escalonadas: cada .reveal dentro del contenedor sube y aparece
  * una sola vez al entrar en pantalla, 70 ms después del anterior de su sección.
  * También toma los elementos que se agregan después (por ejemplo, cuando
- * llegan los datos de la API).
+ * llegan los datos de la API). `deps` vuelve a engancharlo cuando cambia el contenedor
+ * (por ejemplo, al cambiar de pantalla).
  */
-export function useReveal(contenedor: RefObject<HTMLElement | null>) {
+export function useReveal(contenedor: RefObject<HTMLElement | null>, deps: DependencyList = []) {
   useEffect(() => {
     const raiz = contenedor.current;
     if (!raiz) return;
@@ -53,5 +54,6 @@ export function useReveal(contenedor: RefObject<HTMLElement | null>) {
       cambios.disconnect();
       intersecciones.disconnect();
     };
-  }, [contenedor]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contenedor, ...deps]);
 }

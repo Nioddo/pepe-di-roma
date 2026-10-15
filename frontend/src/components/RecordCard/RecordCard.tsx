@@ -15,7 +15,7 @@ interface RecordCardProps {
 /** Tarjeta + estado + acciones: el mismo patrón para reservas y pedidos. */
 export function RecordCard({ arriba, abajo, titulo, meta, detalle, acciones, apagado = false }: RecordCardProps) {
   return (
-    <li className="record" data-apagado={apagado || undefined}>
+    <li className="record reveal" data-apagado={apagado || undefined}>
       <div className="record__date" aria-hidden="true">
         <span className="record__top">{arriba}</span>
         <span className="record__bottom">{abajo}</span>

@@ -137,3 +137,37 @@
     transform: none;
   }
 }
+
+/* Movimiento: las mesas aparecen una tras otra, como si se armara el salón,
+   y la mesa elegida "late" una vez para confirmar la elección */
+/* "backwards": la animación no se queda aplicada al terminar, así no pisa el arrastre del editor */
+.table-btn {
+  animation: mesa-aparece 420ms var(--ease-out) calc(var(--i, 0) * 50ms) backwards;
+}
+
+@keyframes mesa-aparece {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.94);
+  }
+}
+
+/* la aparición sigue en la lista (si no, al desmarcar la mesa se repetiría); el latido se suma */
+.table-btn[data-estado='elegida'] {
+  animation:
+    mesa-aparece 420ms var(--ease-out) calc(var(--i, 0) * 50ms) backwards,
+    mesa-elegida 320ms var(--ease-out);
+}
+
+@keyframes mesa-elegida {
+  from {
+    transform: scale(0.92);
+  }
+  60% {
+    transform: scale(1.04);
+  }
+}
+
+.salon__counter {
+  animation: mesa-aparece 420ms var(--ease-out) backwards;
+}

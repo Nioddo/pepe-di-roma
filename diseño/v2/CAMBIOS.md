@@ -102,16 +102,130 @@ En la primera versión del rediseño todo quedaba en un mismo plano blanco y no 
 - **El carrito es la caja roja**, con el total en grande. Si el envío es a domicilio, la dirección es obligatoria y el error aparece debajo del campo.
 - **Los cuatro medios de pago que acepta el backend**: efectivo, débito, crédito y transferencia.
 
-### Gestión de menú
-- **Maestro–detalle**: con 259 platos, una sola tabla no se puede recorrer. A la izquierda van las secciones de la carta elegida, a la derecha la sección con su tabla. *impeccable (pantallas de gestión: densidad y estructura predecibles)*
-- **Alta de plato** con nombre, precio, medida, descripción, foto (del catálogo real) y etiquetas.
-- **Etiquetas como interruptores**: vegano, sin TACC y picante. Apagadas se ven grises y tachadas.
-- **Eliminar plato o sección siempre pide confirmación.**
+### Encuesta: "¿Qué te pareció?" (nueva)
+- **No hace falta cuenta para opinar.** Solo Reservar y Hacer pedido piden iniciar sesión; el resto del sitio, la encuesta incluida, es abierto.
+- **El puntaje se da con los arcos del logotipo, no con estrellas.** Cinco arcos que se llenan de rojo en cascada (35 ms entre uno y otro) al elegir, y todos juntos al bajar el puntaje. *taste (la idea sale del sujeto; test del competidor) + Emil (formulario de uso ocasional: se permite un detalle de placer)*
+- Son **radios nativos**: se eligen con el mouse, con el dedo o con las flechas del teclado, y el lector de pantalla dice "4 de 5, muy bien".
+- **Como la encuesta real del local** (el relevamiento muestra que hoy usan un Google Forms con atención, mozo, platos, espacio y sugerencia): además del puntaje general, se puede puntuar **atención, platos y el lugar** con arcos chicos y decir **quién te atendió**. Todo opcional.
+- **"¿Qué comiste?"** ofrece primero los platos de los pedidos del cliente (si tiene cuenta) y después cada carta.
+- **Mensaje** con contador de caracteres y **firma** (sugerida desde el email si hay sesión). El email nunca se publica.
+- Al publicar, el formulario se reemplaza por un agradecimiento en el rojo del packaging.
+- Al costado: con sesión, **"Tus opiniones"** (con la respuesta del local y la opción de borrarlas); sin sesión, **"Lo que dicen otros"** con las mejores.
 
-### Gestión de reservas y de pedidos
-- **Tablas reales**, con encabezados para lectores de pantalla y desplazamiento lateral en el teléfono.
-- **Reservas**: confirmar, cancelar, eliminar y asignar o cambiar mesa desde la propia fila.
-- **Pedidos**: avanzar el estado (Confirmar → Enviar o "Listo para retirar" → Entregado), marcar como pagado, cancelar y eliminar.
+### Nuestras calificaciones (portada, nueva)
+- **Arriba, el promedio como un precio de la carta** (grande, rojo, en Anton) con los arcos y la cantidad de opiniones, y debajo el **dato público de Google** (4,5 con 1.507 reseñas, octubre de 2026) con enlace a la ficha, para que se pueda verificar.
+- **Abajo, un carrusel horizontal con las mejores opiniones** (las de más puntaje y, entre iguales, las más nuevas). Cada tarjeta es un arco del logotipo en rosa salsa.
+  - Corre hasta el borde de la pantalla: la tarjeta cortada a la derecha avisa que hay más. *taste*
+  - Se desliza con el dedo, la rueda, las flechas del teclado (la pista es enfocable) o los botones, que se apagan en los extremos. En el teléfono los botones se ocultan: se desliza con el dedo. *impeccable (adapt)*
+  - Encaje por tarjeta (scroll-snap) y desplazamiento suave, salvo con "reducir movimiento". *Emil*
+- **Sin opiniones inventadas.** El sistema arranca vacío: la sección muestra "Todavía nadie opinó" y cinco arcos de altura creciente que abren la encuesta con ese puntaje ya elegido.
+- Las opiniones ocultas por el local no se muestran ni cuentan para el promedio.
+
+### Lo que pasa en Pepe (portada, nueva)
+- Las costumbres reales de la casa, sacadas del relevamiento: **Gnocchi del 29**, **Ragù napoletano** los domingos al mediodía, la **focaccia de 72 horas** con manteca del día y la **pasta para llevar** en porciones de 200 g y 180 g.
+- Cada una empieza por **cuándo pasa**, en rojo y grande, porque es lo que el cliente necesita saber. *taste (la idea sale de los rituales del lugar)*
+- Banda rosa de punta a punta, columnas a distinta altura para que no se lean como tarjetas iguales; en el teléfono pasa a una lista con la foto chica al costado.
+- Todo se edita en Textos y fotos.
+
+### Dónde estamos (portada, nueva)
+- **La dirección real en grande**: Av. Francisco Beiró 3701, Villa Devoto, a pasos de la estación Devoto y a unas cuadras de Plaza Arenales.
+- **El mapa de Google embebido** es la imagen dominante, recortado con el arco; el botón **"Cómo llegar"** abre la ruta en Google Maps.
+- Horario real, WhatsApp, accesibilidad (entrada y baño para silla de ruedas) y la foto de la puerta roja en arco.
+- En tablet el mapa pasa abajo a todo el ancho; en el teléfono la foto sale y queda el mapa. *impeccable (adapt)*
+
+### Gestión: el admin edita todo
+Todas las pantallas de gestión comparten una **franja en tinta** con siete pestañas (Pedidos, Reservas, Carta, Salón, Textos y fotos, Opiniones, Usuarios): marca que se está en la trastienda y permite saltar de una a otra. En el teléfono se desliza de costado.
+
+La edición se hace **en el lugar**: "Editar" abre el formulario debajo de la misma fila, lleva el foco a su título y se cierra con Escape o Cancelar. No hay modales para editar: el modal queda solo para confirmar borrados. *impeccable (modo Operate: el modal como primera opción suele ser pereza)*
+
+Para el personal, cada bloque de la portada tiene un atajo **"Editar"** (en tinta, chico, para no competir con las acciones del cliente) que lleva directo al lugar donde se cambia.
+
+#### Carta
+- **Maestro–detalle**: a la izquierda las secciones de la carta elegida, a la derecha la sección con su tabla. *impeccable*
+- **Editar un plato**: nombre, precio, medida, descripción, foto (del catálogo real o un enlace, con vista previa en arco), etiquetas, si es **producto estrella** y en qué sección va (puede pasar a otra carta).
+- **Etiquetas como interruptores** en la tabla: vegano, sin TACC, picante y **Estrella**. La Estrella decide qué platos salen en "Productos estrella" de la portada.
+- **Orden**: flechas para subir y bajar cada plato dentro de su sección y cada sección dentro de la carta.
+- **Editar una sección**: título, aclaración, grupo, nota al pie y carta.
+- Alta y baja de platos y secciones, siempre con confirmación al borrar.
+
+#### Pedidos
+- **El estado se cambia desde su propia columna**, con un selector que tiene los cinco estados y toma el color del estado. También quedan los botones rápidos (Confirmar → Enviar o "Listo para retirar" → Entregado).
+- **Editar**: estado, modalidad, forma de pago, dirección, si está pagado y **qué lleva** (sumar, quitar o cambiar cantidades); el total se recalcula con los precios del día.
+
+#### Reservas
+- Asignar mesa desde la fila, confirmar, cancelar y eliminar.
+- **Editar**: cliente, fecha, horario, personas, mesa (avisa si está ocupada a esa hora) y estado. Respeta la regla: hasta 4 personas la reserva necesita mesa.
+
+#### Salón (nueva)
+- **El plano se edita a mano**: cada mesa se **arrastra** a otra baldosa (mouse, lápiz o dedo, con captura del puntero; un segundo dedo no roba el arrastre). Si se suelta sobre otra mesa, cambian de lugar. *Emil (el transform se aplica directo al elemento, sin re-renderizar el plano en cada cuadro)*
+- **Con teclado**: se enfoca la mesa y las flechas la mueven de a una baldosa. Cada movimiento se anuncia al lector de pantalla.
+- **Panel lateral**: número, capacidad, columna y fila de la mesa elegida; agregar mesa (va al primer lugar libre) y eliminar (con confirmación; el backend no deja borrar una mesa con reservas activas).
+- **Tamaño del plano** (columnas y filas): no deja achicar si quedaría una mesa afuera. El mapa de Reservar usa este mismo plano.
+
+#### Textos y fotos (nueva)
+- **Todo lo que dice el sitio fuera de la carta**: portada, "Productos estrella", Nuestras cartas, Sobre nosotros y su carrusel, la banda Reservar, las fotos de Ingresar y Registrarse, contacto, pie, nombres y pies de las tres cartas, y el cuadro "Tempo di cottura" con el tiempo de cada pasta.
+- Agrupado **por la pantalla donde aparece**, con un índice al costado. Cada bloque se guarda por separado y avisa "N cambios sin guardar" en un pie que queda pegado abajo.
+- Las fotos se eligen del catálogo o con un enlace, con vista previa.
+- Una clave que se agregue por la API y no tenga lugar propio aparece en "Otros": nada queda sin poder editarse.
+
+#### Opiniones (nueva)
+- Responder ("Pepe responde"), ocultar o volver a mostrar en la portada, corregir puntaje, mensaje, firma, plato o fecha, y eliminar (con confirmación).
+
+#### Pedidos y reservas: datos de contacto
+- **Reservar** pide **a nombre de quién** va la reserva y un **teléfono** (se sugieren los de la última reserva del cliente, para no volver a escribirlos).
+- **Hacer pedido** pide un **teléfono** y suma **indicaciones** opcionales (timbre, piso, a qué hora pasa, algo del pedido). Cada pedido guarda además **fecha y hora**.
+- **El personal no hace pedidos**: no ve "Hacer pedido", la pantalla le explica por qué y lo lleva a Gestión de pedidos, y la API lo rechaza (403).
+- Gestión de pedidos y de reservas muestran nombre, teléfono (se puede tocar para llamar) e indicaciones, y se editan desde la fila.
+- Como ahora hay meses de movimiento, las tablas arrancan en lo que necesita atención (**pedidos en curso / de hoy**; **reservas próximas / de hoy / sin confirmar**) y lo anterior se consulta en el Historial.
+
+#### Métricas (nueva)
+*Guía dataviz: elegir la forma antes que el color, una sola escala de un tono validada con su script, marcas finas, tooltip y tabla en cada gráfico.*
+- **Un filtro de período arriba** (mes o todo el historial) que afecta a todo el panel. El mes en curso se compara con **los mismos días** del mes anterior, para no comparar medio mes contra un mes entero.
+- **Indicadores**: ventas, pedidos, ticket promedio, reservas, personas que vinieron y porcentaje de reservas canceladas, cada uno con su variación (con flecha y texto, no solo color; en cancelaciones subir es malo).
+- **Platos más pedidos**: ranking por unidades con el primero en rojo y el resto en gris (énfasis: la noticia es cuál gana).
+- **Cuándo se reserva**: mapa de calor día de la semana × hora, en una escala de un solo tono. El primer intento falló el validador (el escalón más claro casi no se distinguía del fondo); la escala final pasa los cuatro controles. Arriba dice en palabras el día y la hora pico.
+- **Ventas día por día** del mes, con el mejor día marcado.
+- **Cómo compran**: retiro o envío y medio de pago (con el recordatorio del 10 % en efectivo).
+- **Lo que dicen las opiniones**: el **plato con peor opinión** y el mejor (si eligieron qué comieron, se usa el puntaje de "Platos"), y los promedios de atención, platos y el lugar.
+- **Clientes que más vuelven**: pedidos, reservas y cuánto gastaron.
+- Cada gráfico tiene **"Ver como tabla"** y un tooltip que aparece igual con el mouse que con el foco del teclado.
+
+#### Historial (nueva)
+- **El mes en un calendario**: cada día dice cuántas reservas y pedidos tuvo (sin contar cancelados); el día de hoy va subrayado. Arriba, el resumen del mes.
+- **Al elegir un día**, al costado aparecen sus reservas (por hora) y sus pedidos, y cada uno **se abre en el lugar** con todo el detalle: teléfono, mesa, cuenta, qué llevó, pago, envío e indicaciones.
+- Se navega con los botones de mes o con el **teclado**: flechas para cambiar de día, arriba y abajo para cambiar de semana. El día elegido queda en la dirección (`?dia=2026-10-10`), así se puede compartir.
+- En el teléfono cada día muestra puntos en vez de texto, y el detalle pasa abajo del calendario.
+
+#### Usuarios (nueva, solo ADMIN)
+- Crear cuentas (por ejemplo, empleados), corregir email y DNI, cambiar el rol y eliminar (con confirmación).
+- El admin no puede borrarse a sí mismo ni quitarse el rol de administrador.
+
+## 5 bis. Datos reales del local (Informe de relevamiento)
+
+El informe de `diseño/identidad` reemplazó datos que el boceto no tenía o que había que suponer:
+
+| Antes | Ahora (fuente: relevamiento del 14/10/2026) |
+| --- | --- |
+| Martes a domingo, 12 a 15 h y 20 a 24 h | Todos los días de 8:30 a 00 h; viernes, sábados y vísperas de feriado hasta la 1 |
+| Turnos de reserva de mediodía y noche | Turnos cada 30 min desde las 8:30; el último, 2 h antes del cierre (hasta las 23 h los viernes y sábados) |
+| Teléfono de ejemplo | WhatsApp real +54 9 11 6113-8175 (con enlace directo) |
+| Un email que no figura en ninguna fuente | Se quitó; el campo queda en Textos y fotos por si el local lo quiere cargar |
+| Un texto genérico en "Sobre nosotros" | La historia real: Pepe llegó de Roma a los 8 años, abrieron en diciembre de 2024, el tiramisù es la receta de Reggina, su hermana |
+| Sin ubicación | Dirección, estación Devoto, Plaza Arenales, accesibilidad y mapa |
+| — | Instagram y PedidosYa enlazados en el pie |
+
+Además se sumaron las **37 fotos nuevas** del local que no son flyers con texto (platos, cocina, la nonna, el cocinero y la fachada), achicadas para la web. Las 12 que son piezas con texto o fechas (pop-ups, "29", promociones) quedaron afuera del catálogo.
+
+## 5 ter. Teléfono y tablet
+
+Se revisó cada pantalla a 390, 768, 1024 y 1440 px, con un control automático de desborde horizontal. *impeccable (adapt)*
+
+- **Header**: el logotipo en letras (el de las cartas, en rojo y más grande) reemplaza al logo chico. En el teléfono queda en una sola fila con el menú; los botones de cuenta viajan adentro del menú desplegable.
+- **Pestañas de las cartas**: en el teléfono pasan a una fila que se desliza, solo con los nombres.
+- **Menú**: el índice de secciones queda **pegado arriba** mientras se baja por 260 platos, marca la sección que se está leyendo y se desliza solo para mostrarla. Las referencias (picante, vegano) quedan arriba de la hoja.
+- **Hacer pedido**: en el teléfono la caja queda al final de 100 platos, así que una **barra fija abajo**, al alcance del pulgar, muestra cuántos platos y el total, con "Ver pedido". Se oculta cuando la caja ya está a la vista.
+- **Tablas de gestión**: en el teléfono cada fila pasa a ser una tarjeta con el nombre de cada dato arriba.
+- **Grids**: todas las columnas únicas usan `minmax(0, 1fr)`, para que un contenido que se desliza (pestañas, índice) no ensanche la página.
 
 ## 6. Sistema de componentes
 
@@ -126,6 +240,12 @@ Todos están en `frontend/src/components`, cada uno con su CSS:
 | Badge | vegano, sin TACC, estados de reserva y pedido |
 | Carta (hoja, ítem, pestañas, Tempo di cottura) | con o sin `+` / `−` |
 | Mapa del salón | disponible, ocupada, elegida, bloqueada |
+| Editor del salón | baldosa libre, destino del arrastre, mesa elegida, mesa arrastrándose |
+| Puntaje con arcos | selector (vacío, vista previa al pasar el mouse, elegido, error) y solo lectura (chico, grande, sobre rojo, medio arco) |
+| Editor en el lugar | se abre debajo de una fila, foco en el título, cierra con Escape |
+| Área de texto | con contador de caracteres |
+| Barra de gestión | siete pestañas, la activa en rojo |
+| Atajo "Editar" | solo para el personal |
 | Tabla de gestión | filas, acciones, vacía, cargando |
 | Tarjeta de registro | activa, apagada |
 | Modal de confirmación | uno solo para toda la app |
@@ -146,6 +266,9 @@ Todos están en `frontend/src/components`, cada uno con su CSS:
 - **Notificaciones**: entran y salen por el mismo lado, con transiciones (no keyframes) para que varias seguidas se acomoden sin saltos. Se pausan con el mouse.
 - **Entradas escalonadas** (70 ms entre elementos) solo en Inicio. Las pantallas de gestión no se animan al cargar: el que trabaja no quiere mirar una coreografía. *impeccable*
 - **Hover** solo en dispositivos con mouse, y todo respeta "reducir movimiento".
+- **Puntaje**: los arcos se llenan en cascada al subir el puntaje y se vacían todos juntos al bajarlo (lento donde el usuario decide, rápido donde el sistema responde).
+- **Arrastrar mesas**: la mesa se levanta (escala 1,04 y una sombra, porque de verdad flota) y la baldosa de destino se marca mientras se arrastra.
+- **Editor en el lugar**: entra en 200 ms desde 6 px más arriba; sin animación con "reducir movimiento".
 
 ## 8. Accesibilidad
 
@@ -174,6 +297,14 @@ Hicieron falta para que la carta y la regla de reservas se guarden de verdad:
 - **`Seccion`**: suma `carta` (RISTORANTE, PER_PORTARE_VIA o COLAZIONE), `grupo` (I Vini, Dolce, Salato), `subtitulo` y `nota`.
 - **Nombre de plato**: ya no tiene que ser único en todo el sistema, porque el mismo vino o el mismo café figura en dos cartas con precios distintos.
 - **Reservas**: hasta 4 personas exigen mesa con capacidad suficiente; de 5 a 12 se aceptan sin mesa (el local la asigna después y puede unir mesas); más de 12 se rechazan.
+- **Edición total por el admin**:
+  - **`Contenido`** (nuevo, `/api/contenido`): cada texto y foto del sitio es un par clave–valor (90 claves: portada, cards, contacto, cartas, Tempo di cottura, tamaño del plano del salón…). CRUD completo.
+  - **`Calificacion`** (nuevo, `/api/calificaciones`): `usuarioId`, `firma`, `puntaje` (1 a 5), `mensaje` (hasta 500 caracteres), `fecha`, `platoId` opcional, `visible` y `respuesta` del local. CRUD completo con validaciones. No se puede eliminar un usuario que tenga opiniones.
+  - **`Plato.destacado`**: marca los productos estrella de la portada (seis vienen marcados, los mismos que mostraba la portada).
+  - Las calificaciones **arrancan vacías**: no se inventan opiniones. Se pueden dejar **sin cuenta** (`usuarioId` opcional) y guardan también **atención, comida y espacio** (1 a 5, opcionales) y **quién atendió**, como la encuesta real del local.
+  - **Reserva** suma `nombre` y `telefono` (obligatorios); **Pedido** suma `telefono` (obligatorio), `indicaciones` (opcional) y `creadoEn` (fecha y hora en que se hizo). Los pedidos de cuentas que no son de cliente se rechazan con **403**.
+  - **Historial de prueba** (`data/historialSeed.js`): para que Métricas e Historial tengan algo que mostrar, el backend arranca con 474 reservas y 352 pedidos del 1/8 al 31/10/2026, generados con una semilla fija (siempre los mismos). Los pedidos usan platos reales de la carta para llevar con más peso en los más vendidos según el relevamiento; las reservas cargan más los viernes, sábados y domingos y nunca se superponen en una mesa. Son **datos de prueba**: los clientes y teléfonos son ficticios. Las opiniones no se generan: siguen arrancando vacías.
+  - **Contenido** suma la ubicación, los rituales, el dato de Google, el WhatsApp, Instagram, PedidosYa y el horario extendido (132 claves).
 - **Datos semilla**:
   - las tres cartas reales (259 platos en 39 secciones);
   - las 6 mesas del boceto (cuatro de 4 y dos de 6);
@@ -191,5 +322,10 @@ En la carta para llevar, el segundo bloque titulado "Ottima conservazione" (el d
 - **Mockup v2** (`Mockup_v2_Pepe_Di_Roma.html`) y **Wireframe v2** (`Wireframe_v2_Pepe_Di_Roma.html`): se abren con doble clic.
   - Son la misma app React del frontend, con una API simulada adentro, así que se comportan igual que el producto real.
   - El botón de abajo a la izquierda abre un **panel de revisión**: cambiar de rol (visitante, cliente, admin) y forzar carga lenta, listas vacías o servidor caído, para ver todos los estados.
+  - **"Opiniones de ejemplo"** carga tres opiniones rotuladas como ejemplo para revisar la portada con calificaciones. Solo existen en el mockup; la app real arranca sin opiniones.
   - Se regeneran con `npm run diseno` dentro de `frontend/`.
+- **Figma** (https://www.figma.com/design/C9SEG21XR03MDt558atnom):
+  - **Componentes**: variables de color, radio y espaciado (con su `var(--…)` del código), estilos de texto Anton, Poppins y Baumans, y los componentes con variantes: botón, badge, campo, puntaje con arcos (selector y lectura), mesa, toast, barra de gestión, ítem de carta, opinión, header por rol, encabezado de pantalla, footer, logo, íconos y las 13 fotos reales.
+  - **Mockup**: Inicio (con "Nuestras calificaciones") y Menú, armados con instancias editables.
+  - **Pendiente**: el resto de las pantallas y la página Wireframe. El plan gratuito de Figma permite 20 operaciones por mes desde la integración y se agotaron; mientras tanto, el mockup y el wireframe completos son los dos HTML de esta carpeta.
 - **Frontend real**: ver `frontend/README.md`.

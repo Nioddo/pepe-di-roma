@@ -20,17 +20,28 @@
   padding: 16px var(--gutter);
 }
 
-/* el logo dentro del arco del monograma */
+/* el logotipo tal cual está en las cartas: las letras de arcos, en rojo */
 .site-header__logo {
+  display: block;
   flex: none;
-  border-radius: var(--arch-sm);
+  border-radius: 6px;
+  line-height: 0;
+  transition: transform var(--t-press) var(--ease-out);
+}
+
+.site-header__logo:active {
+  transform: scale(0.97);
 }
 
 .site-header__logo img {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--arch-sm);
-  object-fit: cover;
+  width: auto;
+  height: 60px;
+}
+
+@media (max-width: 560px) {
+  .site-header__logo img {
+    height: 46px;
+  }
 }
 
 .site-nav {
@@ -176,6 +187,52 @@
 
 @media (prefers-reduced-motion: reduce) {
   .site-header[data-abierto] .site-nav {
+    animation: none;
+  }
+}
+
+/* teléfono: una sola fila (logo y menú). Los botones de cuenta viajan
+   adentro del menú desplegable, debajo de los enlaces. */
+@media (max-width: 560px) {
+  .site-header__in {
+    padding-block: 12px;
+  }
+
+  .site-header__toggle {
+    margin-left: auto;
+  }
+
+  .site-header__actions {
+    display: none;
+    order: 5;
+    width: 100%;
+    margin-left: 0;
+    padding-bottom: 14px;
+  }
+
+  .site-header[data-abierto] .site-header__actions {
+    display: flex;
+    animation: nav-abrir 200ms var(--ease-out);
+  }
+
+  .site-header__actions .btn {
+    flex: 1;
+    padding-block: 12px;
+  }
+
+  .site-header__user {
+    display: block;
+    flex: 1 1 100%;
+    max-width: none;
+  }
+
+  .site-nav ul {
+    padding-bottom: 8px;
+  }
+}
+
+@media (max-width: 560px) and (prefers-reduced-motion: reduce) {
+  .site-header[data-abierto] .site-header__actions {
     animation: none;
   }
 }

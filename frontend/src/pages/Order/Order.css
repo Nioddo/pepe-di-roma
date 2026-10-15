@@ -127,7 +127,8 @@
   font-size: var(--small);
 }
 
-.caja .field input {
+.caja .field input,
+.caja .field textarea {
   border-color: var(--white);
 }
 
@@ -136,14 +137,15 @@
   color: var(--white);
 }
 
-.caja .field[data-invalid] input {
+.caja .field[data-invalid] input,
+.caja .field[data-invalid] textarea {
   border-color: var(--red-press);
   box-shadow: 0 0 0 3px var(--white);
 }
 
 @media (max-width: 1000px) {
   .pedido {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .caja {
@@ -154,5 +156,79 @@
 @media (max-width: 560px) {
   .pedido__hoja {
     padding: 18px 14px;
+  }
+}
+
+.caja__titulo:focus {
+  outline: none;
+}
+
+/* ===================== BARRA DEL TELÉFONO =====================
+   Con la caja al final de 100 platos, el total y "Ver pedido" quedan abajo,
+   donde llega el pulgar. Flota de verdad, por eso lleva sombra. */
+.pedido-barra {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .pedido {
+    padding-bottom: 72px;
+  }
+
+  .pedido-barra {
+    position: fixed;
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    left: 12px;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 8px 8px 22px;
+    border-radius: var(--pill);
+    background: var(--red);
+    color: var(--white);
+    box-shadow: 0 14px 30px -10px rgb(134 10 18 / 0.5);
+    animation: barra-entra 260ms var(--ease-out);
+  }
+
+  .pedido-barra :focus-visible {
+    outline-color: var(--white);
+  }
+
+  .pedido-barra__resumen {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  .pedido-barra__resumen span {
+    color: var(--rosa);
+    font-size: var(--small);
+  }
+
+  .pedido-barra__resumen b {
+    font-family: var(--f-display);
+    font-size: 24px;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pedido-barra .btn {
+    min-height: 44px;
+  }
+}
+
+@keyframes barra-entra {
+  from {
+    opacity: 0;
+    transform: translateY(120%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pedido-barra {
+    animation: none;
   }
 }

@@ -6,7 +6,9 @@ import { getMesas } from '../../services/mesasService';
 import { cambiarEstadoReserva, deleteReserva, getReservas, updateReserva } from '../../services/reservasService';
 import { getUsuarios } from '../../services/usuariosService';
 import { mensajeDeError } from '../../services/api';
-import { formatearFecha } from '../../utils/formato';
+import { formatearFecha, hoyISO, plural } from '../../utils/formato';
+import { Toggle } from '../../components/Toggle/Toggle';
+import { Link } from 'react-router-dom';
 import { ESTADO_RESERVA } from '../../utils/estados';
 import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { DataTable, RowActions, type Columna } from '../../components/DataTable/DataTable';
@@ -15,7 +17,14 @@ import { Button } from '../../components/Button/Button';
 import { EmptyState } from '../../components/EmptyState/EmptyState';
 import { SkeletonList } from '../../components/Skeleton/Skeleton';
 import type { Reserva } from '../../types';
-import './AdminReservations.css';
+import { EditorReserva } from './EditorReserva';
+
+type Vista = 'proximas' | 'hoy' | 'pendientes';
+const VISTAS: { value: Vista; label: string }[] = [
+  { value: 'proximas', label: 'Próximas' },
+  { value: 'hoy', label: 'Hoy' },
+  { value: 'pendientes', label: 'Sin confirmar' }
+];
 
 const cargar = () => Promise.all([getReservas(), getMesas(), getUsuarios()]);
 
@@ -24,9 +33,15 @@ export function AdminReservations() {
   const confirmar = useConfirm();
   const { data, loading, error, recargar } = useApi(cargar);
   const [ocupado, setOcupado] = useState<string | null>(null);
+  const [editando, setEditando] = useState<number | null>(null);
 
   const [reservas, mesas, usuarios] = data ?? [[], [], []];
-  const ordenadas = reservas.slice().sort((a, b) => (a.fecha + a.horaInicio).localeCompare(b.fecha + b.horaInicio));
+  // las que vienen; las pasadas se consultan en Historial
+  const [vista, setVista] = useState<Vista>('proximas');
+  const hoy = hoyISO();
+  const ordenadas = reservas
+    .filter((r) => (vista === 'hoy' ? r.fecha === hoy : vista === 'pendientes' ? r.fecha >= hoy && r.estado === 'PENDIENTE' : r.fecha >= hoy))
+    .sort((a, b) => (a.fecha + a.horaInicio).localeCompare(b.fecha + b.horaInicio));
   const emailDe = (id: number) => usuarios.find((u) => u.id === id)?.email ?? `Cliente #${id}`;
   const cuando = (r: Reserva) => `${formatearFecha(r.fecha)} a las ${r.horaInicio} h`;
 
@@ -82,7 +97,21 @@ export function AdminReservations() {
   const columnas: Columna<Reserva>[] = [
     { clave: 'fecha', titulo: 'Fecha', numerica: true, render: (r) => formatearFecha(r.fecha) },
     { clave: 'hora', titulo: 'Horario', numerica: true, render: (r) => `${r.horaInicio} h` },
-    { clave: 'cliente', titulo: 'Cliente', render: (r) => emailDe(r.clienteId) },
+    {
+      clave: 'cliente',
+      titulo: 'A nombre de',
+      render: (r) => (
+        <>
+          <strong>{r.nombre ?? emailDe(r.clienteId)}</strong>
+          {r.telefono && (
+            <a className="cell-note" href={`tel:${r.telefono.replace(/[^\d+]/g, '')}`}>
+              {r.telefono}
+            </a>
+          )}
+          <span className="cell-note">{emailDe(r.clienteId)}</span>
+        </>
+      )
+    },
     { clave: 'personas', titulo: 'Personas', numerica: true, render: (r) => r.cantidadIntegrantes },
     {
       clave: 'mesa',
@@ -137,6 +166,9 @@ export function AdminReservations() {
               Cancelar
             </Button>
           )}
+          <Button variant="secondary" size="sm" aria-expanded={editando === r.id} onClick={() => setEditando(editando === r.id ? null : r.id)}>
+            Editar
+          </Button>
           <Button variant="danger-quiet" size="sm" loading={ocupado === `eliminar-${r.id}`} onClick={() => eliminar(r)}>
             Eliminar
           </Button>
@@ -151,23 +183,44 @@ export function AdminReservations() {
   } else if (error) {
     contenido = <EmptyState title="No pudimos cargar las reservas" text={error} action={<Button onClick={recargar}>Reintentar</Button>} />;
   } else if (ordenadas.length === 0) {
-    contenido = <EmptyState title="No hay reservas" text="Cuando los clientes reserven, las vas a ver acá." />;
+    contenido = <EmptyState title="No hay reservas para mostrar" text="Cuando los clientes reserven, las vas a ver acá. Las pasadas están en el Historial." />;
   } else {
     contenido = (
       <DataTable
         columnas={columnas}
         filas={ordenadas}
         getKey={(r) => r.id}
-        minWidth={940}
-        caption="Los grupos de 5 a 12 personas reservan sin mesa: asignala desde la columna Mesa (podés unir mesas)."
+        minWidth={1020}
+        detalle={(r) =>
+          editando === r.id && (
+            <EditorReserva
+              reserva={r}
+              reservas={reservas}
+              mesas={mesas}
+              usuarios={usuarios}
+              onCerrar={() => setEditando(null)}
+              onGuardado={() => {
+                setEditando(null);
+                recargar();
+              }}
+            />
+          )
+        }
+        caption={`${plural(ordenadas.length, 'reserva')}. Los grupos de 5 a 12 personas reservan sin mesa: asignala desde la columna Mesa (podés unir mesas).`}
       />
     );
   }
 
   return (
     <>
-      <PageHeader title="Gestión de reservas" lead="Confirmá, reasigná mesas y cancelá reservas." compact />
+      <PageHeader title="Gestión de reservas" lead="Confirmá, reasigná mesas, cambiá fecha, horario o personas, y cancelá reservas." compact />
       <div className="wrap page">
+        <div className="filtros">
+          <Toggle legend="Mostrar" options={VISTAS} value={vista} onChange={setVista} />
+          <Link className="filtros__enlace" to="/admin/historial">
+            Ver reservas pasadas en el Historial
+          </Link>
+        </div>
         {contenido}
       </div>
     </>

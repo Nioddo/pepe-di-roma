@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useContenido } from '../../context/ContenidoContext';
 import { useApi } from '../../hooks/useApi';
 import { getMesas } from '../../services/mesasService';
 import { getReservas } from '../../services/reservasService';
@@ -14,13 +15,12 @@ import './Reserve.css';
 
 const cargarDatos = () => Promise.all([getMesas(), getReservas()]);
 
-const BAJADA = 'Toda reserva dura 2 horas. Horario: martes a domingo, de 12 a 15 h y de 20 a 24 h.';
-
 /** Carga el salón y las reservas; el formulario recién se arma con los datos listos. */
 export function Reserve() {
   const { id } = useParams();
   const editId = id ? Number(id) : undefined;
   const { usuario } = useAuth();
+  const BAJADA = useContenido().texto('reservar.bajada');
   const { data, loading, error, recargar } = useApi(cargarDatos);
 
   const mesas = useMemo(() => (data ? [...data[0]].sort((a, b) => a.numero - b.numero) : []), [data]);

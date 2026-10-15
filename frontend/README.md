@@ -47,9 +47,9 @@ El backend no guarda contraseñas: se ingresa con email y DNI.
 src/
 ├── assets/        Fotos reales de la marca y logo
 ├── components/    Componentes reutilizables (cada uno con su CSS)
-├── content/       Textos institucionales del local
-├── context/       Sesión, notificaciones (toast) y confirmación (modal)
-├── hooks/         useApi (carga + errores) y useReveal (entradas animadas)
+├── content/       Lo fijo de las cartas (ids y siluetas de "Tempo di cottura")
+├── context/       Sesión, notificaciones (toast), confirmación (modal) y textos del sitio
+├── hooks/         useApi (carga + errores), useReveal, useSitio y useSalon
 ├── pages/         Una carpeta por pantalla
 ├── services/      Toda la comunicación con la API
 ├── styles/        Tokens del sistema de diseño, base y layout compartido
@@ -61,7 +61,11 @@ src/
 
 ### Servicios
 
-`services/api.ts` es el único lugar donde se usa `fetch`: arma la URL, procesa la respuesta `{ success, data | message }` del backend y lanza un `ApiError` con el mensaje cuando algo falla. Cada recurso tiene su archivo (`platosService`, `seccionesService`, `mesasService`, `reservasService`, `pedidosService`, `usuariosService`) y las páginas solo llaman a esas funciones.
+`services/api.ts` es el único lugar donde se usa `fetch`: arma la URL, procesa la respuesta `{ success, data | message }` del backend y lanza un `ApiError` con el mensaje cuando algo falla. Cada recurso tiene su archivo (`platosService`, `seccionesService`, `mesasService`, `reservasService`, `pedidosService`, `usuariosService`, `contenidoService`, `calificacionesService`) y las páginas solo llaman a esas funciones.
+
+### Nada escrito a mano en los componentes
+
+Los textos y las fotos del sitio (portada, cards, contacto, nombres y pies de las cartas, "Tempo di cottura", tamaño del plano del salón) vienen de `/api/contenido`. `context/ContenidoContext` los carga al abrir el sitio (con su pantalla de carga y de error) y los componentes los leen con `useContenido()` o con los hooks de `hooks/useSitio.ts`. Al guardar en "Textos y fotos", todo el sitio se actualiza.
 
 ### Experiencia de usuario
 
@@ -79,11 +83,38 @@ Labels visibles asociados a cada input, errores vinculados con `aria-describedby
 
 El menú reproduce las tres cartas impresas del local (`diseño/cartas`): Il Ristorante, Per portare via y Colazione e merenda. Los platos, precios, descripciones y secciones vienen de la API; el componente `components/Carta` los dibuja como la hoja impresa (con la letra Baumans, solo ahí) y lo reutiliza "Hacer pedido" con un + / − en cada línea.
 
+### Encuesta y calificaciones
+
+Cualquiera puede opinar en `/opinar`, con o sin cuenta: puntaje general de 1 a 5 con los arcos del logotipo, y opcionalmente atención, platos, el lugar y quién lo atendió (como la encuesta del local). La portada muestra el promedio y un carrusel con las mejores opiniones en "Nuestras calificaciones". El admin las responde, las oculta o las corrige en Gestión → Opiniones.
+
+### Datos de prueba
+
+El backend arranca con un historial de prueba (474 reservas y 352 pedidos entre el 1/8 y el 31/10/2026, generados siempre igual en `backend/src/data/historialSeed.js`) para que Métricas e Historial muestren algo. Los clientes y teléfonos son ficticios. Las opiniones arrancan vacías.
+
+### Qué pide iniciar sesión
+
+Solo **Reservar** y **Hacer pedido** (y sus listados, Mis reservas y Mis pedidos). El menú, la portada y la encuesta son abiertos. La gestión es del personal del local, que **no puede hacer pedidos** (la pantalla lo explica y la API responde 403). Reservar pide nombre y teléfono; Hacer pedido pide teléfono y acepta indicaciones.
+
+### Gestión (personal del local)
+
+| Pantalla | Qué se edita |
+| --- | --- |
+| Pedidos | En curso o de hoy. Estado (desde la tabla, los cinco), modalidad, pago, dirección, teléfono, indicaciones, pagado e ítems |
+| Reservas | Próximas, de hoy o sin confirmar. Nombre, teléfono, cliente, fecha, horario, personas, mesa y estado |
+| Historial | Calendario del mes; cada día con sus reservas y pedidos y el detalle de cada uno |
+| Métricas | Ventas, platos más pedidos, días y horarios con más reservas, plato con peor y mejor opinión, cómo compran y clientes frecuentes, por mes |
+| Carta | Platos (todo, incluida la foto y si es producto estrella), secciones, orden, altas y bajas |
+| Salón | Mesas (número, capacidad, lugar) arrastrándolas en el plano o con el teclado; tamaño del plano |
+| Textos y fotos | Todos los textos y fotos del sitio |
+| Opiniones | Responder, ocultar, corregir, eliminar |
+| Usuarios (solo ADMIN) | Crear, editar email, DNI y rol, eliminar |
+
 ### Reglas de reserva
 
 - Hasta 4 personas: eligen la mesa en el mapa del salón (armado con `posicionX` / `posicionY` de la API).
 - De 5 a 12: no eligen mesa; la reserva se guarda sin mesa y el local la asigna desde Gestión de reservas.
-- Más de 12: no pueden reservar online; se muestra cómo contactar al local.
+- Más de 12: no pueden reservar online; se ofrece el WhatsApp del local.
+- Horarios: turnos cada 30 minutos desde las 8:30; como la reserva dura 2 horas y el local cierra a las 00 h (a la 1 los viernes y sábados), el último turno es 22:00 (23:00 viernes y sábados).
 
 ## Diseño
 

@@ -11,7 +11,7 @@ import { TextField } from '../../components/Field/Field';
 import { Notice } from '../../components/Notice/Notice';
 import { Button } from '../../components/Button/Button';
 import type { DestinoLogin } from '../../components/RequireAuth/RequireAuth';
-import foto from '../../assets/platos/pepediroma_02_lasagna_ragu.jpg';
+import { useFoto } from '../../hooks/useSitio';
 
 type Campo = 'email' | 'dni';
 
@@ -21,6 +21,7 @@ export function Register() {
   const navigate = useNavigate();
   const destino = useLocation().state as DestinoLogin | null;
   const formRef = useRef<HTMLFormElement>(null);
+  const foto = useFoto('registrarse.foto');
 
   const [email, setEmail] = useState('');
   const [dni, setDni] = useState('');
@@ -51,7 +52,7 @@ export function Register() {
   };
 
   return (
-    <AuthLayout foto={foto} fotoAlt="Lasagna de ragú servida en plato hondo">
+    <AuthLayout foto={foto.src} fotoAlt={foto.alt}>
       <PageHeader inline title="Registrarse" lead="Creá tu cuenta y sumate a la famiglia." />
 
       {destino?.aviso && <Notice>{destino.aviso}</Notice>}

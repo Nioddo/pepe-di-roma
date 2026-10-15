@@ -1,0 +1,154 @@
+.salon-editor {
+  display: grid;
+  grid-template-columns: minmax(0, 8fr) minmax(280px, 4fr);
+  align-items: start;
+  gap: clamp(22px, 3vw, 44px);
+}
+
+.salon-editor__panel {
+  position: sticky;
+  top: calc(var(--header-h) + 16px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.salon-editor__panel .panel p.muted {
+  margin-top: -6px;
+  margin-bottom: 0;
+}
+
+.salon-editor__resumen {
+  margin-top: 18px;
+  color: var(--red);
+  font-family: var(--f-display);
+  font-size: 26px;
+  line-height: 1.1;
+}
+
+.salon-editor__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.salon-editor__acciones .btn--danger-quiet {
+  margin-left: auto;
+}
+
+/* ---------- el plano: el piso en rosa, cada lugar es una baldosa ---------- */
+.plano__piso {
+  display: grid;
+  gap: clamp(10px, 1.6vw, 18px);
+  padding: clamp(16px, 2.4vw, 28px);
+  border-radius: var(--radius-lg);
+  background: var(--rosa);
+}
+
+.plano__cocina {
+  margin-bottom: 0;
+}
+
+.plano__celda {
+  display: grid;
+  min-height: clamp(104px, 12vw, 150px);
+  border-radius: 999px 999px 14px 14px;
+  background: var(--rosa-deep);
+  transition: background-color var(--t-ui) ease;
+}
+
+/* la baldosa donde caería la mesa que se arrastra */
+.plano__celda[data-destino] {
+  background: #f0bcbc;
+}
+
+.plano__celda {
+  place-items: end center;
+  padding: 10px 10px 0;
+}
+
+.plano__mesa {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 150px);
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+}
+
+.plano__mesa[data-arrastrando] {
+  z-index: 5;
+  box-shadow: 0 18px 36px -12px rgb(134 10 18 / 0.45);
+  cursor: grabbing;
+  transition: none;
+}
+
+.plano__vacia {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--red-dark);
+  font-size: var(--small);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.plano__vacia:disabled {
+  cursor: default;
+}
+
+.plano__vacia span {
+  opacity: 0;
+  transition: opacity var(--t-ui) ease;
+}
+
+.plano__vacia:not(:disabled):focus-visible span {
+  opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .plano__vacia:not(:disabled):hover {
+    background: #f3c9c9;
+  }
+
+  .plano__vacia:not(:disabled):hover span {
+    opacity: 1;
+  }
+}
+
+.plano__ayuda {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: var(--small);
+}
+
+.plano__ayuda svg {
+  flex: none;
+  margin-top: 2px;
+}
+
+@media (max-width: 960px) {
+  .salon-editor {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .salon-editor__panel {
+    position: static;
+  }
+}
+
+@media (max-width: 560px) {
+  .plano__celda {
+    min-height: 88px;
+  }
+
+  .plano__mesa .table-btn__cap {
+    font-size: 11px;
+  }
+}

@@ -1,5 +1,6 @@
-// Datos institucionales de las tres cartas impresas del local (diseño/cartas).
-// Los platos, precios y secciones NO están acá: vienen de la API.
+// Lo fijo de las tres cartas impresas: sus identificadores y las siluetas de pasta
+// de "Tempo di cottura" (imágenes del proyecto). Los nombres, textos, tiempos y
+// pies de cada carta se editan desde Gestión → Textos y fotos (API /contenido).
 
 import type { CartaId } from '../types';
 import anolini from '../assets/carta/pasta-anolini.png';
@@ -18,6 +19,8 @@ import cappelletti from '../assets/carta/pasta-cappelletti.png';
 import tortelloni from '../assets/carta/pasta-tortelloni.png';
 import fusilli from '../assets/carta/pasta-fusilli.png';
 
+export const CARTA_IDS: CartaId[] = ['RISTORANTE', 'PER_PORTARE_VIA', 'COLAZIONE'];
+
 export interface CartaInfo {
   id: CartaId;
   /** Nombre corto para las pestañas y los selectores. */
@@ -30,78 +33,25 @@ export interface CartaInfo {
   pie: string[];
 }
 
-export const CARTAS: CartaInfo[] = [
-  {
-    id: 'RISTORANTE',
-    nombre: 'Il Ristorante',
-    titulo: null,
-    subtitulo: null,
-    uso: 'Almuerzo y cena en el salón.',
-    pie: ['Amore eterno per la pasta', 'No cobramos cubierto · Descuento por pago en efectivo: 10%']
-  },
-  {
-    id: 'PER_PORTARE_VIA',
-    nombre: 'Per portare via',
-    titulo: 'Per portare via',
-    subtitulo: 'Venta por mostrador',
-    uso: 'Pasta fresca, salsas y dulces para llevar.',
-    pie: []
-  },
-  {
-    id: 'COLAZIONE',
-    nombre: 'Colazione e merenda',
-    titulo: 'La colazione e la merenda',
-    subtitulo: null,
-    uso: 'Desayunos y meriendas, dulces y salados.',
-    pie: ['Amore eterno per la pasta', 'Descuento por pago en efectivo: 10%']
-  }
+/** "Tempo di cottura" va en la carta para llevar. La clave arma 'cottura.<clave>' en el contenido. */
+export const COTTURA_CARTA: CartaId = 'PER_PORTARE_VIA';
+
+export const COTTURA_FORMAS = [
+  { clave: 'anolini', nombre: 'Anolini', img: anolini },
+  { clave: 'radiatori', nombre: 'Radiatori', img: radiatori },
+  { clave: 'cappelacci', nombre: 'Cappelacci', img: cappelacci },
+  { clave: 'maccheroni', nombre: 'Maccheroni', img: maccheroni },
+  { clave: 'agnolotti', nombre: 'Agnolotti', img: agnolotti },
+  { clave: 'tortelli', nombre: 'Tortelli', img: tortelli },
+  { clave: 'mafaldine', nombre: 'Mafaldine', img: mafaldine },
+  { clave: 'casoncelli', nombre: 'Casoncelli', img: casoncelli },
+  { clave: 'spaghetti', nombre: 'Spaghetti', img: spaghetti },
+  { clave: 'mezze-maniche', nombre: 'Mezze maniche', img: mezzeManiche },
+  { clave: 'caramelle', nombre: 'Caramelle', img: caramelle },
+  { clave: 'gnocchi', nombre: 'Gnocchi', img: gnocchi },
+  { clave: 'tortelloni', nombre: 'Tortelloni', img: tortelloni },
+  { clave: 'cappelletti', nombre: 'Cappelletti', img: cappelletti },
+  { clave: 'fusilli', nombre: 'Fusilli', img: fusilli }
 ];
 
-export function cartaInfo(id: CartaId): CartaInfo {
-  return CARTAS.find((c) => c.id === id) ?? CARTAS[0];
-}
-
-/** "Tempo di cottura": va en la carta para llevar, después de las pastas simples. */
-export const COTTURA = {
-  carta: 'PER_PORTARE_VIA' as CartaId,
-  despuesDe: 'Paste Semplice',
-  formas: [
-    { nombre: 'Anolini', tiempo: '4′ a 5′', img: anolini },
-    { nombre: 'Radiatori', tiempo: '2′ a 3′', img: radiatori },
-    { nombre: 'Cappelacci', tiempo: '4′ a 5′', img: cappelacci },
-    { nombre: 'Maccheroni', tiempo: '3′ a 4′', img: maccheroni },
-    { nombre: 'Agnolotti', tiempo: '4′ a 5′', img: agnolotti },
-    { nombre: 'Tortelli', tiempo: '4′ a 5′', img: tortelli },
-    { nombre: 'Mafaldine', tiempo: '3′ a 4′', img: mafaldine },
-    { nombre: 'Casoncelli', tiempo: '4′ a 5′', img: casoncelli },
-    { nombre: 'Spaghetti', tiempo: '2′ a 3′', img: spaghetti },
-    { nombre: 'Mezze maniche', tiempo: '3′ a 4′', img: mezzeManiche },
-    { nombre: 'Caramelle', tiempo: '4′ a 5′', img: caramelle },
-    { nombre: 'Gnocchi', tiempo: '2′', img: gnocchi },
-    { nombre: 'Tortelloni', tiempo: '4′ a 5′', img: tortelloni },
-    { nombre: 'Cappelletti', tiempo: '4′ a 5′', img: cappelletti },
-    { nombre: 'Fusilli', tiempo: '2′ a 3′', img: fusilli }
-  ],
-  consejos: [
-    {
-      titulo: 'Istruzioni',
-      texto: ['Una vez que el agua rompa hervor, añadir sal y cocinar de acuerdo al tipo de pasta.']
-    },
-    {
-      titulo: 'Come ti piace',
-      texto: ['En todos los casos, el tiempo de cocción puede variar según el gusto de cada comensal.']
-    },
-    {
-      titulo: 'Ottima conservazione',
-      texto: ['Heladera: pasta rellena dentro de los 2 días, pasta extruida dentro de los 4 días.']
-    },
-    {
-      titulo: 'In freezer',
-      texto: ['Hasta 3 meses. Cocinar sin descongelar.']
-    },
-    {
-      titulo: 'Porzione',
-      texto: ['Pasta rellena 200 gr.', 'Pasta extruida 180 gr.']
-    }
-  ]
-};
+export const COTTURA_CONSEJOS = ['istruzioni', 'comeTiPiace', 'conservazione', 'freezer', 'porzione'];

@@ -1,7 +1,8 @@
 import { Fragment, type ReactNode } from 'react';
 import { Icon } from '../Icon/Icon';
 import { Cottura } from './Cottura';
-import { COTTURA, type CartaInfo } from '../../content/cartas';
+import { COTTURA_CARTA, type CartaInfo } from '../../content/cartas';
+import { useCottura } from '../../hooks/useSitio';
 import { formatearMonto } from '../../utils/formato';
 import { idSeccion } from '../../utils/carta';
 import logoCarta from '../../assets/carta/logo-carta.png';
@@ -58,6 +59,8 @@ function CartaItem({ plato, accion }: { plato: Plato; accion?: ReactNode }) {
  * secciones con su aclaración "-pastas rellenas-" y el precio con el signo alineado.
  */
 export function CartaSheet({ carta, secciones, accion, compacta = false }: CartaSheetProps) {
+  const cottura = useCottura();
+
   return (
     <article className="carta" data-carta={carta.id} data-compacta={compacta || undefined} aria-label={`Carta ${carta.nombre}`}>
       {!compacta && <img className="carta__logo" src={logoCarta} alt="Pepe Di Roma" width={537} height={299} />}
@@ -99,7 +102,7 @@ export function CartaSheet({ carta, secciones, accion, compacta = false }: Carta
               {s.nota && <p className="carta__nota">{s.nota}</p>}
             </section>
 
-            {!compacta && carta.id === COTTURA.carta && s.titulo === COTTURA.despuesDe && <Cottura />}
+            {!compacta && carta.id === COTTURA_CARTA && s.titulo === cottura.seccion && <Cottura />}
           </Fragment>
         );
       })}

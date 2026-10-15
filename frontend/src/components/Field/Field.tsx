@@ -1,4 +1,4 @@
-import { useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes } from 'react';
+import { useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react';
 import { Icon } from '../Icon/Icon';
 import './Field.css';
 
@@ -56,17 +56,48 @@ export function TextField({ label, error, hint, id, ...input }: TextFieldProps) 
   );
 }
 
+type TextAreaFieldProps = Comunes & TextareaHTMLAttributes<HTMLTextAreaElement>;
+
+/** Texto largo (mensajes, descripciones). Si tiene maxLength, muestra cuánto queda. */
+export function TextAreaField({ label, error, hint, id, maxLength, value, ...area }: TextAreaFieldProps) {
+  const generado = useId();
+  const campoId = id ?? generado;
+  const largo = typeof value === 'string' ? value.length : 0;
+  const restante = maxLength ? maxLength - largo : null;
+  const ayuda = [hint, restante !== null ? `Quedan ${restante} caracteres.` : ''].filter(Boolean).join(' ');
+  return (
+    <FieldShell id={campoId} label={label} error={error} hint={ayuda || undefined}>
+      <textarea
+        id={campoId}
+        rows={4}
+        maxLength={maxLength}
+        value={value}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={describedBy(campoId, error, ayuda)}
+        {...area}
+      />
+    </FieldShell>
+  );
+}
+
 export interface Opcion {
   value: string;
   label: string;
 }
 
+export interface GrupoOpciones {
+  label: string;
+  options: Opcion[];
+}
+
 type SelectFieldProps = Comunes &
   SelectHTMLAttributes<HTMLSelectElement> & {
     options: Opcion[];
+    /** Opciones agrupadas (optgroup) que van después de las sueltas. */
+    grupos?: GrupoOpciones[];
   };
 
-export function SelectField({ label, error, hint, id, options, ...select }: SelectFieldProps) {
+export function SelectField({ label, error, hint, id, options, grupos = [], ...select }: SelectFieldProps) {
   const generado = useId();
   const campoId = id ?? generado;
   return (
@@ -82,6 +113,17 @@ export function SelectField({ label, error, hint, id, options, ...select }: Sele
             {o.label}
           </option>
         ))}
+        {grupos
+          .filter((g) => g.options.length > 0)
+          .map((g) => (
+            <optgroup key={g.label} label={g.label}>
+              {g.options.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </optgroup>
+          ))}
       </select>
     </FieldShell>
   );

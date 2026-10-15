@@ -12,7 +12,8 @@
 }
 
 .panel .field input,
-.panel .field select {
+.panel .field select,
+.panel .field textarea {
   border-color: var(--white);
 }
 
@@ -72,19 +73,116 @@
 
 @media (max-width: 1080px) {
   .split--admin {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 @media (max-width: 900px) {
   .split,
   .split--reverse {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 @media (max-width: 560px) {
   .form-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
+}
+
+/* Selector en una celda de tabla (mesa de una reserva, estado de un pedido) */
+.inline-select select {
+  padding: 8px 12px;
+  border: 2px solid var(--rosa-deep);
+  border-radius: var(--pill);
+  background: var(--white);
+  font-size: var(--small);
+  cursor: pointer;
+  transition: border-color var(--t-ui) ease;
+}
+
+.inline-select select:focus {
+  outline: none;
+  border-color: var(--red);
+}
+
+.inline-select select:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* el estado del pedido se lee con el mismo color que su badge */
+.inline-select[data-tono='warn'] select {
+  border-color: var(--warn-field);
+  background: var(--warn-field);
+  color: var(--warn);
+}
+
+.inline-select[data-tono='info'] select {
+  border-color: var(--info-field);
+  background: var(--info-field);
+  color: var(--info);
+}
+
+.inline-select[data-tono='ok'] select {
+  border-color: var(--ok-field);
+  background: var(--ok-field);
+  color: var(--ok);
+}
+
+.inline-select[data-tono='off'] select {
+  border-color: var(--off-field);
+  background: var(--off-field);
+  color: var(--off);
+}
+
+.inline-select[data-tono='danger'] select {
+  border-color: var(--rosa);
+  background: var(--rosa);
+  color: var(--red-dark);
+}
+
+.inline-select[data-tono] select {
+  font-weight: 600;
+}
+
+.inline-select[data-tono] select:focus {
+  border-color: var(--ink);
+}
+
+/* Alta en línea (por ejemplo, una cuenta nueva) arriba de la tabla */
+.admin-usuarios__alta {
+  margin-bottom: 28px;
+  padding: 16px 0;
+  border-radius: var(--radius-lg);
+  background: var(--rosa);
+}
+
+/* Fila de filtros arriba de una tabla de gestión: una sola fila, a la izquierda */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-bottom: 20px;
+}
+
+.filtros fieldset {
+  margin-bottom: 0;
+}
+
+.filtros__enlace {
+  color: var(--red-dark);
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+
+.cell-indicacion {
+  display: block;
+  max-width: 34ch;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: var(--small);
+  font-style: italic;
 }

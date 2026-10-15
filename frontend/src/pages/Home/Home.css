@@ -478,7 +478,7 @@
 @media (max-width: 900px) {
   .index,
   .about {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .about {
@@ -548,4 +548,25 @@
   .index__item button::before {
     transition: none;
   }
+}
+
+/* =================== TEXTOS EDITABLES =================== */
+/* el título de portada respeta los saltos de línea que escribe el admin */
+.hero__linea {
+  display: block;
+}
+
+.home-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 24px;
+}
+
+.about__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
 }

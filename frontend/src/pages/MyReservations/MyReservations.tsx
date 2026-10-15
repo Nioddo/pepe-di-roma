@@ -84,6 +84,7 @@ export function MyReservations() {
                     {formatearFecha(r.fecha)}, de {r.horaInicio} a {deMinutos(aMinutos(r.horaInicio) + r.duracionMin)} h
                   </span>
                   <Badge tono={ESTADO_RESERVA[r.estado].tono}>{ESTADO_RESERVA[r.estado].texto}</Badge>
+                  {r.nombre && <span>A nombre de {r.nombre}</span>}
                 </>
               }
               acciones={

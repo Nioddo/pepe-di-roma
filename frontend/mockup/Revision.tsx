@@ -11,7 +11,7 @@ import './revision.css';
 const ROLES = [
   { id: 'visitante', texto: 'Visitante', email: null, destino: '#/' },
   { id: 'cliente', texto: 'Cliente', email: 'cliente@pepediroma.com.ar', destino: '#/mis-reservas' },
-  { id: 'admin', texto: 'Admin', email: 'admin@pepediroma.com.ar', destino: '#/admin/menu' }
+  { id: 'admin', texto: 'Admin', email: 'admin@pepediroma.com.ar', destino: '#/admin/pedidos' }
 ];
 
 function rolActual(): string {
@@ -62,6 +62,7 @@ export function Revision({ wireframe }: { wireframe: boolean }) {
             <button type="button" aria-pressed={modo.lento} onClick={() => cambiarModo('lento')}>Carga lenta</button>
             <button type="button" aria-pressed={modo.vacio} onClick={() => cambiarModo('vacio')}>Listas vacías</button>
             <button type="button" aria-pressed={modo.error} onClick={() => cambiarModo('error')}>Servidor caído</button>
+            <button type="button" aria-pressed={modo.muestras} onClick={() => cambiarModo('muestras')}>Opiniones de ejemplo</button>
           </div>
           <p>Respuesta visual</p>
           <div className="revision__fila">

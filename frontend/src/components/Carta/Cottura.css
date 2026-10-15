@@ -93,7 +93,7 @@
 
 @media (max-width: 560px) {
   .cottura__consejos {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

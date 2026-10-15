@@ -1,0 +1,30 @@
+/* Atajo del personal: chico, en el color de la tinta, para no competir con las acciones del cliente */
+.editar-aqui {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--pill);
+  background: var(--ink);
+  color: var(--white);
+  font-size: var(--small);
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform var(--t-press) var(--ease-out);
+}
+
+.editar-aqui:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .editar-aqui:hover {
+    background: var(--red-press);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editar-aqui:active {
+    transform: none;
+  }
+}

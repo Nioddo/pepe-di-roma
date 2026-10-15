@@ -17,3 +17,49 @@
   align-items: flex-start;
   gap: 6px;
 }
+
+.editor-pedido__pago {
+  margin-bottom: 22px;
+}
+
+.editor-pedido__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.editor-pedido__lista li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 8px 8px 16px;
+  border-radius: var(--radius);
+  background: var(--rosa);
+}
+
+.editor-pedido__precio {
+  font-variant-numeric: tabular-nums;
+}
+
+.editor-pedido__agregar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.editor-pedido__agregar .field {
+  flex: 1 1 260px;
+}
+
+.editor-pedido__agregar .btn {
+  margin-bottom: 22px;
+}
+
+.editor-pedido__total {
+  font-variant-numeric: tabular-nums;
+}

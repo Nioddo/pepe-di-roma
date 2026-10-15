@@ -5,7 +5,7 @@ import { useConfirm } from '../../context/ConfirmContext';
 import { useApi } from '../../hooks/useApi';
 import { cambiarEstadoPedido, getPedidosDeCliente } from '../../services/pedidosService';
 import { mensajeDeError } from '../../services/api';
-import { formatearPrecio } from '../../utils/formato';
+import { formatearFechaHora, formatearPrecio } from '../../utils/formato';
 import { ESTADO_PEDIDO, METODO_PAGO, MODALIDAD, textoEstadoPedido } from '../../utils/estados';
 import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { RecordCard, RecordList } from '../../components/RecordCard/RecordCard';
@@ -23,7 +23,7 @@ export function MyOrders() {
 
   const clienteId = usuario?.id ?? 0;
   const { data, loading, error, recargar } = useApi(() => getPedidosDeCliente(clienteId), [clienteId]);
-  const pedidos = (data ?? []).slice().sort((a, b) => b.id - a.id);
+  const pedidos = (data ?? []).slice().sort((a, b) => (b.creadoEn ?? '').localeCompare(a.creadoEn ?? '') || b.id - a.id);
 
   const cancelar = async (p: Pedido) => {
     const ok = await confirmar({
@@ -72,6 +72,7 @@ export function MyOrders() {
             meta={
               <>
                 <Badge tono={ESTADO_PEDIDO[p.estado].tono}>{textoEstadoPedido(p.estado, p.modalidad)}</Badge>
+                <span>{formatearFechaHora(p.creadoEn)}</span>
                 <span>{formatearPrecio(p.precioTotal)}</span>
                 {p.estado !== 'CANCELADO' && p.estado !== 'ENTREGADO' && <span>Listo en unos {p.tiempoEstimadoMin} min</span>}
                 <span>
@@ -82,13 +83,21 @@ export function MyOrders() {
             }
             detalle={
               p.items.map((it) => `${it.cantidad}× ${it.nombre}`).join(' · ') +
-              (p.modalidad === 'DELIVERY' && p.direccion ? ` — ${p.direccion}` : '')
+              (p.modalidad === 'DELIVERY' && p.direccion ? ` — ${p.direccion}` : '') +
+              (p.indicaciones ? ` · “${p.indicaciones}”` : '')
             }
             acciones={
-              p.estado === 'PENDIENTE' && (
+              p.estado === 'PENDIENTE' ? (
                 <Button variant="danger-quiet" size="sm" loading={cancelando === p.id} onClick={() => cancelar(p)}>
                   Cancelar
                 </Button>
+              ) : (
+                p.estado === 'ENTREGADO' &&
+                p.items.length > 0 && (
+                  <ButtonLink to={`/opinar?plato=${p.items[0].platoId}`} variant="secondary" size="sm">
+                    Contanos qué te pareció
+                  </ButtonLink>
+                )
               )
             }
           />

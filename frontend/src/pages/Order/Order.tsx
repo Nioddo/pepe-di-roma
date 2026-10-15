@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
@@ -6,18 +6,20 @@ import { useApi } from '../../hooks/useApi';
 import { getCarta } from '../../services/seccionesService';
 import { createPedido } from '../../services/pedidosService';
 import { mensajeDeError } from '../../services/api';
-import { cartaInfo } from '../../content/cartas';
+import { useCartas } from '../../hooks/useSitio';
 import { cantidadesPorCarta, cartaDesdeParametro } from '../../utils/carta';
-import { formatearPrecio } from '../../utils/formato';
+import { formatearPrecio, plural } from '../../utils/formato';
 import { METODO_PAGO, MODALIDAD } from '../../utils/estados';
-import { hayErrores, type Errores } from '../../utils/validacion';
+import { hayErrores, validarTelefono, type Errores } from '../../utils/validacion';
+import { esPersonal } from '../../utils/sesion';
 import { enfocarPrimerError } from '../../utils/foco';
 import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { CartaSheet } from '../../components/Carta/CartaSheet';
 import { CartaTabs } from '../../components/Carta/CartaTabs';
 import { Stepper } from '../../components/Stepper/Stepper';
 import { Toggle } from '../../components/Toggle/Toggle';
-import { InlineError, TextField } from '../../components/Field/Field';
+import { InlineError, TextAreaField, TextField } from '../../components/Field/Field';
+import { ButtonLink } from '../../components/Button/Button';
 import { Button } from '../../components/Button/Button';
 import { EmptyState } from '../../components/EmptyState/EmptyState';
 import { SkeletonList } from '../../components/Skeleton/Skeleton';
@@ -25,7 +27,7 @@ import type { CartaId, MetodoPago } from '../../types';
 import './Order.css';
 
 type ModalidadPedido = 'TAKEAWAY' | 'DELIVERY';
-type Campo = 'direccion' | 'carrito';
+type Campo = 'direccion' | 'carrito' | 'telefono';
 
 const PANEL = 'panel-pedido';
 
@@ -41,13 +43,19 @@ export function Order() {
   const toast = useToast();
   const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
+  const cajaRef = useRef<HTMLElement>(null);
+  // en el teléfono la caja queda al final: mientras no se ve, una barra abajo muestra el total
+  const [cajaVisible, setCajaVisible] = useState(false);
   const [params, setParams] = useSearchParams();
 
   const { data, loading, error, recargar } = useApi(getCarta);
+  const { cartaInfo } = useCartas();
   const [cantidades, setCantidades] = useState<Record<number, number>>({});
   const [modalidad, setModalidad] = useState<ModalidadPedido>('TAKEAWAY');
   const [metodoPago, setMetodoPago] = useState<MetodoPago>('EFECTIVO');
   const [direccion, setDireccion] = useState('');
+  const [telefono, setTelefono] = useState('');
+  const [indicaciones, setIndicaciones] = useState('');
   const [errores, setErrores] = useState<Errores<Campo>>({});
   const [enviando, setEnviando] = useState(false);
 
@@ -58,6 +66,22 @@ export function Order() {
   const total = lineas.reduce((suma, p) => suma + p.precio * cantidades[p.id], 0);
 
   const cambiarCarta = (id: CartaId) => setParams({ carta: id.toLowerCase() }, { replace: true });
+
+  useEffect(() => {
+    const caja = cajaRef.current;
+    if (!caja || !('IntersectionObserver' in window)) return;
+    const observador = new IntersectionObserver(([e]) => setCajaVisible(e.isIntersecting), { threshold: 0.15 });
+    observador.observe(caja);
+    return () => observador.disconnect();
+  }, []);
+
+  const irACaja = () => {
+    const titulo = document.getElementById('caja-titulo');
+    if (!titulo) return;
+    const reducir = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    titulo.scrollIntoView({ behavior: reducir ? 'auto' : 'smooth', block: 'start' });
+    titulo.focus({ preventScroll: true });
+  };
 
   const cambiarCantidad = (platoId: number, cantidad: number) => {
     setCantidades((actual) => ({ ...actual, [platoId]: Math.max(0, cantidad) }));
@@ -70,7 +94,8 @@ export function Order() {
 
     const nuevos: Errores<Campo> = {
       carrito: lineas.length === 0 ? 'Tu pedido está vacío. Sumá al menos un plato de la carta.' : '',
-      direccion: modalidad === 'DELIVERY' && !direccion.trim() ? 'Ingresá una dirección para el envío.' : ''
+      direccion: modalidad === 'DELIVERY' && !direccion.trim() ? 'Ingresá una dirección para el envío.' : '',
+      telefono: validarTelefono(telefono)
     };
     setErrores(nuevos);
     if (hayErrores(nuevos)) {
@@ -86,6 +111,8 @@ export function Order() {
         modalidad,
         metodoPago,
         direccion: modalidad === 'DELIVERY' ? direccion.trim() : null,
+        telefono: telefono.trim(),
+        indicaciones: indicaciones.trim() || null,
         items: lineas.map((p) => ({ platoId: p.id, cantidad: cantidades[p.id] }))
       });
       toast.success(
@@ -119,6 +146,22 @@ export function Order() {
     );
   }
 
+  // los pedidos son de los clientes: el personal los gestiona, no los hace
+  if (esPersonal(usuario)) {
+    return (
+      <>
+        <PageHeader title="Armá tu pedido" />
+        <div className="wrap page">
+          <EmptyState
+            title="El personal no hace pedidos desde la web"
+            text="Los pedidos los hacen los clientes. Desde Gestión de pedidos podés ver, cambiar el estado o corregir cualquiera."
+            action={<ButtonLink to="/admin/pedidos">Ir a Gestión de pedidos</ButtonLink>}
+          />
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <PageHeader
@@ -136,8 +179,8 @@ export function Order() {
           </div>
 
           {/* el carrito es la caja roja del packaging */}
-          <aside className="caja" aria-labelledby="caja-titulo">
-            <h2 id="caja-titulo" className="caja__titulo">
+          <aside className="caja" aria-labelledby="caja-titulo" ref={cajaRef}>
+            <h2 id="caja-titulo" className="caja__titulo" tabIndex={-1}>
               Tu pedido
               {unidades > 0 && <span className="caja__cuenta">{unidades}</span>}
             </h2>
@@ -178,6 +221,27 @@ export function Order() {
                   }}
                 />
               )}
+              <TextField
+                label="Teléfono"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                hint="Te avisamos por acá cuando esté listo."
+                value={telefono}
+                error={errores.telefono}
+                onChange={(e) => {
+                  setTelefono(e.target.value);
+                  setErrores((er) => ({ ...er, telefono: '' }));
+                }}
+              />
+              <TextAreaField
+                label="Indicaciones (opcional)"
+                hint="Timbre, piso, a qué hora pasás o algo del pedido."
+                rows={2}
+                maxLength={300}
+                value={indicaciones}
+                onChange={(e) => setIndicaciones(e.target.value)}
+              />
               <Toggle legend="Pago" options={PAGOS} value={metodoPago} onChange={setMetodoPago} />
               <p className="caja__nota">Descuento por pago en efectivo: 10%, se aplica en el local.</p>
               <Button type="submit" variant="inverse" block loading={enviando}>
@@ -187,6 +251,18 @@ export function Order() {
           </aside>
         </div>
       </div>
+
+      {unidades > 0 && !cajaVisible && (
+        <div className="pedido-barra" role="region" aria-label="Resumen de tu pedido">
+          <p className="pedido-barra__resumen">
+            <span>{plural(unidades, 'plato')}</span>
+            <b>{formatearPrecio(total)}</b>
+          </p>
+          <Button variant="inverse" size="sm" onClick={irACaja}>
+            Ver pedido
+          </Button>
+        </div>
+      )}
     </>
   );
 }

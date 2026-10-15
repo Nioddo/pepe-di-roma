@@ -1,8 +1,11 @@
-import type { MouseEvent } from 'react';
+import { useEffect, useRef, type MouseEvent } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useApi } from '../../hooks/useApi';
 import { getCarta } from '../../services/seccionesService';
-import { cartaInfo } from '../../content/cartas';
+import { useCartas } from '../../hooks/useSitio';
+import { useSeccionActual } from '../../hooks/useSeccionActual';
+import { useAuth } from '../../context/AuthContext';
+import { esPersonal } from '../../utils/sesion';
 import { cantidadesPorCarta, cartaDesdeParametro, idSeccion } from '../../utils/carta';
 import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { CartaSheet } from '../../components/Carta/CartaSheet';
@@ -47,12 +50,25 @@ function CartaCargando() {
 export function Menu() {
   const { data, loading, error, recargar } = useApi(getCarta);
   const [params, setParams] = useSearchParams();
+  const { cartaInfo } = useCartas();
+  const { usuario } = useAuth();
 
   const elegida = cartaDesdeParametro(params.get('carta'));
   const carta = cartaInfo(elegida);
   const secciones = data?.porCarta[elegida] ?? [];
 
   const cambiarCarta = (id: CartaId) => setParams({ carta: id.toLowerCase() }, { replace: true });
+
+  // el índice marca la sección que se está leyendo y, en el teléfono, la trae a la vista
+  const actual = useSeccionActual(data ? secciones.map((s) => idSeccion(carta, s)) : []);
+  const indice = useRef<HTMLOListElement>(null);
+  useEffect(() => {
+    const lista = indice.current;
+    const enlace = lista?.querySelector<HTMLElement>('[aria-current="location"]');
+    if (!lista || !enlace || lista.scrollWidth <= lista.clientWidth) return;
+    const reducir = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    lista.scrollTo({ left: enlace.offsetLeft - 16, behavior: reducir ? 'auto' : 'smooth' });
+  }, [actual]);
 
   let hoja;
   if (loading) {
@@ -70,28 +86,42 @@ export function Menu() {
       <PageHeader
         title="Nuestro menú"
         lead="Las tres cartas del local, tal cual se imprimen para el salón y el mostrador."
-        actions={<ButtonLink to="/pedido">Hacer pedido</ButtonLink>}
+        actions={esPersonal(usuario) ? undefined : <ButtonLink to="/pedido">Hacer pedido</ButtonLink>}
       />
 
       <div className="mesa">
         <div className="wrap">
           <CartaTabs value={elegida} onChange={cambiarCarta} panelId={PANEL} cantidades={cantidadesPorCarta(data)} />
 
+          {/* en el teléfono las referencias van acá: el índice pegado arriba lleva solo las secciones */}
+          <ul className="mesa__leyenda mesa__leyenda--movil" aria-label="Referencias">
+            <li>
+              <Icon name="picante" size={18} /> Picante
+            </li>
+            <li>
+              <Icon name="vegano" size={18} /> Vegano
+            </li>
+          </ul>
+
           <div className="mesa__layout">
             <aside className="mesa__indice" aria-label="Secciones de esta carta">
               <p className="mesa__indice-titulo">En esta carta</p>
               {secciones.length > 0 && (
-                <ol className="mesa__secciones">
+                <ol className="mesa__secciones" ref={indice}>
                   {secciones.map((s) => (
                     <li key={s.id}>
-                      <a href={`#${idSeccion(carta, s)}`} onClick={(e) => irASeccion(e, idSeccion(carta, s))}>
+                      <a
+                        href={`#${idSeccion(carta, s)}`}
+                        aria-current={actual === idSeccion(carta, s) ? 'location' : undefined}
+                        onClick={(e) => irASeccion(e, idSeccion(carta, s))}
+                      >
                         {s.grupo ? `${s.grupo} · ${s.titulo}` : s.titulo}
                       </a>
                     </li>
                   ))}
                 </ol>
               )}
-              <ul className="mesa__leyenda" aria-label="Referencias">
+              <ul className="mesa__leyenda mesa__leyenda--escritorio" aria-label="Referencias">
                 <li>
                   <Icon name="picante" size={18} /> Picante
                 </li>

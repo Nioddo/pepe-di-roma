@@ -1,0 +1,29 @@
+.admin-opinion p {
+  max-width: 56ch;
+  line-height: 1.5;
+}
+
+.admin-opinion__respuesta {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: var(--small);
+}
+
+.admin-opiniones__visible {
+  margin-bottom: 22px;
+}
+
+.admin-opiniones__promedio {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-opinion__aspectos {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: var(--small);
+  font-variant-numeric: tabular-nums;
+}

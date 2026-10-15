@@ -1,5 +1,5 @@
 import { api } from './api';
-import type { EstadoPedido, Pedido, PedidoInput } from '../types';
+import type { EstadoPedido, Pedido, PedidoCambios, PedidoInput } from '../types';
 
 const RUTA = '/pedidos';
 
@@ -14,6 +14,10 @@ export async function getPedidosDeCliente(clienteId: number): Promise<Pedido[]> 
 
 export function createPedido(datos: PedidoInput): Promise<Pedido> {
   return api.post<Pedido>(RUTA, datos);
+}
+
+export function updatePedido(id: number, cambios: PedidoCambios): Promise<Pedido> {
+  return api.put<Pedido>(`${RUTA}/${id}`, cambios);
 }
 
 export function cambiarEstadoPedido(id: number, estado: EstadoPedido): Promise<Pedido> {

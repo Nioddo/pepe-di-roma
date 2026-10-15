@@ -1,0 +1,430 @@
+/* Panel de métricas: herramienta de trabajo. Superficies blancas con el borde
+   rosa de la gestión, números en la sans y marcas finas (guía dataviz). */
+
+.metricas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.metricas > .tiles,
+.metricas__nota,
+.metrica--ancha {
+  grid-column: 1 / -1;
+}
+
+/* ---------- indicadores ---------- */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.tile {
+  padding: 18px 20px;
+  border-radius: var(--radius-lg);
+  background: var(--rosa);
+}
+
+.tile__label {
+  color: var(--muted);
+  font-size: var(--small);
+  font-weight: 600;
+}
+
+.tile__valor {
+  margin-top: 4px;
+  font-size: clamp(26px, 2.4vw, 32px);
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.tile__delta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  font-size: var(--small);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.tile__delta[data-tono='bien'] {
+  color: var(--ok);
+}
+
+.tile__delta[data-tono='mal'] {
+  color: var(--red-dark);
+}
+
+.tile__delta[data-tono='igual'] {
+  color: var(--muted);
+}
+
+/* ---------- panel ---------- */
+.metrica {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: clamp(18px, 2vw, 26px);
+  border: 2px solid var(--rosa-deep);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+}
+
+.metrica__cabecera {
+  margin-bottom: 18px;
+}
+
+.metrica__cabecera h2 {
+  font-size: clamp(22px, 2vw, 28px);
+}
+
+.metrica__cabecera p {
+  margin-top: 6px;
+  color: var(--ink);
+}
+
+.metrica__subtitulo {
+  margin: 14px 0 8px;
+  font-family: var(--f-text);
+  font-size: var(--small);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.metrica__nota {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: var(--small);
+}
+
+.metrica__tabla {
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.metrica__tabla summary {
+  width: fit-content;
+  color: var(--red-dark);
+  font-size: var(--small);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.metrica__tabla[open] summary {
+  margin-bottom: 10px;
+}
+
+.tabla-datos {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--small);
+  font-variant-numeric: tabular-nums;
+}
+
+.metrica__tabla .tabla-datos {
+  display: block;
+  max-height: 280px;
+  overflow: auto;
+}
+
+.tabla-datos th,
+.tabla-datos td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--rosa);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tabla-datos thead th {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.tabla-datos--visible {
+  font-size: var(--body);
+}
+
+.tabla-datos--visible td,
+.tabla-datos--visible th {
+  padding: 10px 12px;
+  white-space: normal;
+}
+
+/* ---------- tooltip de cada marca: lo mismo con el foco que con el mouse ---------- */
+[data-tip] {
+  position: relative;
+}
+
+[data-tip]:hover::after,
+[data-tip]:focus-visible::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 10;
+  width: max-content;
+  max-width: 240px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--white);
+  font-size: var(--small);
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
+  white-space: normal;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* ---------- barras horizontales ---------- */
+.barras {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.barras__fila {
+  display: grid;
+  grid-template-columns: minmax(110px, 38%) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.barras__nombre {
+  overflow: hidden;
+  font-size: var(--small);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.barras__pista {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.barras__barra {
+  flex: none;
+  width: calc(var(--ancho) * 0.82);
+  min-width: 3px;
+  height: 20px;
+  border-radius: 0 4px 4px 0;
+  background: #b8a3a3;
+  transition: filter var(--t-ui) ease;
+}
+
+.barras__barra[data-destacada] {
+  background: var(--red);
+}
+
+.barras__barra:hover,
+.barras__barra:focus-visible {
+  filter: brightness(1.12);
+}
+
+.barras__valor {
+  flex: none;
+  color: var(--ink);
+  font-size: var(--small);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- mapa de calor ---------- */
+.calor {
+  display: grid;
+  grid-template-columns: 36px repeat(16, minmax(0, 1fr));
+  gap: 2px;
+  overflow-x: auto;
+}
+
+.calor__hora,
+.calor__dia {
+  color: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.calor__dia {
+  align-self: center;
+  text-align: left;
+}
+
+.calor__celda {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  min-width: 18px;
+  border-radius: 4px;
+  background: var(--fondo, #f4eeee);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.calor__celda[data-oscura] {
+  color: var(--white);
+}
+
+.calor__escala {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.calor__escala i {
+  width: 18px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* ---------- columnas por día ---------- */
+.columnas {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+}
+
+.columnas__eje {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 200px;
+  color: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.columnas__plot {
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.columnas__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.columnas__pista {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: 200px;
+  border-bottom: 1px solid var(--rosa-deep);
+}
+
+.columnas__barra {
+  display: block;
+  width: min(100%, 22px);
+  height: var(--alto);
+  border-radius: 4px 4px 0 0;
+  background: var(--red);
+  transition: filter var(--t-ui) ease;
+}
+
+.columnas__barra[data-mejor] {
+  background: var(--red-dark);
+}
+
+.columnas__pista:hover .columnas__barra,
+.columnas__pista:focus-visible .columnas__barra {
+  filter: brightness(1.15);
+}
+
+.columnas__dia {
+  min-height: 14px;
+  color: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- opiniones ---------- */
+.opinados {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.opinados__caso {
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  background: var(--rosa);
+}
+
+.opinados__caso[data-tono='mejor'] {
+  background: var(--ok-field);
+}
+
+.opinados__nombre {
+  margin: 4px 0 6px;
+  font-size: var(--lead);
+  font-weight: 600;
+}
+
+.opinados__puntos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--small);
+}
+
+.aspectos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px 20px;
+  margin: 0;
+}
+
+.aspectos dt {
+  color: var(--muted);
+  font-size: var(--small);
+  font-weight: 600;
+}
+
+.aspectos dd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 0;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 900px) {
+  .metricas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .calor {
+    grid-template-columns: 32px repeat(16, 22px);
+  }
+}
+
+.metricas__nota {
+  margin-bottom: -8px;
+  color: var(--muted);
+  font-size: var(--small);
+  font-weight: 600;
+}

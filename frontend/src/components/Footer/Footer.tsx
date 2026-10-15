@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { bajada, contacto } from '../../content/sitio';
+import { useContenido } from '../../context/ContenidoContext';
+import { useContacto } from '../../hooks/useSitio';
 import './Footer.css';
 
 // El nombre se arma con los mismos arcos del logotipo, como cajas sobre el rojo del packaging.
@@ -8,6 +9,9 @@ const ALTURAS = [100, 82, 92, 74, 64, 64, 96, 86, 100, 78];
 const ANIO = new Date().getFullYear();
 
 export function Footer() {
+  const { texto } = useContenido();
+  const contacto = useContacto();
+
   return (
     <footer className="site-footer">
       <div className="wrap">
@@ -22,9 +26,7 @@ export function Footer() {
         <div className="footer-grid">
           <div>
             <h2 className="footer-title">Pepe Di Roma</h2>
-            <p className="footer-text">
-              Fábrica de pastas artesanales. Rústico, pero elegante: pasta fresca hecha a la vista, todos los días.
-            </p>
+            <p className="footer-text">{texto('footer.texto')}</p>
           </div>
 
           <nav aria-label="Pie de página">
@@ -33,15 +35,32 @@ export function Footer() {
               <li><Link to="/menu">Menú</Link></li>
               <li><Link to="/reservar">Reservar</Link></li>
               <li><Link to="/pedido">Hacer pedido</Link></li>
+              <li><Link to="/opinar">Dejá tu opinión</Link></li>
+              {contacto.pedidosya && (
+                <li>
+                  <a href={contacto.pedidosya} target="_blank" rel="noopener noreferrer">
+                    También en PedidosYa
+                  </a>
+                </li>
+              )}
             </ul>
           </nav>
 
           <div>
             <h2 className="footer-title">Contacto</h2>
             <ul>
+              <li>{contacto.direccion}</li>
               <li>{contacto.barrio}</li>
-              <li><a href={contacto.telefonoHref}>{contacto.telefono}</a></li>
-              <li><a href={`mailto:${contacto.email}`}>{contacto.email}</a></li>
+              <li>
+                <a href={contacto.whatsappHref} target="_blank" rel="noopener noreferrer">
+                  WhatsApp {contacto.telefono}
+                </a>
+              </li>
+              {contacto.email && (
+                <li>
+                  <a href={`mailto:${contacto.email}`}>{contacto.email}</a>
+                </li>
+              )}
             </ul>
           </div>
 
@@ -50,14 +69,19 @@ export function Footer() {
             <ul>
               <li>{contacto.dias}</li>
               <li>{contacto.horario}</li>
-              <li>Instagram {contacto.instagram}</li>
+              {contacto.horarioExtendido && <li>{contacto.horarioExtendido}</li>}
+              <li>
+                <a href={contacto.instagramUrl} target="_blank" rel="noopener noreferrer">
+                  Instagram {contacto.instagram}
+                </a>
+              </li>
             </ul>
           </div>
         </div>
 
         <div className="footer-base">
-          <span>© {ANIO} Pepe Di Roma · Villa Devoto, Buenos Aires</span>
-          <span>{bajada}</span>
+          <span>© {ANIO} Pepe Di Roma · {contacto.barrio}</span>
+          <span>{texto('sitio.lema')}</span>
         </div>
       </div>
     </footer>

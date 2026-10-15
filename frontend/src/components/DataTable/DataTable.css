@@ -1,4 +1,6 @@
 .table-wrap {
+  /* contiene a los labels ocultos de las celdas: si no, se escapan del recorte */
+  position: relative;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -9,6 +11,7 @@
 
 .data-table {
   width: 100%;
+  min-width: var(--min-width, 620px);
   border-collapse: collapse;
 }
 
@@ -44,6 +47,32 @@
   }
 }
 
+.data-table tbody tr[data-abierta] {
+  background: var(--rosa);
+}
+
+.data-table__detalle > td {
+  padding: 0 0 28px;
+  background: var(--rosa);
+}
+
+.data-table__detalle .editor {
+  animation: detalle-entra var(--t-ui) var(--ease-out);
+}
+
+@keyframes detalle-entra {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .data-table__detalle .editor {
+    animation: none;
+  }
+}
+
 .data-table .is-num {
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
@@ -58,4 +87,94 @@
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 8px;
+}
+
+/* teléfono: cada fila pasa a ser una tarjeta; el nombre de la columna va arriba del dato */
+@media (max-width: 640px) {
+  .table-wrap {
+    overflow: visible;
+  }
+
+  .data-table {
+    min-width: 0;
+  }
+
+  .data-table caption {
+    display: block;
+  }
+
+  .data-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .data-table,
+  .data-table tbody,
+  .data-table tr,
+  .data-table td {
+    display: block;
+  }
+
+  .data-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .data-table tbody tr:not(.data-table__detalle) {
+    padding: 6px 0;
+    border-radius: var(--radius-lg);
+    background: var(--rosa);
+  }
+
+  .data-table tbody tr[data-abierta] {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .data-table td {
+    padding: 8px 16px;
+    border-bottom: 0;
+  }
+
+  .data-table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    color: var(--muted);
+    font-size: var(--small);
+    font-weight: 600;
+  }
+
+  .data-table .is-num {
+    white-space: normal;
+  }
+
+  .data-table .row-actions {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .data-table__detalle {
+    margin-top: -12px;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    background: var(--rosa);
+  }
+
+  .data-table__detalle > td {
+    padding: 0 0 12px;
+  }
+
+  .data-table__detalle .editor {
+    margin: 0 8px;
+  }
+
+  @media (hover: hover) {
+    .data-table tbody tr:hover {
+      background: var(--rosa);
+    }
+  }
 }

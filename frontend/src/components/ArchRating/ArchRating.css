@@ -1,0 +1,167 @@
+/* ---------- Selector: cinco arcos que se llenan de rojo ---------- */
+.arch-rating {
+  margin-bottom: 26px;
+}
+
+.arch-rating__fila {
+  display: flex;
+  gap: clamp(8px, 1.4vw, 14px);
+}
+
+.arch-rating__arco {
+  position: relative;
+  width: clamp(48px, 7vw, 64px);
+  aspect-ratio: 5 / 6;
+  border: 3px solid var(--red);
+  border-radius: 999px 999px 6px 6px;
+  background: var(--white);
+  cursor: pointer;
+  transition:
+    background-color var(--t-ui) var(--ease-out),
+    transform var(--t-press) var(--ease-out);
+}
+
+/* al llenar, los arcos se encienden en cascada; al vaciar, todos juntos */
+.arch-rating__arco[data-lleno] {
+  background: var(--red);
+  transition-delay: calc(var(--i) * 35ms), 0ms;
+}
+
+.arch-rating__arco input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.arch-rating__arco:active {
+  transform: scale(0.94);
+}
+
+.arch-rating__arco:has(input:focus-visible) {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.arch-rating[data-invalid] .arch-rating__arco {
+  border-color: var(--red-dark);
+  border-style: dashed;
+}
+
+.arch-rating__texto {
+  margin-top: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.arch-rating__texto b {
+  color: var(--ink);
+}
+
+/* ---------- Solo lectura ---------- */
+.arch-score {
+  display: inline-flex;
+  gap: 4px;
+  vertical-align: middle;
+}
+
+.arch-score i {
+  position: relative;
+  display: block;
+  width: 14px;
+  height: 17px;
+  border: 2px solid var(--red);
+  border-radius: 999px 999px 3px 3px;
+}
+
+.arch-score i[data-lleno] {
+  background: var(--red);
+}
+
+/* medio arco: se llena solo la mitad izquierda, como el pórtico partido */
+.arch-score i[data-medio]::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: var(--red);
+  clip-path: inset(0 50% 0 0);
+}
+
+.arch-score--lg {
+  gap: 10px;
+}
+
+.arch-score--lg i {
+  width: clamp(30px, 3.4vw, 44px);
+  height: clamp(36px, 4.1vw, 53px);
+  border-width: 3px;
+}
+
+.arch-score--lg i[data-medio]::before {
+  inset: -3px;
+}
+
+.arch-score--inverso i {
+  border-color: var(--white);
+}
+
+.arch-score--inverso i[data-lleno] {
+  background: var(--white);
+}
+
+.arch-score--inverso i[data-medio]::before {
+  background: var(--white);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arch-rating__arco,
+  .arch-rating__arco[data-lleno] {
+    transition: background-color var(--t-ui) ease;
+    transition-delay: 0ms;
+  }
+
+  .arch-rating__arco:active {
+    transform: none;
+  }
+}
+
+/* chico: los aspectos de la encuesta, uno debajo del otro */
+.arch-rating--chico {
+  display: grid;
+  grid-template-columns: minmax(96px, auto) auto 1fr;
+  align-items: center;
+  column-gap: 16px;
+  margin-bottom: 12px;
+}
+
+.arch-rating--chico legend {
+  float: left;
+  margin: 0;
+  font-weight: 500;
+}
+
+.arch-rating--chico .arch-rating__fila {
+  gap: 6px;
+}
+
+.arch-rating--chico .arch-rating__arco {
+  width: 34px;
+  border-width: 2px;
+}
+
+.arch-rating--chico .arch-rating__texto {
+  margin-top: 0;
+  font-size: var(--small);
+}
+
+@media (max-width: 420px) {
+  .arch-rating--chico {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .arch-rating--chico .arch-rating__texto {
+    display: none;
+  }
+}

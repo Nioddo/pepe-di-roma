@@ -1,0 +1,338 @@
+/* Historial: el calendario a la izquierda (maestro) y el día elegido a la derecha (detalle). */
+
+.historial {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: start;
+  gap: clamp(20px, 3vw, 40px);
+}
+
+/* ---------- calendario ---------- */
+.calendario {
+  padding: clamp(16px, 2vw, 24px);
+  border-radius: var(--radius-lg);
+  background: var(--rosa);
+}
+
+.calendario__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.calendario__cabecera h2 {
+  min-width: 0;
+  margin-right: auto;
+  font-size: clamp(24px, 2.4vw, 32px);
+}
+
+.calendario__cabecera h2::first-letter {
+  text-transform: uppercase;
+}
+
+.calendario__nav {
+  display: grid;
+  order: 1;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--red);
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--red);
+  cursor: pointer;
+  transition:
+    background-color var(--t-ui) ease,
+    color var(--t-ui) ease,
+    transform var(--t-press) var(--ease-out);
+}
+
+.calendario__nav:active {
+  transform: scale(0.94);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .calendario__nav:hover {
+    background: var(--red);
+    color: var(--white);
+  }
+}
+
+.calendario__cabecera .btn {
+  order: 2;
+}
+
+.calendario__resumen {
+  margin: 8px 0 16px;
+  color: var(--muted);
+  font-size: var(--small);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.calendario__grilla {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.calendario__semana {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.calendario__dia-semana {
+  color: var(--muted);
+  font-size: var(--small);
+  font-weight: 600;
+  text-align: center;
+}
+
+.calendario__dia {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  min-height: 78px;
+  padding: 6px 8px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: var(--white);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--t-ui) ease,
+    background-color var(--t-ui) ease,
+    transform var(--t-press) var(--ease-out);
+}
+
+.calendario__dia[data-vacio] {
+  background: transparent;
+  color: var(--muted);
+}
+
+.calendario__dia:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .calendario__dia:not([aria-pressed='true']):hover {
+    border-color: var(--red);
+  }
+}
+
+.calendario__dia[aria-pressed='true'] {
+  background: var(--red);
+  color: var(--white);
+}
+
+.calendario__dia[aria-current='date'] .calendario__numero {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.calendario__numero {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.calendario__cuenta {
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+}
+
+.calendario__cuenta--reservas {
+  color: var(--red-dark);
+}
+
+.calendario__cuenta--pedidos {
+  color: var(--muted);
+}
+
+.calendario__dia[aria-pressed='true'] .calendario__cuenta {
+  color: var(--white);
+}
+
+.calendario__ayuda {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: var(--small);
+}
+
+/* ---------- el día elegido ---------- */
+.jornada {
+  position: sticky;
+  top: calc(var(--header-h) + 16px);
+  max-height: calc(100svh - var(--header-h) - 32px);
+  overflow-y: auto;
+  padding: clamp(16px, 2vw, 24px);
+  border: 2px solid var(--rosa-deep);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+}
+
+.jornada__titulo {
+  font-size: clamp(24px, 2.2vw, 30px);
+}
+
+.jornada__titulo::first-letter {
+  text-transform: uppercase;
+}
+
+.jornada__resumen {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: var(--small);
+  font-weight: 600;
+}
+
+.jornada__seccion {
+  display: flex;
+  align-items: center;
+  margin: 22px 0 10px;
+  font-size: 20px;
+}
+
+.jornada__canceladas {
+  margin-left: 10px;
+  color: var(--muted);
+  font-family: var(--f-text);
+  font-size: var(--small);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.jornada__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* cada reserva o pedido se abre en el lugar para ver el detalle */
+.registro {
+  border-radius: var(--radius);
+  background: var(--rosa);
+}
+
+.registro summary {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  list-style: none;
+}
+
+.registro summary::-webkit-details-marker {
+  display: none;
+}
+
+.registro summary:focus-visible {
+  outline-offset: 2px;
+}
+
+.registro__hora {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.registro__quien {
+  min-width: 0;
+  font-weight: 500;
+}
+
+.registro__detalle {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 4px 14px 14px 76px;
+  font-size: var(--small);
+}
+
+.registro__detalle div {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.registro__detalle dt {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.registro__detalle dd {
+  margin: 0;
+}
+
+.registro__detalle a {
+  color: var(--ink);
+}
+
+@media (max-width: 960px) {
+  .historial {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .jornada {
+    position: static;
+    max-height: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .calendario__dia {
+    min-height: 58px;
+    padding: 4px;
+  }
+
+  /* en el teléfono no entra el texto: queda un punto por tipo de movimiento */
+  .calendario__cuenta {
+    font-size: 0;
+  }
+
+  .calendario__cuenta::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .registro summary {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+
+  .registro summary .badge {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .registro__detalle {
+    padding-left: 14px;
+  }
+
+  .registro__detalle div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calendario__nav:active,
+  .calendario__dia:active {
+    transform: none;
+  }
+}

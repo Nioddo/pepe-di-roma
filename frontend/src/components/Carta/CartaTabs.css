@@ -56,13 +56,38 @@
   }
 }
 
+/* teléfono: las tres pestañas en una fila que se desliza; solo el nombre */
 @media (max-width: 700px) {
   .carta-tabs {
-    grid-template-columns: 1fr;
+    display: flex;
+    gap: 4px;
+    padding: 5px;
+    overflow-x: auto;
+    border-radius: var(--pill);
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .carta-tabs::-webkit-scrollbar {
+    display: none;
   }
 
   .carta-tabs__tab {
-    padding: 11px 16px;
+    flex: none;
+    min-height: 44px;
+    justify-content: center;
+    padding: 8px 18px;
+    border-radius: var(--pill);
+    scroll-snap-align: start;
+  }
+
+  .carta-tabs__nombre {
+    font-size: 19px;
+    white-space: nowrap;
+  }
+
+  .carta-tabs__uso {
+    display: none;
   }
 }
 

@@ -1,0 +1,61 @@
+/* La trastienda: una franja en tinta que marca que estás en la gestión del local.
+   En el teléfono se desliza de costado, sin plegarse. */
+.admin-nav {
+  background: var(--ink);
+}
+
+.admin-nav__lista {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding-block: 10px;
+  overflow-x: auto;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.admin-nav__lista::-webkit-scrollbar {
+  display: none;
+}
+
+.admin-nav a {
+  display: block;
+  padding: 8px 15px;
+  border-radius: var(--pill);
+  color: #e9dede;
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+  transition:
+    background-color var(--t-ui) ease,
+    color var(--t-ui) ease,
+    transform var(--t-press) var(--ease-out);
+}
+
+.admin-nav a:active {
+  transform: scale(0.97);
+}
+
+.admin-nav a:focus-visible {
+  outline-color: var(--white);
+}
+
+.admin-nav a[aria-current='page'] {
+  background: var(--red);
+  color: var(--white);
+  font-weight: 600;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .admin-nav a:not([aria-current='page']):hover {
+    background: #332b2b;
+    color: var(--white);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-nav a:active {
+    transform: none;
+  }
+}

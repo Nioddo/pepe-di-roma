@@ -18,6 +18,14 @@ export function validarDni(valor: string): string {
   return '';
 }
 
+/** Entre 8 y 15 números; se aceptan espacios, guiones, paréntesis y el +. */
+export function validarTelefono(valor: string): string {
+  if (!valor.trim()) return 'Dejanos un teléfono para avisarte si pasa algo.';
+  const digitos = valor.replace(/[\s()+-]/g, '');
+  if (!/^\d{8,15}$/.test(digitos)) return 'Revisá el teléfono: tiene que tener entre 8 y 15 números.';
+  return '';
+}
+
 export function validarRequerido(valor: string, mensaje: string): string {
   return valor.trim() ? '' : mensaje;
 }

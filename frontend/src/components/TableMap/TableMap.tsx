@@ -1,3 +1,4 @@
+import { estiloPlano, useSalon } from '../../hooks/useSalon';
 import type { Mesa } from '../../types';
 import './TableMap.css';
 
@@ -22,13 +23,15 @@ interface TableMapProps {
  * para que el lector de pantalla pueda decir por qué no se eligen.
  */
 export function TableMap({ mesas, estadoDe, onElegir }: TableMapProps) {
-  const columnas = Math.max(3, ...mesas.map((m) => m.posicionX + 1));
+  const { columnas, filas, cocina } = useSalon(mesas);
 
   return (
-    <div className="salon__floor" style={{ gridTemplateColumns: `repeat(${columnas}, minmax(0, 1fr))` }}>
-      <div className="salon__counter" aria-hidden="true">
-        Cocina a la vista
-      </div>
+    <div className="salon__floor" style={estiloPlano(columnas, filas)}>
+      {cocina && (
+        <div className="salon__counter" aria-hidden="true">
+          {cocina}
+        </div>
+      )}
       {mesas.map((mesa) => {
         const estado = estadoDe(mesa);
         const inactiva = estado === 'ocupada' || estado === 'bloqueada';

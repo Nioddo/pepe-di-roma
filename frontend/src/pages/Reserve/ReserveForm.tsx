@@ -5,9 +5,9 @@ import { createReserva, updateReserva } from '../../services/reservasService';
 import { mensajeDeError } from '../../services/api';
 import { formatearFecha, hoyISO } from '../../utils/formato';
 import { horarios, MAX_ONLINE, mesaOcupada, reglaPara } from '../../utils/reservas';
-import { hayErrores, type Errores } from '../../utils/validacion';
+import { hayErrores, validarRequerido, validarTelefono, type Errores } from '../../utils/validacion';
 import { enfocarPrimerError } from '../../utils/foco';
-import { contacto } from '../../content/sitio';
+import { useContacto } from '../../hooks/useSitio';
 import { InlineError, SelectField, TextField } from '../../components/Field/Field';
 import { Notice } from '../../components/Notice/Notice';
 import { Button, ButtonLink } from '../../components/Button/Button';
@@ -15,7 +15,7 @@ import { TableLegend, TableMap, type EstadoMesa } from '../../components/TableMa
 import { EmptyState } from '../../components/EmptyState/EmptyState';
 import type { Mesa, Reserva, Usuario } from '../../types';
 
-type Campo = 'fecha' | 'hora' | 'mesa';
+type Campo = 'fecha' | 'hora' | 'mesa' | 'nombre' | 'telefono';
 
 const OPCIONES_INTEGRANTES = [
   ...Array.from({ length: MAX_ONLINE }, (_, i) => ({
@@ -25,10 +25,6 @@ const OPCIONES_INTEGRANTES = [
   { value: String(MAX_ONLINE + 1), label: `Más de ${MAX_ONLINE}` }
 ];
 
-const OPCIONES_HORARIO = [
-  { value: '', label: 'Elegí un horario' },
-  ...horarios().map((h) => ({ value: h, label: `${h} h` }))
-];
 
 interface ReserveFormProps {
   usuario: Usuario;
@@ -49,10 +45,15 @@ export function ReserveForm({ usuario, mesas, reservas, editando, onError }: Res
   const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
   const mapaRef = useRef<HTMLDivElement>(null);
+  const contacto = useContacto();
 
   const [fecha, setFecha] = useState(editando?.fecha ?? hoyISO());
   const [hora, setHora] = useState(editando?.horaInicio ?? '');
   const [integrantes, setIntegrantes] = useState(editando?.cantidadIntegrantes ?? 2);
+  // para no volver a escribirlo: se sugiere el nombre y el teléfono de la última reserva del cliente
+  const ultima = reservas.filter((r) => r.clienteId === usuario.id && r.nombre).sort((a, b) => b.id - a.id)[0];
+  const [nombre, setNombre] = useState(editando?.nombre ?? ultima?.nombre ?? '');
+  const [telefono, setTelefono] = useState(editando?.telefono ?? ultima?.telefono ?? '');
   const [mesaId, setMesaId] = useState<number | null>(
     editando && reglaPara(editando.cantidadIntegrantes) === 'elige-mesa' ? editando.mesaId : null
   );
@@ -85,12 +86,14 @@ export function ReserveForm({ usuario, mesas, reservas, editando, onError }: Res
     const nuevos: Errores<Campo> = {
       fecha: !fecha ? 'Elegí una fecha.' : !editando && fecha < hoyISO() ? 'Elegí una fecha de hoy en adelante.' : '',
       hora: hora ? '' : 'Elegí un horario.',
-      mesa: regla === 'elige-mesa' && fecha && hora && !mesaId ? 'Elegí una mesa disponible en el mapa.' : ''
+      mesa: regla === 'elige-mesa' && fecha && hora && !mesaId ? 'Elegí una mesa disponible en el mapa.' : '',
+      nombre: validarRequerido(nombre, 'Decinos a nombre de quién va la reserva.'),
+      telefono: validarTelefono(telefono)
     };
 
     setErrores(nuevos);
     if (hayErrores(nuevos)) {
-      if (nuevos.fecha || nuevos.hora) enfocarPrimerError(formRef.current);
+      if (nuevos.fecha || nuevos.hora || nuevos.nombre || nuevos.telefono) enfocarPrimerError(formRef.current);
       else mapaRef.current?.querySelector<HTMLElement>('[data-estado="libre"]')?.focus();
       return;
     }
@@ -99,7 +102,7 @@ export function ReserveForm({ usuario, mesas, reservas, editando, onError }: Res
     const mesaFinal = regla === 'elige-mesa' ? mesaId : null;
     const numero = mesas.find((m) => m.id === mesaFinal)?.numero;
     const cuando = `${formatearFecha(fecha)} a las ${hora} h`;
-    const datos = { fecha, horaInicio: hora, cantidadIntegrantes: integrantes, mesaId: mesaFinal };
+    const datos = { fecha, horaInicio: hora, cantidadIntegrantes: integrantes, mesaId: mesaFinal, nombre: nombre.trim(), telefono: telefono.trim() };
 
     setEnviando(true);
     try {
@@ -126,7 +129,7 @@ export function ReserveForm({ usuario, mesas, reservas, editando, onError }: Res
   let notaMapa = 'Tocá una mesa disponible para elegirla.';
   if (!fecha || !hora) notaMapa = 'Elegí fecha y horario para ver qué mesas están libres.';
   else if (regla === 'asigna-local') notaMapa = 'Para grupos de 5 a 12 personas el mapa queda bloqueado: la mesa la asigna el local.';
-  else if (regla === 'no-online') notaMapa = 'El mapa queda bloqueado: los grupos de más de 12 reservan por teléfono o email.';
+  else if (regla === 'no-online') notaMapa = 'El mapa queda bloqueado: los grupos de más de 12 reservan por WhatsApp.';
 
   return (
     <div className="split">
@@ -146,19 +149,48 @@ export function ReserveForm({ usuario, mesas, reservas, editando, onError }: Res
             error={errores.fecha}
             onChange={(e) => {
               setFecha(e.target.value);
+              // si el nuevo día cierra antes, el horario elegido puede quedar afuera
+              if (hora && !horarios(e.target.value).includes(hora)) setHora('');
               setMesaId(null);
               limpiar('fecha');
             }}
           />
           <SelectField
             label="Horario"
-            options={OPCIONES_HORARIO}
+            options={[{ value: '', label: 'Elegí un horario' }, ...horarios(fecha).map((h) => ({ value: h, label: `${h} h` }))]}
             value={hora}
             error={errores.hora}
             onChange={(e) => {
               setHora(e.target.value);
               setMesaId(null);
               limpiar('hora');
+            }}
+          />
+        </div>
+
+        <div className="form-row">
+          <TextField
+            label="A nombre de"
+            autoComplete="name"
+            maxLength={60}
+            value={nombre}
+            error={errores.nombre}
+            onChange={(e) => {
+              setNombre(e.target.value);
+              limpiar('nombre');
+            }}
+          />
+          <TextField
+            label="Teléfono"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            hint="Para avisarte si cambia algo."
+            value={telefono}
+            error={errores.telefono}
+            onChange={(e) => {
+              setTelefono(e.target.value);
+              limpiar('telefono');
             }}
           />
         </div>
@@ -177,9 +209,11 @@ export function ReserveForm({ usuario, mesas, reservas, editando, onError }: Res
         )}
         {regla === 'no-online' && (
           <Notice tono="stop">
-            <strong>Más de {MAX_ONLINE} personas no pueden reservar online.</strong> Escribinos a{' '}
-            <a href={`mailto:${contacto.email}`}>{contacto.email}</a> o llamá al{' '}
-            <a href={contacto.telefonoHref}>{contacto.telefono}</a>.
+            <strong>Más de {MAX_ONLINE} personas no pueden reservar online.</strong> Escribinos por{' '}
+            <a href={contacto.whatsappHref} target="_blank" rel="noopener noreferrer">
+              WhatsApp al {contacto.telefono}
+            </a>{' '}
+            y lo coordinamos.
           </Notice>
         )}
 

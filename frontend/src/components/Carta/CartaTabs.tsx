@@ -1,5 +1,5 @@
 import { useRef, type KeyboardEvent } from 'react';
-import { CARTAS } from '../../content/cartas';
+import { useCartas } from '../../hooks/useSitio';
 import type { CartaId } from '../../types';
 import './CartaTabs.css';
 
@@ -15,19 +15,20 @@ interface CartaTabsProps {
 /** Pestañas de las tres cartas. Se recorren con las flechas, como pide el patrón ARIA de tabs. */
 export function CartaTabs({ value, onChange, panelId, cantidades }: CartaTabsProps) {
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
+  const { cartas } = useCartas();
 
   const alTeclear = (e: KeyboardEvent, i: number) => {
     const paso = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
     if (!paso) return;
     e.preventDefault();
-    const siguiente = (i + paso + CARTAS.length) % CARTAS.length;
-    onChange(CARTAS[siguiente].id);
+    const siguiente = (i + paso + cartas.length) % cartas.length;
+    onChange(cartas[siguiente].id);
     refs.current[siguiente]?.focus();
   };
 
   return (
     <div className="carta-tabs" role="tablist" aria-label="Cartas del local">
-      {CARTAS.map((c, i) => {
+      {cartas.map((c, i) => {
         const activa = c.id === value;
         return (
           <button

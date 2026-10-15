@@ -6,7 +6,7 @@ import { useApi } from '../../hooks/useApi';
 import { createSeccion, deleteSeccion, getCarta, updateSeccion } from '../../services/seccionesService';
 import { createPlato, deletePlato, updatePlato } from '../../services/platosService';
 import { mensajeDeError } from '../../services/api';
-import { cartaInfo } from '../../content/cartas';
+import { useCartas } from '../../hooks/useSitio';
 import { cantidadesPorCarta, cartaDesdeParametro } from '../../utils/carta';
 import { formatearPrecio, plural } from '../../utils/formato';
 import { catalogoFotos, resolverImagen } from '../../utils/imagenes';
@@ -18,6 +18,9 @@ import { Check, SelectField, TextField } from '../../components/Field/Field';
 import { Button } from '../../components/Button/Button';
 import { Badge } from '../../components/Badge/Badge';
 import { ArchImage } from '../../components/ArchImage/ArchImage';
+import { Icon } from '../../components/Icon/Icon';
+import { EditorPlato } from './EditorPlato';
+import { EditorSeccion } from './EditorSeccion';
 import { DataTable, RowActions, type Columna } from '../../components/DataTable/DataTable';
 import { EmptyState } from '../../components/EmptyState/EmptyState';
 import { SkeletonList } from '../../components/Skeleton/Skeleton';
@@ -25,28 +28,39 @@ import type { CartaId, Plato, SeccionConPlatos } from '../../types';
 import './AdminMenu.css';
 
 type CampoPlato = 'nombre' | 'precio';
-type Etiqueta = 'vegano' | 'sinTacc' | 'picante';
+type Etiqueta = 'vegano' | 'sinTacc' | 'picante' | 'destacado';
 
 const PANEL = 'panel-admin-menu';
-const ETIQUETAS: { clave: Etiqueta; texto: string; tono: 'veg' | 'tacc' | 'brand' }[] = [
+const ETIQUETAS: { clave: Etiqueta; texto: string; tono: 'veg' | 'tacc' | 'brand' | 'warn' }[] = [
   { clave: 'vegano', texto: 'Vegano', tono: 'veg' },
   { clave: 'sinTacc', texto: 'Sin TACC', tono: 'tacc' },
-  { clave: 'picante', texto: 'Picante', tono: 'brand' }
+  { clave: 'picante', texto: 'Picante', tono: 'brand' },
+  { clave: 'destacado', texto: 'Estrella', tono: 'warn' }
 ];
 const OPCIONES_FOTO = [{ value: '', label: 'Sin foto' }, ...catalogoFotos.map((f) => ({ value: f.clave, label: f.nombre }))];
 
-const PLATO_VACIO = { nombre: '', precio: '', medida: '', descripcion: '', foto: '', vegano: false, sinTacc: false, picante: false };
+const PLATO_VACIO = { nombre: '', precio: '', medida: '', descripcion: '', foto: '', vegano: false, sinTacc: false, picante: false, destacado: false };
 
 export function AdminMenu() {
   const toast = useToast();
   const confirmar = useConfirm();
   const { data, loading, error, recargar } = useApi(getCarta);
   const [params, setParams] = useSearchParams();
+  const { cartaInfo } = useCartas();
 
   const carta: CartaId = cartaDesdeParametro(params.get('carta'));
   const secciones = data?.porCarta[carta] ?? [];
-  const [seccionId, setSeccionId] = useState<number | null>(null);
+  const [seccionId, setSeccionIdBase] = useState<number | null>(null);
   const seccion = secciones.find((s) => s.id === seccionId) ?? secciones[0];
+  /** Qué plato tiene abierto su formulario de edición, y si se edita la sección. */
+  const [editandoPlato, setEditandoPlato] = useState<number | null>(null);
+  const [editandoSeccion, setEditandoSeccion] = useState(false);
+
+  const setSeccionId = (id: number | null) => {
+    setSeccionIdBase(id);
+    setEditandoPlato(null);
+    setEditandoSeccion(false);
+  };
 
   const [plato, setPlato] = useState(PLATO_VACIO);
   const [erroresPlato, setErroresPlato] = useState<Errores<CampoPlato>>({});
@@ -108,7 +122,8 @@ export function AdminMenu() {
         imageUrl: plato.foto || null,
         vegano: plato.vegano,
         sinTacc: plato.sinTacc,
-        picante: plato.picante
+        picante: plato.picante,
+        destacado: plato.destacado
       });
       await updateSeccion(seccion.id, { platos: [...seccion.platos, creado.id] });
       toast.success(`Agregaste "${creado.nombre}" a ${seccion.titulo}.`);
@@ -152,9 +167,38 @@ export function AdminMenu() {
     ejecutar(`etiqueta-${p.id}-${etiqueta}`, async () => {
       const valor = !p[etiqueta];
       await updatePlato(p.id, { [etiqueta]: valor });
+      if (etiqueta === 'destacado') {
+        return valor ? `"${p.nombre}" ahora sale en Productos estrella.` : `"${p.nombre}" ya no sale en Productos estrella.`;
+      }
       const texto = ETIQUETAS.find((e) => e.clave === etiqueta)?.texto.toLowerCase();
       return `${p.nombre}: ${texto} ${valor ? 'activado' : 'desactivado'}.`;
     });
+
+  /** Sube o baja un plato dentro de su sección (es el orden en que se lee la carta). */
+  const moverPlato = (p: Plato, paso: -1 | 1) => {
+    if (!seccion) return;
+    const ids = seccion.platosDetalle.map((x) => x.id);
+    const i = ids.indexOf(p.id);
+    const j = i + paso;
+    if (i < 0 || j < 0 || j >= ids.length) return;
+    [ids[i], ids[j]] = [ids[j], ids[i]];
+    ejecutar(`orden-${p.id}`, async () => {
+      await updateSeccion(seccion.id, { platos: ids });
+      return `"${p.nombre}" ${paso < 0 ? 'subió' : 'bajó'} un lugar en ${seccion.titulo}.`;
+    });
+  };
+
+  /** Intercambia el orden con la sección vecina de la misma carta. */
+  const moverSeccion = (s: SeccionConPlatos, paso: -1 | 1) => {
+    const i = secciones.findIndex((x) => x.id === s.id);
+    const vecina = secciones[i + paso];
+    if (!vecina) return;
+    ejecutar(`orden-seccion-${s.id}`, async () => {
+      await updateSeccion(s.id, { orden: vecina.orden });
+      await updateSeccion(vecina.id, { orden: s.orden });
+      return `"${s.titulo}" ${paso < 0 ? 'subió' : 'bajó'} un lugar en la carta.`;
+    });
+  };
 
   const eliminarPlato = async (p: Plato) => {
     const ok = await confirmar({
@@ -235,13 +279,33 @@ export function AdminMenu() {
       clave: 'acciones',
       titulo: 'Acciones',
       tituloOculto: true,
-      render: (p) => (
-        <RowActions>
-          <Button variant="danger-quiet" size="sm" loading={ocupado === `plato-${p.id}`} onClick={() => eliminarPlato(p)}>
-            Eliminar
-          </Button>
-        </RowActions>
-      )
+      render: (p) => {
+        const i = seccion?.platosDetalle.findIndex((x) => x.id === p.id) ?? 0;
+        const ultimo = (seccion?.platosDetalle.length ?? 1) - 1;
+        return (
+          <RowActions>
+            <div className="orden" role="group" aria-label={`Orden de ${p.nombre}`}>
+              <button type="button" className="orden__btn" aria-label={`Subir ${p.nombre}`} disabled={i === 0 || ocupado !== null} onClick={() => moverPlato(p, -1)}>
+                <Icon name="up" size={16} />
+              </button>
+              <button type="button" className="orden__btn" aria-label={`Bajar ${p.nombre}`} disabled={i === ultimo || ocupado !== null} onClick={() => moverPlato(p, 1)}>
+                <Icon name="down" size={16} />
+              </button>
+            </div>
+            <Button
+              variant="secondary"
+              size="sm"
+              aria-expanded={editandoPlato === p.id}
+              onClick={() => setEditandoPlato(editandoPlato === p.id ? null : p.id)}
+            >
+              Editar
+            </Button>
+            <Button variant="danger-quiet" size="sm" loading={ocupado === `plato-${p.id}`} onClick={() => eliminarPlato(p)}>
+              Eliminar
+            </Button>
+          </RowActions>
+        );
+      }
     }
   ];
 
@@ -305,10 +369,54 @@ export function AdminMenu() {
                     {plural(seccion.platosDetalle.length, 'plato')} en {cartaInfo(carta).nombre}
                   </p>
                 </div>
-                <Button variant="danger-quiet" size="sm" loading={ocupado === `seccion-${seccion.id}`} onClick={() => eliminarSeccion(seccion)}>
-                  Eliminar sección
-                </Button>
+                <div className="admin-menu__acciones">
+                  <div className="orden" role="group" aria-label={`Orden de la sección ${seccion.titulo}`}>
+                    <button
+                      type="button"
+                      className="orden__btn"
+                      aria-label={`Subir la sección ${seccion.titulo}`}
+                      disabled={secciones[0]?.id === seccion.id || ocupado !== null}
+                      onClick={() => moverSeccion(seccion, -1)}
+                    >
+                      <Icon name="up" size={16} />
+                    </button>
+                    <button
+                      type="button"
+                      className="orden__btn"
+                      aria-label={`Bajar la sección ${seccion.titulo}`}
+                      disabled={secciones[secciones.length - 1]?.id === seccion.id || ocupado !== null}
+                      onClick={() => moverSeccion(seccion, 1)}
+                    >
+                      <Icon name="down" size={16} />
+                    </button>
+                  </div>
+                  <Button variant="secondary" size="sm" aria-expanded={editandoSeccion} onClick={() => setEditandoSeccion((v) => !v)}>
+                    Editar sección
+                  </Button>
+                  <Button variant="danger-quiet" size="sm" loading={ocupado === `seccion-${seccion.id}`} onClick={() => eliminarSeccion(seccion)}>
+                    Eliminar sección
+                  </Button>
+                </div>
               </div>
+
+              {editandoSeccion && (
+                <div className="admin-menu__editor-seccion">
+                  <EditorSeccion
+                    key={seccion.id}
+                    seccion={seccion}
+                    secciones={data?.secciones ?? []}
+                    onCerrar={() => setEditandoSeccion(false)}
+                    onGuardado={(nueva) => {
+                      setEditandoSeccion(false);
+                      if (nueva !== carta) {
+                        setParams({ carta: nueva.toLowerCase() }, { replace: true });
+                        setSeccionIdBase(seccion.id);
+                      }
+                      recargar();
+                    }}
+                  />
+                </div>
+              )}
 
               <form ref={formPlato} className="admin-menu__alta" onSubmit={crearPlato} noValidate>
                 <p className="admin-menu__rotulo">Agregar plato a {seccion.titulo}</p>
@@ -352,7 +460,28 @@ export function AdminMenu() {
               </form>
 
               {seccion.platosDetalle.length > 0 ? (
-                <DataTable columnas={columnas} filas={seccion.platosDetalle} getKey={(p) => p.id} caption={`Platos de ${seccion.titulo}`} captionOculta minWidth={720} />
+                <DataTable
+                  columnas={columnas}
+                  filas={seccion.platosDetalle}
+                  getKey={(p) => p.id}
+                  caption={`Platos de ${seccion.titulo}`}
+                  captionOculta
+                  minWidth={860}
+                  detalle={(p) =>
+                    editandoPlato === p.id && (
+                      <EditorPlato
+                        plato={p}
+                        seccion={seccion}
+                        secciones={data?.secciones ?? []}
+                        onCerrar={() => setEditandoPlato(null)}
+                        onGuardado={() => {
+                          setEditandoPlato(null);
+                          recargar();
+                        }}
+                      />
+                    )
+                  }
+                />
               ) : (
                 <p className="empty-inline">Esta sección no tiene platos. Agregá el primero con el formulario.</p>
               )}
@@ -367,7 +496,11 @@ export function AdminMenu() {
 
   return (
     <>
-      <PageHeader title="Gestión de menú" lead="Las tres cartas del local: secciones, platos, precios y etiquetas." compact />
+      <PageHeader
+        title="Gestión de la carta"
+        lead="Las tres cartas del local: secciones, platos, precios, fotos, etiquetas y los productos estrella de la portada."
+        compact
+      />
       <div className="wrap page">
         <CartaTabs value={carta} onChange={cambiarCarta} panelId={PANEL} cantidades={cantidadesPorCarta(data)} />
         <div id={PANEL} role="tabpanel" aria-labelledby={`tab-${carta}`} className="admin-menu__panel">

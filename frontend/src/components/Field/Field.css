@@ -11,7 +11,8 @@
 }
 
 .field input,
-.field select {
+.field select,
+.field textarea {
   width: 100%;
   padding: 13px 16px;
   border: 2px solid var(--rosa-deep);
@@ -25,21 +26,30 @@
   cursor: pointer;
 }
 
+.field textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.55;
+}
+
 @media (hover: hover) {
   .field input:hover,
-  .field select:hover {
+  .field select:hover,
+  .field textarea:hover {
     border-color: #e8b9b9;
   }
 }
 
 .field input:focus,
-.field select:focus {
+.field select:focus,
+.field textarea:focus {
   outline: none;
   border-color: var(--red);
 }
 
 .field[data-invalid] input,
-.field[data-invalid] select {
+.field[data-invalid] select,
+.field[data-invalid] textarea {
   border-color: var(--red-dark);
 }
 

@@ -1,0 +1,117 @@
+/* El agradecimiento ocupa el lugar del formulario: rojo plano del packaging, arco arriba. */
+.encuesta-gracias {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 22px;
+  padding: clamp(48px, 7vw, 96px) clamp(26px, 4vw, 56px) clamp(30px, 4vw, 52px);
+  border-radius: var(--arch-md);
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+  background: var(--red);
+  color: var(--white);
+  animation: gracias-entra 360ms var(--ease-out);
+}
+
+.encuesta-gracias :focus-visible {
+  outline-color: var(--white);
+}
+
+.encuesta-gracias__titulo {
+  font-family: var(--f-display);
+  font-size: clamp(56px, 7vw, 96px);
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.encuesta-gracias__texto {
+  max-width: 36ch;
+  font-size: var(--lead);
+}
+
+.encuesta-gracias__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.encuesta-gracias .encuesta-gracias__otra {
+  color: var(--white);
+}
+
+@keyframes gracias-entra {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+.encuesta-mias__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.encuesta-mia {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 20px 22px;
+  border-radius: var(--radius-lg);
+  background: var(--rosa);
+}
+
+.encuesta-mia__cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.encuesta-mia__texto {
+  line-height: 1.55;
+}
+
+.encuesta-mia__meta {
+  color: var(--muted);
+  font-size: var(--small);
+}
+
+.encuesta-mia .opinion__respuesta {
+  margin-top: 0;
+  background: var(--white);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .encuesta-gracias {
+    animation: none;
+  }
+}
+
+.encuesta__aspectos {
+  margin-bottom: 22px;
+  padding: 18px 20px 4px;
+  border-radius: var(--radius);
+  background: var(--rosa);
+}
+
+.encuesta__aspectos > legend {
+  /* flotado, el legend queda adentro de la caja rosa en vez de montado sobre su borde */
+  float: left;
+  width: 100%;
+  margin-bottom: 14px;
+  padding: 0;
+}
+
+.encuesta__aspectos > :not(legend) {
+  clear: both;
+}
+
+.encuesta__aspectos .field input {
+  border-color: var(--white);
+}

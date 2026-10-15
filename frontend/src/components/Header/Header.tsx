@@ -5,7 +5,7 @@ import { useToast } from '../../context/ToastContext';
 import { esPersonal } from '../../utils/sesion';
 import { Button, ButtonLink } from '../Button/Button';
 import { Icon } from '../Icon/Icon';
-import logo from '../../assets/logo.jpg';
+import logoLetras from '../../assets/logo-letras.png';
 import type { Usuario } from '../../types';
 import './Header.css';
 
@@ -20,9 +20,7 @@ function enlacesPara(usuario: Usuario | null): Enlace[] {
     return [
       { to: '/', texto: 'Inicio' },
       { to: '/menu', texto: 'Menú' },
-      { to: '/admin/menu', texto: 'Gestión de menú' },
-      { to: '/admin/reservas', texto: 'Reservas' },
-      { to: '/admin/pedidos', texto: 'Pedidos' }
+      { to: '/admin', texto: 'Gestión' }
     ];
   }
 
@@ -30,7 +28,8 @@ function enlacesPara(usuario: Usuario | null): Enlace[] {
     { to: '/', texto: 'Inicio' },
     { to: '/menu', texto: 'Menú' },
     { to: '/reservar', texto: 'Reservar' },
-    { to: '/pedido', texto: 'Hacer pedido' }
+    { to: '/pedido', texto: 'Hacer pedido' },
+    { to: '/opinar', texto: 'Opinar' }
   ];
 
   if (!usuario) return publicos;
@@ -79,7 +78,7 @@ export function Header() {
     <header className="site-header" data-scroll={conScroll || undefined} data-abierto={abierto || undefined}>
       <div className="site-header__in">
         <Link to="/" className="site-header__logo" aria-label="Pepe Di Roma, ir al inicio">
-          <img src={logo} alt="" width={52} height={52} />
+          <img src={logoLetras} alt="" width={131} height={72} />
         </Link>
 
         <nav className="site-nav" id="nav-principal" aria-label="Principal">
@@ -94,17 +93,18 @@ export function Header() {
           </ul>
         </nav>
 
+        <button
+          type="button"
+          className="site-header__toggle"
+          aria-expanded={abierto}
+          aria-controls="nav-principal"
+          aria-label={abierto ? 'Cerrar navegación' : 'Abrir navegación'}
+          onClick={() => setAbierto((a) => !a)}
+        >
+          <Icon name={abierto ? 'close' : 'menu'} size={20} />
+        </button>
+
         <div className="site-header__actions">
-          <button
-            type="button"
-            className="site-header__toggle"
-            aria-expanded={abierto}
-            aria-controls="nav-principal"
-            aria-label={abierto ? 'Cerrar navegación' : 'Abrir navegación'}
-            onClick={() => setAbierto((a) => !a)}
-          >
-            <Icon name={abierto ? 'close' : 'menu'} size={20} />
-          </button>
           {usuario ? (
             <>
               <span className="site-header__user" title={usuario.email}>

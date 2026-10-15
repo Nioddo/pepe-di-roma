@@ -55,3 +55,32 @@ export function hoyISO(): string {
   const dia = String(d.getDate()).padStart(2, '0');
   return `${d.getFullYear()}-${mes}-${dia}`;
 }
+
+const MESES_LARGOS = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+const DIAS_LARGOS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+
+/** "2026-10" → "octubre de 2026" */
+export function nombreDeMes(mes: string): string {
+  const [anio, m] = mes.split('-').map(Number);
+  return `${MESES_LARGOS[m - 1]} de ${anio}`;
+}
+
+/** "2026-10-14" → "miércoles 14 de octubre" */
+export function fechaLarga(fecha: string): string {
+  const d = new Date(`${fecha}T12:00:00`);
+  return `${DIAS_LARGOS[d.getDay()]} ${d.getDate()} de ${MESES_LARGOS[d.getMonth()]}`;
+}
+
+/** "2026-10-14T13:05" → "14/10, 13:05 h" */
+export function formatearFechaHora(fechaHora: string | null): string {
+  if (!fechaHora) return 'Sin fecha';
+  const [fecha, hora] = fechaHora.split('T');
+  return `${formatearFecha(fecha)}, ${hora} h`;
+}
+
+/** Montos grandes en corto: 1.250.000 → "$ 1,25 M"; 85.000 → "$ 85 mil". */
+export function montoCorto(valor: number): string {
+  if (valor >= 1_000_000) return `$ ${(valor / 1_000_000).toLocaleString('es-AR', { maximumFractionDigits: 2 })} M`;
+  if (valor >= 10_000) return `$ ${Math.round(valor / 1000).toLocaleString('es-AR')} mil`;
+  return formatearPrecio(valor);
+}

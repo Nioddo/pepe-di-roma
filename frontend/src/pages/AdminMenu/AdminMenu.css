@@ -231,7 +231,7 @@
 
 @media (max-width: 900px) {
   .admin-menu {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .admin-menu__secciones {
@@ -240,6 +240,84 @@
   }
 
   .admin-menu__campos {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* acciones de la sección elegida */
+.admin-menu__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-menu__editor-seccion {
+  margin-bottom: 28px;
+  padding: 16px 0;
+  border-radius: var(--radius-lg);
+  background: var(--rosa);
+}
+
+/* subir / bajar: dos flechas juntas, como un solo control */
+.orden {
+  display: inline-flex;
+  flex: none;
+  border-radius: var(--pill);
+  background: var(--rosa);
+}
+
+.orden__btn {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: var(--pill);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    background-color var(--t-ui) ease,
+    transform var(--t-press) var(--ease-out);
+}
+
+.orden__btn:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.orden__btn:disabled {
+  color: #b9a9a9;
+  cursor: default;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .orden__btn:not(:disabled):hover {
+    background: var(--rosa-deep);
+  }
+}
+
+/* la foto del plato al lado de su selector */
+.editor-plato__foto {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.editor-plato__foto > div:last-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.editor-plato__vista {
+  flex: none;
+  width: 92px;
+  height: 108px;
+  border-radius: var(--arch-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orden__btn:active:not(:disabled) {
+    transform: none;
   }
 }

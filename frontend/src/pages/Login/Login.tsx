@@ -12,7 +12,7 @@ import { TextField } from '../../components/Field/Field';
 import { Notice } from '../../components/Notice/Notice';
 import { Button } from '../../components/Button/Button';
 import type { DestinoLogin } from '../../components/RequireAuth/RequireAuth';
-import foto from '../../assets/platos/pepediroma_09_gnocchi_funghi.jpg';
+import { useFoto } from '../../hooks/useSitio';
 
 type Campo = 'email' | 'dni';
 
@@ -22,6 +22,7 @@ export function Login() {
   const navigate = useNavigate();
   const destino = useLocation().state as DestinoLogin | null;
   const formRef = useRef<HTMLFormElement>(null);
+  const foto = useFoto('ingresar.foto');
 
   const [email, setEmail] = useState('');
   const [dni, setDni] = useState('');
@@ -52,7 +53,7 @@ export function Login() {
   };
 
   return (
-    <AuthLayout foto={foto} fotoAlt="Gnocchi con hongos y costilla en plato blanco">
+    <AuthLayout foto={foto.src} fotoAlt={foto.alt}>
       <PageHeader inline title="Ingresar" lead="Entrá con tu email y tu DNI." />
 
       {destino?.aviso && <Notice>{destino.aviso}</Notice>}

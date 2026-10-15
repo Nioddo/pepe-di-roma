@@ -1,0 +1,39 @@
+.editor {
+  margin: 0 16px;
+  padding: clamp(20px, 2.4vw, 30px);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+}
+
+.editor__titulo {
+  margin-bottom: 20px;
+  font-size: clamp(20px, 1.8vw, 26px);
+}
+
+.editor__titulo:focus {
+  outline: none;
+}
+
+.editor__campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  column-gap: 18px;
+}
+
+.editor__campos .editor__ancho {
+  grid-column: 1 / -1;
+}
+
+.editor__pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.editor__extra {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-right: auto;
+}

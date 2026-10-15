@@ -106,8 +106,13 @@
 }
 
 @media (max-width: 900px) {
+  /* minmax(0, …): la fila de secciones se desliza adentro, no ensancha la página */
   .mesa__layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mesa__indice {
+    min-width: 0;
   }
 
   .mesa__indice {
@@ -132,5 +137,85 @@
     flex-direction: row;
     gap: 18px;
     padding-top: 14px;
+  }
+}
+
+/* la sección que se está leyendo */
+.mesa__secciones a[aria-current='location'] {
+  background: var(--white);
+  color: var(--red);
+}
+
+/* teléfono y tablet: el índice viaja pegado arriba, en una fila que se desliza.
+   Con 30 secciones y 260 platos, es la forma de saltar sin volver al principio. */
+@media (max-width: 900px) {
+  .mesa__indice {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 10px var(--gutter);
+    background: var(--red);
+  }
+
+  .mesa__indice-titulo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .mesa__secciones {
+    flex-wrap: nowrap;
+    margin: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .mesa__secciones::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mesa__secciones li {
+    flex: none;
+    scroll-snap-align: start;
+  }
+
+  .mesa__secciones a {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    white-space: nowrap;
+  }
+
+  .mesa__secciones a[aria-current='location'] {
+    background: var(--white);
+  }
+
+  .mesa__leyenda--escritorio {
+    display: none;
+  }
+
+  .mesa__leyenda--movil {
+    display: flex;
+    margin-top: 14px;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  /* al saltar a una sección, el título queda debajo del índice pegado */
+  .carta .carta__seccion,
+  .carta .carta__seccion-titulo {
+    scroll-margin-top: 76px;
+  }
+}
+
+@media (min-width: 901px) {
+  .mesa__leyenda--movil {
+    display: none;
   }
 }

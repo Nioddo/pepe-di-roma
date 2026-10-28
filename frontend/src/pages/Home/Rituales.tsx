@@ -20,7 +20,7 @@ export function Rituales() {
   if (rituales.length === 0) return null;
 
   return (
-    <section className="banda rituales" aria-labelledby="rituales-titulo">
+    <section className="banda rituales paper" aria-labelledby="rituales-titulo">
       <div className="wrap">
         <div className="rituales__cabecera">
           <h2 id="rituales-titulo" className="reveal">

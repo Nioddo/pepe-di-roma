@@ -9,8 +9,9 @@ import { mensajeDeError } from '../../services/api';
 import { useCartas } from '../../hooks/useSitio';
 import { cantidadesPorCarta, cartaDesdeParametro } from '../../utils/carta';
 import { formatearPrecio, plural } from '../../utils/formato';
-import { METODO_PAGO, MODALIDAD } from '../../utils/estados';
-import { hayErrores, validarTelefono, type Errores } from '../../utils/validacion';
+import { METODO_PAGO } from '../../utils/estados';
+import { horasRetiro } from '../../utils/reservas';
+import { hayErrores, validarRequerido, type Errores } from '../../utils/validacion';
 import { esPersonal } from '../../utils/sesion';
 import { enfocarPrimerError } from '../../utils/foco';
 import { PageHeader } from '../../components/PageHeader/PageHeader';
@@ -18,7 +19,7 @@ import { CartaSheet } from '../../components/Carta/CartaSheet';
 import { CartaTabs } from '../../components/Carta/CartaTabs';
 import { Stepper } from '../../components/Stepper/Stepper';
 import { Toggle } from '../../components/Toggle/Toggle';
-import { InlineError, TextAreaField, TextField } from '../../components/Field/Field';
+import { InlineError, SelectField, TextField } from '../../components/Field/Field';
 import { ButtonLink } from '../../components/Button/Button';
 import { Button } from '../../components/Button/Button';
 import { EmptyState } from '../../components/EmptyState/EmptyState';
@@ -26,15 +27,9 @@ import { SkeletonList } from '../../components/Skeleton/Skeleton';
 import type { CartaId, MetodoPago } from '../../types';
 import './Order.css';
 
-type ModalidadPedido = 'TAKEAWAY' | 'DELIVERY';
-type Campo = 'direccion' | 'carrito' | 'telefono';
+type Campo = 'carrito' | 'hora' | 'nombre';
 
 const PANEL = 'panel-pedido';
-
-const MODALIDADES: { value: ModalidadPedido; label: string }[] = [
-  { value: 'TAKEAWAY', label: MODALIDAD.TAKEAWAY },
-  { value: 'DELIVERY', label: MODALIDAD.DELIVERY }
-];
 
 const PAGOS = (Object.keys(METODO_PAGO) as MetodoPago[]).map((m) => ({ value: m, label: METODO_PAGO[m] }));
 
@@ -51,11 +46,9 @@ export function Order() {
   const { data, loading, error, recargar } = useApi(getCarta);
   const { cartaInfo } = useCartas();
   const [cantidades, setCantidades] = useState<Record<number, number>>({});
-  const [modalidad, setModalidad] = useState<ModalidadPedido>('TAKEAWAY');
   const [metodoPago, setMetodoPago] = useState<MetodoPago>('EFECTIVO');
-  const [direccion, setDireccion] = useState('');
-  const [telefono, setTelefono] = useState('');
-  const [indicaciones, setIndicaciones] = useState('');
+  const [hora, setHora] = useState('');
+  const [nombre, setNombre] = useState('');
   const [errores, setErrores] = useState<Errores<Campo>>({});
   const [enviando, setEnviando] = useState(false);
 
@@ -64,6 +57,8 @@ export function Order() {
   const lineas = (data?.platos ?? []).filter((p) => (cantidades[p.id] ?? 0) > 0);
   const unidades = lineas.reduce((n, p) => n + cantidades[p.id], 0);
   const total = lineas.reduce((suma, p) => suma + p.precio * cantidades[p.id], 0);
+  // cuantos más platos, más tarde la primera hora posible
+  const horas = horasRetiro(unidades);
 
   const cambiarCarta = (id: CartaId) => setParams({ carta: id.toLowerCase() }, { replace: true });
 
@@ -94,8 +89,8 @@ export function Order() {
 
     const nuevos: Errores<Campo> = {
       carrito: lineas.length === 0 ? 'Tu pedido está vacío. Sumá al menos un plato de la carta.' : '',
-      direccion: modalidad === 'DELIVERY' && !direccion.trim() ? 'Ingresá una dirección para el envío.' : '',
-      telefono: validarTelefono(telefono)
+      hora: !hora ? 'Elegí a qué hora pasás a retirar.' : !horas.includes(hora) ? 'Con lo que sumaste no llegamos a esa hora: elegí otra.' : '',
+      nombre: validarRequerido(nombre, 'Decinos a nombre de quién lo preparamos.')
     };
     setErrores(nuevos);
     if (hayErrores(nuevos)) {
@@ -108,16 +103,12 @@ export function Order() {
     try {
       const pedido = await createPedido({
         clienteId: usuario.id,
-        modalidad,
         metodoPago,
-        direccion: modalidad === 'DELIVERY' ? direccion.trim() : null,
-        telefono: telefono.trim(),
-        indicaciones: indicaciones.trim() || null,
+        nombre: nombre.trim(),
+        horaRetiro: hora,
         items: lineas.map((p) => ({ platoId: p.id, cantidad: cantidades[p.id] }))
       });
-      toast.success(
-        `Pedido #${pedido.id} enviado: ${formatearPrecio(pedido.precioTotal)}, listo en unos ${pedido.tiempoEstimadoMin} min.`
-      );
+      toast.success(`Pedido #${pedido.id} enviado: ${formatearPrecio(pedido.precioTotal)}. Lo retirás a las ${hora} h.`);
       navigate('/mis-pedidos');
     } catch (err) {
       toast.error(mensajeDeError(err));
@@ -167,7 +158,7 @@ export function Order() {
     <>
       <PageHeader
         title="Armá tu pedido"
-        lead="Elegí de cualquiera de las tres cartas. Retirás en el local o te lo mandamos."
+        lead="Elegí de cualquiera de las tres cartas, decinos a qué hora pasás y lo retirás en el local."
       />
 
       <div className="wrap page">
@@ -211,44 +202,37 @@ export function Order() {
             {errores.carrito && <InlineError>{errores.carrito}</InlineError>}
 
             <form ref={formRef} onSubmit={enviar} noValidate className="caja__form">
-              <Toggle legend="Modalidad" options={MODALIDADES} value={modalidad} onChange={setModalidad} />
-              {modalidad === 'DELIVERY' && (
-                <TextField
-                  label="Dirección"
-                  autoComplete="street-address"
-                  hint="Calle, número y piso si corresponde."
-                  value={direccion}
-                  error={errores.direccion}
+              <p className="caja__modalidad">Para retirar en el local</p>
+              {horas.length > 0 ? (
+                <SelectField
+                  label="Hora de retiro"
+                  hint="Hoy. La primera hora es cuando ya lo tenemos listo."
+                  options={[{ value: '', label: 'Elegí la hora' }, ...horas.map((h) => ({ value: h, label: `${h} h` }))]}
+                  value={hora}
+                  error={errores.hora}
                   onChange={(e) => {
-                    setDireccion(e.target.value);
-                    setErrores((er) => ({ ...er, direccion: '' }));
+                    setHora(e.target.value);
+                    setErrores((er) => ({ ...er, hora: '' }));
                   }}
                 />
+              ) : (
+                <p className="caja__nota">Por hoy ya no llegamos a prepararlo. Abrimos mañana a las 8:30.</p>
               )}
               <TextField
-                label="Teléfono"
-                type="tel"
-                inputMode="tel"
-                autoComplete="tel"
-                hint="Te avisamos por acá cuando esté listo."
-                value={telefono}
-                error={errores.telefono}
+                label="A nombre de"
+                autoComplete="name"
+                maxLength={60}
+                hint="Quién pasa a buscarlo."
+                value={nombre}
+                error={errores.nombre}
                 onChange={(e) => {
-                  setTelefono(e.target.value);
-                  setErrores((er) => ({ ...er, telefono: '' }));
+                  setNombre(e.target.value);
+                  setErrores((er) => ({ ...er, nombre: '' }));
                 }}
-              />
-              <TextAreaField
-                label="Indicaciones (opcional)"
-                hint="Timbre, piso, a qué hora pasás o algo del pedido."
-                rows={2}
-                maxLength={300}
-                value={indicaciones}
-                onChange={(e) => setIndicaciones(e.target.value)}
               />
               <Toggle legend="Pago" options={PAGOS} value={metodoPago} onChange={setMetodoPago} />
               <p className="caja__nota">Descuento por pago en efectivo: 10%, se aplica en el local.</p>
-              <Button type="submit" variant="inverse" block loading={enviando}>
+              <Button type="submit" variant="inverse" block loading={enviando} disabled={horas.length === 0}>
                 Confirmar pedido
               </Button>
             </form>

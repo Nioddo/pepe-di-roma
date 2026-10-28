@@ -92,6 +92,20 @@ function validarIndicaciones(indicaciones) {
     return indicaciones.trim() || null;
 }
 
+function validarNombre(nombre) {
+    if (typeof nombre !== 'string' || nombre.trim() === '' || nombre.trim().length > 60) {
+        throw new BadRequestError(Messages.PEDIDO_NOMBRE_REQUIRED);
+    }
+    return nombre.trim();
+}
+
+function validarHoraRetiro(hora) {
+    if (typeof hora !== 'string' || !/^([01]\d|2[0-3]):[0-5]\d$/.test(hora)) {
+        throw new BadRequestError(Messages.PEDIDO_HORA_RETIRO_INVALID);
+    }
+    return hora;
+}
+
 function validarQueSeaCliente(clienteId) {
     const usuario = UsuarioRepository.findById(clienteId);
     if (usuario && usuario.rol !== Rol.CLIENTE) {
@@ -194,8 +208,11 @@ function crear(body) {
 
     const clienteId = validarClienteId(body.clienteId);
     validarQueSeaCliente(clienteId);
-    const modalidad = validarModalidad(body.modalidad);
-    const telefono = validarTelefono(body.telefono);
+    // los pedidos web son para retirar: la modalidad y el teléfono quedan opcionales
+    const modalidad = body.modalidad === undefined ? Modalidad.TAKEAWAY : validarModalidad(body.modalidad);
+    const telefono = body.telefono === undefined || body.telefono === null ? null : validarTelefono(body.telefono);
+    const nombre = validarNombre(body.nombre);
+    const horaRetiro = validarHoraRetiro(body.horaRetiro);
     const indicaciones = validarIndicaciones(body.indicaciones);
     const metodoPago = validarMetodoPago(body.metodoPago);
     const direccion = validarDireccion(modalidad, body.direccion);
@@ -215,7 +232,9 @@ function crear(body) {
         pagoRecibido,
         telefono,
         indicaciones,
-        creadoEn: ahora()
+        creadoEn: ahora(),
+        nombre,
+        horaRetiro
     });
 
     guardarItems(pedido.id, items);
@@ -251,6 +270,12 @@ function modificar(id, body) {
     }
     if (body.indicaciones !== undefined) {
         cambios.indicaciones = validarIndicaciones(body.indicaciones);
+    }
+    if (body.nombre !== undefined) {
+        cambios.nombre = validarNombre(body.nombre);
+    }
+    if (body.horaRetiro !== undefined) {
+        cambios.horaRetiro = validarHoraRetiro(body.horaRetiro);
     }
 
     const itemsNuevos = body.items !== undefined ? construirItems(body.items) : null;

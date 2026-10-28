@@ -96,6 +96,7 @@
   border: 2px solid var(--rosa-deep);
   border-radius: var(--pill);
   background: var(--white);
+  color: var(--ink);
   font-size: var(--small);
   cursor: pointer;
   transition: border-color var(--t-ui) ease;

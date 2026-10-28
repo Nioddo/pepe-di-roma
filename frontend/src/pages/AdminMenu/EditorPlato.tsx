@@ -4,21 +4,15 @@ import { useCartas } from '../../hooks/useSitio';
 import { updatePlato } from '../../services/platosService';
 import { updateSeccion } from '../../services/seccionesService';
 import { mensajeDeError } from '../../services/api';
-import { catalogoFotos, resolverImagen } from '../../utils/imagenes';
+import { resolverImagen } from '../../utils/imagenes';
 import { hayErrores, validarPrecio, validarRequerido, type Errores } from '../../utils/validacion';
 import { enfocarPrimerError } from '../../utils/foco';
 import { Editor } from '../../components/Editor/Editor';
 import { Check, SelectField, TextAreaField, TextField } from '../../components/Field/Field';
-import { ArchImage } from '../../components/ArchImage/ArchImage';
+import { FotoPicker } from '../../components/Foto/Foto';
 import type { Plato, Seccion } from '../../types';
 
-type Campo = 'nombre' | 'precio' | 'url';
-
-const OPCIONES_FOTO = [
-  { value: '', label: 'Sin foto' },
-  ...catalogoFotos.map((f) => ({ value: f.clave, label: f.nombre })),
-  { value: 'url', label: 'Otra foto (pegar un enlace)…' }
-];
+type Campo = 'nombre' | 'precio' | 'foto';
 
 interface EditorPlatoProps {
   plato: Plato;
@@ -33,15 +27,12 @@ interface EditorPlatoProps {
 export function EditorPlato({ plato, seccion, secciones, onCerrar, onGuardado }: EditorPlatoProps) {
   const toast = useToast();
   const { cartaInfo } = useCartas();
-  const esDelCatalogo = !plato.imageUrl || catalogoFotos.some((f) => f.clave === plato.imageUrl);
-
   const [datos, setDatos] = useState({
     nombre: plato.nombre,
     precio: String(plato.precio),
     medida: plato.medida ?? '',
     descripcion: plato.descripcion ?? '',
-    foto: esDelCatalogo ? (plato.imageUrl ?? '') : 'url',
-    url: esDelCatalogo ? '' : (plato.imageUrl ?? ''),
+    foto: plato.imageUrl ?? '',
     vegano: plato.vegano,
     sinTacc: plato.sinTacc,
     picante: plato.picante,
@@ -56,15 +47,14 @@ export function EditorPlato({ plato, seccion, secciones, onCerrar, onGuardado }:
     setErrores((e) => ({ ...e, [campo]: '' }));
   };
 
-  const imagen = datos.foto === 'url' ? datos.url.trim() : datos.foto;
-  const vistaPrevia = resolverImagen(imagen);
+  const imagen = datos.foto.trim();
 
   const guardar = async (evento: FormEvent<HTMLFormElement>) => {
     evento.preventDefault();
     const nuevos: Errores<Campo> = {
       nombre: validarRequerido(datos.nombre, 'El plato necesita un nombre.'),
       precio: validarPrecio(datos.precio),
-      url: datos.foto === 'url' && !/^https?:\/\/\S+$/.test(datos.url.trim()) ? 'Pegá un enlace que empiece con http:// o https://.' : ''
+      foto: imagen && !resolverImagen(imagen) ? 'Pegá un enlace que empiece con http:// o https://.' : ''
     };
     setErrores(nuevos);
     if (hayErrores(nuevos)) {
@@ -135,22 +125,8 @@ export function EditorPlato({ plato, seccion, secciones, onCerrar, onGuardado }:
           onChange={(e) => cambiar('descripcion', e.target.value)}
         />
       </div>
-      <div className="editor-plato__foto editor__ancho">
-        <ArchImage className="editor-plato__vista" src={vistaPrevia} alt="" fallbackLabel="Sin foto" aria-hidden="true" />
-        <div>
-          <SelectField label="Foto" options={OPCIONES_FOTO} value={datos.foto} onChange={(e) => cambiar('foto', e.target.value)} />
-          {datos.foto === 'url' && (
-            <TextField
-              label="Enlace de la foto"
-              type="url"
-              inputMode="url"
-              placeholder="https://"
-              value={datos.url}
-              error={errores.url}
-              onChange={(e) => cambiar('url', e.target.value)}
-            />
-          )}
-        </div>
+      <div className="editor__ancho">
+        <FotoPicker label="Foto" value={datos.foto} error={errores.foto} onChange={(v) => cambiar('foto', v)} />
       </div>
       <fieldset className="editor__ancho">
         <legend>Etiquetas</legend>

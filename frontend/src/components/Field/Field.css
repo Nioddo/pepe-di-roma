@@ -18,12 +18,21 @@
   border: 2px solid var(--rosa-deep);
   border-radius: 10px;
   background: var(--white);
+  /* en la caja roja el texto heredado es blanco: sobre el campo blanco no se vería */
+  color: var(--ink);
   font-size: var(--body);
   transition: border-color var(--t-ui) ease;
 }
 
 .field select {
   cursor: pointer;
+}
+
+/* la lista desplegable se dibuja aparte del campo: lleva su propio fondo y su propia tinta */
+select option,
+select optgroup {
+  background: var(--white);
+  color: var(--ink);
 }
 
 .field textarea {

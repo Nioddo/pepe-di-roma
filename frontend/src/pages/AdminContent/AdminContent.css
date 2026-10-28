@@ -105,24 +105,6 @@
   color: var(--warn);
 }
 
-.contenido-foto {
-  display: flex;
-  align-items: flex-start;
-  gap: 18px;
-}
-
-.contenido-foto > div:last-child {
-  flex: 1;
-  min-width: 0;
-}
-
-.contenido-foto__vista {
-  flex: none;
-  width: 92px;
-  height: 108px;
-  border-radius: var(--arch-sm);
-}
-
 @media (max-width: 900px) {
   .contenido {
     grid-template-columns: minmax(0, 1fr);

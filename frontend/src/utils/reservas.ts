@@ -29,6 +29,19 @@ export function horarios(fecha?: string): string[] {
   return salida;
 }
 
+/**
+ * Horas de retiro de hoy, cada 15 minutos: desde que el pedido puede estar listo
+ * (misma cuenta que el backend: 15 min + 5 por plato) hasta las 23:45.
+ * shortcut: no ofrece la hora extra de viernes y sábado (pasaría al día siguiente); sumarla si el local la pide.
+ */
+export function horasRetiro(platos: number, ahora = new Date()): string[] {
+  const listo = ahora.getHours() * 60 + ahora.getMinutes() + 15 + 5 * Math.max(1, platos);
+  const desde = Math.max(8 * 60 + 30, Math.ceil(listo / 15) * 15);
+  const salida: string[] = [];
+  for (let m = desde; m <= 23 * 60 + 45; m += 15) salida.push(deMinutos(m));
+  return salida;
+}
+
 /** Misma regla de solapamiento que aplica el backend (ReservaService.validarDisponibilidad). */
 export function mesaOcupada(
   mesaId: number,

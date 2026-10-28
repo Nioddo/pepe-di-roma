@@ -1,0 +1,217 @@
+/* =================== VER UNA FOTO EN GRANDE =================== */
+.foto-zoom {
+  display: block;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  cursor: zoom-in;
+  transition: transform var(--t-press) var(--ease-out);
+}
+
+.foto-zoom:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .foto-zoom:hover img {
+    opacity: 0.88;
+  }
+}
+
+/* reusa el .modal de ConfirmDialog (entrada y fondo); acá cambia el tamaño */
+.visor.modal {
+  width: auto;
+  max-width: min(960px, calc(100% - 32px));
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--white);
+}
+
+.visor img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100svh - 140px);
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+.visor__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 12px 12px 20px;
+  font-size: var(--small);
+  font-weight: 600;
+}
+
+.visor__cerrar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.12);
+  color: var(--white);
+  cursor: pointer;
+  transition:
+    background-color var(--t-ui) ease,
+    transform var(--t-press) var(--ease-out);
+}
+
+.visor__cerrar:active {
+  transform: scale(0.94);
+}
+
+.visor :focus-visible {
+  outline-color: var(--white);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .visor__cerrar:hover {
+    background: rgb(255 255 255 / 0.22);
+  }
+}
+
+/* =================== ELEGIR LA FOTO VIÉNDOLA =================== */
+.foto-picker {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.foto-picker legend {
+  margin-bottom: 10px;
+  padding: 0;
+  font-weight: 600;
+}
+
+.foto-picker__actual {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.foto-picker .foto-picker__vista {
+  width: 112px;
+  height: 112px;
+  border-radius: var(--radius);
+}
+
+.foto-picker__nombre {
+  font-weight: 600;
+}
+
+.foto-picker__ayuda {
+  color: var(--muted);
+  font-size: var(--small);
+}
+
+.foto-picker__grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 8px;
+  max-height: 252px;
+  padding: 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: var(--rosa-deep) transparent;
+}
+
+.foto-picker__op {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--rosa);
+  cursor: pointer;
+  transition: transform var(--t-press) var(--ease-out);
+}
+
+.foto-picker__op:active {
+  transform: scale(0.96);
+}
+
+.foto-picker__op input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.foto-picker__op img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.foto-picker__op--texto {
+  padding: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* la elegida: marco rojo por dentro y la tilde en la esquina */
+.foto-picker__op::after {
+  position: absolute;
+  inset: 0;
+  border: 3px solid transparent;
+  border-radius: inherit;
+  content: '';
+  transition: border-color var(--t-ui) ease;
+}
+
+.foto-picker__op:has(:checked)::after {
+  border-color: var(--red);
+}
+
+.foto-picker__op:has(:checked)::before {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 1;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--red)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3 3 7-7' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center / 12px no-repeat;
+  content: '';
+}
+
+.foto-picker__op--texto:has(:checked) {
+  color: var(--red);
+}
+
+.foto-picker__op:has(:focus-visible) {
+  outline: 3px solid var(--red);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .foto-picker__op:hover::after {
+    border-color: var(--rosa-deep);
+  }
+
+  .foto-picker__op:has(:checked):hover::after {
+    border-color: var(--red);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foto-zoom:active,
+  .foto-picker__op:active,
+  .visor__cerrar:active {
+    transform: none;
+  }
+}

@@ -17,7 +17,17 @@ import { EditarAqui } from '../../components/EditarAqui/EditarAqui';
 import { Opiniones } from './Opiniones';
 import { Ubicacion } from './Ubicacion';
 import { Rituales } from './Rituales';
+import fusilli from '../../assets/carta/pasta-fusilli.png';
+import cappelletti from '../../assets/carta/pasta-cappelletti.png';
+import caramelle from '../../assets/carta/pasta-caramelle.png';
 import './Home.css';
+
+/* las pastas de la carta, sueltas alrededor de la foto: "a la vista" */
+const PASTAS_PORTADA = [
+  { src: fusilli, clase: 'a', giro: -18 },
+  { src: cappelletti, clase: 'b', giro: 12 },
+  { src: caramelle, clase: 'c', giro: -8 }
+];
 
 /* ---------- Productos estrella: los platos que el admin marca como destacados ---------- */
 function ProductosEstrella() {
@@ -221,10 +231,14 @@ export function Home() {
           </div>
         </div>
         <div className="hero__media">
+          <div className="hero__sol" aria-hidden="true" />
           <div className="hero__arch-back" aria-hidden="true" />
           <div className="hero__arch">
             {fotoHero.src && <img src={fotoHero.src} alt={fotoHero.alt} fetchPriority="high" />}
           </div>
+          {PASTAS_PORTADA.map((p, i) => (
+            <img key={p.clase} className={`hero__pasta hero__pasta--${p.clase}`} src={p.src} alt="" aria-hidden="true" style={{ '--giro': `${p.giro}deg`, '--i': i } as CSSProperties} />
+          ))}
         </div>
       </section>
 

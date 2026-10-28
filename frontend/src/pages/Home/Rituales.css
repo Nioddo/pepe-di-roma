@@ -1,11 +1,7 @@
 /* =================== LO QUE PASA EN PEPE ===================
-   El rosa salsa de punta a punta. Cada costumbre empieza por cuándo pasa,
+   El rosa salsa de punta a punta, con el papel de arcos de Productos estrella (clase paper). Cada costumbre empieza por cuándo pasa,
    en rojo y grande, porque eso es lo que el cliente necesita saber.
    Las columnas van a distinta altura para que no se lean como tarjetas iguales. */
-
-.rituales {
-  background: var(--rosa);
-}
 
 .rituales__cabecera {
   display: flex;

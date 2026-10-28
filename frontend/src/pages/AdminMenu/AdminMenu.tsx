@@ -9,15 +9,16 @@ import { mensajeDeError } from '../../services/api';
 import { useCartas } from '../../hooks/useSitio';
 import { cantidadesPorCarta, cartaDesdeParametro } from '../../utils/carta';
 import { formatearPrecio, plural } from '../../utils/formato';
-import { catalogoFotos, resolverImagen } from '../../utils/imagenes';
+import { resolverImagen } from '../../utils/imagenes';
 import { hayErrores, validarPrecio, validarRequerido, type Errores } from '../../utils/validacion';
 import { enfocarPrimerError } from '../../utils/foco';
 import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { CartaTabs } from '../../components/Carta/CartaTabs';
-import { Check, SelectField, TextField } from '../../components/Field/Field';
+import { Check, TextField } from '../../components/Field/Field';
 import { Button } from '../../components/Button/Button';
 import { Badge } from '../../components/Badge/Badge';
 import { ArchImage } from '../../components/ArchImage/ArchImage';
+import { FotoAmpliable, FotoPicker } from '../../components/Foto/Foto';
 import { Icon } from '../../components/Icon/Icon';
 import { EditorPlato } from './EditorPlato';
 import { EditorSeccion } from './EditorSeccion';
@@ -37,7 +38,6 @@ const ETIQUETAS: { clave: Etiqueta; texto: string; tono: 'veg' | 'tacc' | 'brand
   { clave: 'picante', texto: 'Picante', tono: 'brand' },
   { clave: 'destacado', texto: 'Estrella', tono: 'warn' }
 ];
-const OPCIONES_FOTO = [{ value: '', label: 'Sin foto' }, ...catalogoFotos.map((f) => ({ value: f.clave, label: f.nombre }))];
 
 const PLATO_VACIO = { nombre: '', precio: '', medida: '', descripcion: '', foto: '', vegano: false, sinTacc: false, picante: false, destacado: false };
 
@@ -242,7 +242,9 @@ export function AdminMenu() {
       titulo: 'Plato',
       render: (p) => (
         <div className="admin-dish">
-          <ArchImage className="admin-dish__img" src={resolverImagen(p.imageUrl)} alt="" fallbackLabel="" aria-hidden="true" />
+          <FotoAmpliable src={resolverImagen(p.imageUrl)} titulo={p.nombre}>
+            <ArchImage className="admin-dish__img" src={resolverImagen(p.imageUrl)} alt="" fallbackLabel="" aria-hidden="true" />
+          </FotoAmpliable>
           <div>
             <span className="admin-dish__nombre">
               {p.nombre}
@@ -434,7 +436,9 @@ export function AdminMenu() {
                     onChange={(e) => cambiarPlato('precio', e.target.value)}
                   />
                   <TextField label="Medida (opcional)" hint='"-pocillo-", "x505ml"…' value={plato.medida} onChange={(e) => cambiarPlato('medida', e.target.value)} />
-                  <SelectField label="Foto" options={OPCIONES_FOTO} value={plato.foto} onChange={(e) => cambiarPlato('foto', e.target.value)} />
+                  <div className="admin-menu__ancho">
+                    <FotoPicker label="Foto" conEnlace={false} value={plato.foto} onChange={(v) => cambiarPlato('foto', v)} />
+                  </div>
                   <div className="admin-menu__ancho">
                     <TextField
                       label="Descripción (opcional)"

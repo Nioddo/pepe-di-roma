@@ -14,6 +14,7 @@ import { Button } from '../../components/Button/Button';
 import { Icon } from '../../components/Icon/Icon';
 import { EmptyState } from '../../components/EmptyState/EmptyState';
 import { Loading, SkeletonBlock } from '../../components/Skeleton/Skeleton';
+import { MesaForma, Sala, celdaEn } from '../../components/TableMap/TableMap';
 import type { Mesa } from '../../types';
 import './AdminSalon.css';
 
@@ -223,23 +224,25 @@ export function AdminSalon() {
   } else {
     plano = (
       <div className="plano" aria-busy={ocupado || undefined}>
-        <div
-          className="plano__piso"
-          style={{ gridTemplateColumns: `repeat(${columnas}, minmax(0, 1fr))` }}
+        <Sala
+          columnas={columnas}
+          filas={filas}
+          cocina={cocina}
           role="group"
           aria-label={`Plano del salón: ${plural(columnas, 'columna')} por ${plural(filas, 'fila')}`}
         >
-          {cocina && (
-            <div className="salon__counter plano__cocina" aria-hidden="true">
-              {cocina}
-            </div>
-          )}
           {Array.from({ length: filas }, (_, y) =>
             Array.from({ length: columnas }, (_, x) => {
               const mesa = mesaEn(x, y);
               const esDestino = destino?.x === x && destino?.y === y;
               return (
-                <div key={`${x},${y}`} className="plano__celda" data-celda={`${x},${y}`} data-destino={esDestino || undefined}>
+                <div
+                  key={`${x},${y}`}
+                  className="sala__celda plano__celda"
+                  style={celdaEn(x, y)}
+                  data-celda={`${x},${y}`}
+                  data-destino={esDestino || undefined}
+                >
                   {mesa ? (
                     <button
                       ref={(el) => {
@@ -262,8 +265,7 @@ export function AdminSalon() {
                         if (e.detail === 0) setElegidaId(mesa.id);
                       }}
                     >
-                      <span className="table-btn__n">{mesa.numero}</span>
-                      <span className="table-btn__cap">{plural(mesa.capacidad, 'persona')}</span>
+                      <MesaForma numero={mesa.numero} capacidad={mesa.capacidad} texto={plural(mesa.capacidad, 'persona')} />
                     </button>
                   ) : (
                     <button
@@ -280,7 +282,7 @@ export function AdminSalon() {
               );
             })
           )}
-        </div>
+        </Sala>
         <p id="plano-ayuda" className="plano__ayuda">
           <Icon name="mover" size={16} />
           Arrastrá una mesa a otro lugar, o elegila y usá las flechas del teclado. Si la soltás sobre otra mesa, cambian de lugar.
@@ -346,7 +348,10 @@ export function AdminSalon() {
                 onChange={(e) => cambiarTamano('salon.filas', Number(e.target.value))}
               />
             </div>
-            <p className="muted">El texto de la barra de arriba ("{cocina || 'sin texto'}") se cambia en Textos y fotos.</p>
+            <p className="muted">
+              El texto de la cocina ("{cocina || 'sin texto'}") se cambia en Textos y fotos. La cocina, el baño, la estantería, la
+              ventana y la entrada son fijos: las mesas se ubican alrededor.
+            </p>
           </div>
         </aside>
       </div>

@@ -60,6 +60,8 @@ const Messages = Object.freeze({
     PEDIDO_ITEM_INVALID: 'Cada item debe tener un platoId valido y una cantidad mayor a 0',
     PEDIDO_TELEFONO_INVALID: 'El telefono debe tener entre 8 y 15 numeros',
     PEDIDO_INDICACIONES_INVALID: 'Las indicaciones deben ser un texto de hasta 300 caracteres',
+    PEDIDO_NOMBRE_REQUIRED: 'El nombre de quien retira es obligatorio (hasta 60 caracteres)',
+    PEDIDO_HORA_RETIRO_INVALID: 'La hora de retiro debe tener el formato HH:MM',
     PEDIDO_SOLO_CLIENTES: 'El personal del local no puede hacer pedidos desde la web',
     PEDIDO_PAGO_INVALID: 'El campo pagoRecibido debe ser booleano',
 

@@ -92,6 +92,10 @@ export interface Pedido {
   indicaciones: string | null;
   /** Cuándo se hizo el pedido, en hora local: "2026-10-14T13:05". */
   creadoEn: string | null;
+  /** A nombre de quién se retira. null en los pedidos viejos. */
+  nombre: string | null;
+  /** Hora de retiro en el local: "13:45". null en los pedidos viejos. */
+  horaRetiro: string | null;
 }
 
 /** Opinión de un cliente: puntaje de 1 a 5, lo que comió y un mensaje para el local. */
@@ -207,16 +211,17 @@ export interface PedidoCambios {
   pagoRecibido?: boolean;
   telefono?: string;
   indicaciones?: string | null;
+  nombre?: string;
+  horaRetiro?: string;
   items?: { platoId: number; cantidad: number }[];
 }
 
+/** Los pedidos web son para retirar: solo la hora, el pago y a nombre de quién. */
 export interface PedidoInput {
   clienteId: number;
-  modalidad: Modalidad;
   metodoPago: MetodoPago;
-  direccion: string | null;
-  telefono: string;
-  indicaciones: string | null;
+  nombre: string;
+  horaRetiro: string;
   items: { platoId: number; cantidad: number }[];
 }
 

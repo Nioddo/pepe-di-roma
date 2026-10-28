@@ -1,5 +1,5 @@
 /* =================== DÓNDE ESTAMOS ===================
-   El mapa real de la calle es la imagen dominante, recortado con el arco.
+   El mapa real de la calle es la imagen dominante, en un recuadro recto.
    Al lado, la dirección en grande y la puerta roja del local. */
 
 .ubicacion {
@@ -91,7 +91,7 @@
 .ubicacion__mapa {
   min-height: 520px;
   overflow: hidden;
-  border-radius: 320px 320px var(--radius-lg) var(--radius-lg);
+  border-radius: var(--radius-lg);
   background: var(--rosa);
 }
 
@@ -127,10 +127,6 @@
     margin-top: 0;
   }
 
-  .ubicacion__mapa {
-    border-radius: 200px 200px var(--radius-lg) var(--radius-lg);
-  }
-
   .ubicacion__mapa,
   .ubicacion__mapa iframe {
     min-height: 420px;
@@ -145,10 +141,6 @@
 
   .ubicacion__puerta {
     display: none;
-  }
-
-  .ubicacion__mapa {
-    border-radius: 140px 140px var(--radius) var(--radius);
   }
 
   .ubicacion__mapa,

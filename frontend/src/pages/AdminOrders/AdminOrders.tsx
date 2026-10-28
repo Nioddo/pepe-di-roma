@@ -138,11 +138,13 @@ export function AdminOrders() {
       )
     },
     {
-      clave: 'modalidad',
-      titulo: 'Modalidad',
+      clave: 'retiro',
+      titulo: 'Retiro',
+      // los pedidos viejos no tienen hora de retiro: se ve la modalidad que tenían
       render: (p) => (
         <>
-          {MODALIDAD[p.modalidad]}
+          {p.horaRetiro ? <strong>{p.horaRetiro} h</strong> : MODALIDAD[p.modalidad]}
+          {p.nombre && <span className="cell-note">A nombre de {p.nombre}</span>}
           {p.direccion && <span className="cell-note">{p.direccion}</span>}
           <span className="cell-note">{METODO_PAGO[p.metodoPago]}</span>
         </>

@@ -9,17 +9,19 @@ const pedidos = [
     new Pedido(
         1,
         1,
-        Modalidad.DELIVERY,
+        Modalidad.TAKEAWAY,
         MetodoPago.TRANSFERENCIA,
-        'Av. Nazca 2500',
+        null,
         [],
         EstadoPedido.EN_PREPARACION,
         21900,
-        50,
+        30,
         false,
-        '+54 9 11 5000-1234',
-        'Tocar timbre 3A',
-        `${historial.HOY}T12:40`
+        null,
+        null,
+        `${historial.HOY}T12:40`,
+        'Lucía',
+        '13:15'
     ),
     new Pedido(
         2,
@@ -32,9 +34,11 @@ const pedidos = [
         20900,
         30,
         true,
-        '+54 9 11 6021-7788',
         null,
-        `${historial.HOY}T13:05`
+        null,
+        `${historial.HOY}T13:05`,
+        'Martín Pérez',
+        '13:45'
     ),
     ...historial.pedidos.map(
         (p) =>
@@ -70,7 +74,9 @@ function create(datos) {
         datos.pagoRecibido,
         datos.telefono,
         datos.indicaciones,
-        datos.creadoEn
+        datos.creadoEn,
+        datos.nombre,
+        datos.horaRetiro
     );
 
     pedidos.push(pedido);

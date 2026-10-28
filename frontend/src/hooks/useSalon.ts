@@ -8,10 +8,3 @@ export function useSalon(mesas: Mesa[]) {
   const filas = Math.max(1, Number(texto('salon.filas')) || 2, ...mesas.map((m) => m.posicionY + 1));
   return { columnas, filas, cocina: texto('salon.cocina') };
 }
-
-export function estiloPlano(columnas: number, filas: number) {
-  return {
-    gridTemplateColumns: `repeat(${columnas}, minmax(0, 1fr))`,
-    gridTemplateRows: `auto repeat(${filas}, auto)`
-  };
-}

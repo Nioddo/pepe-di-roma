@@ -64,6 +64,50 @@
   animation: hero-drift 22s ease-in-out infinite alternate;
 }
 
+/* el sol: un círculo rosa detrás del arco, asomando arriba a la derecha, para que la portada blanca tenga calor */
+.hero__sol {
+  position: absolute;
+  z-index: 0;
+  top: clamp(-8px, 1vh, 12px);
+  left: calc(78% + min(50vh, 410px) - clamp(60px, 9vw, 150px));
+  width: clamp(150px, 22vw, 340px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--rosa);
+}
+
+/* las pastas sueltas: siluetas rojas de la carta, a la deriva alrededor de la foto */
+.hero__pasta {
+  position: absolute;
+  z-index: 3;
+  width: auto;
+  height: clamp(52px, 6.4vw, 104px);
+  filter: drop-shadow(0 6px 0 var(--rosa-deep));
+  pointer-events: none;
+  transform: rotate(var(--giro));
+}
+
+.hero__pasta--a {
+  top: 14%;
+  left: 47%;
+}
+
+.hero__pasta--b {
+  bottom: 7%;
+  left: 38%;
+}
+
+.hero__pasta--c {
+  top: 11%;
+  left: 58%;
+}
+
+/* el segundo renglón del título se corre y se pone rojo: la foto y el título se contestan en diagonal */
+.hero__linea:nth-child(2) {
+  padding-left: clamp(28px, 5vw, 88px);
+  color: var(--red);
+}
+
 /* el par real de la marca: un arco rojo plano corrido detrás */
 .hero__arch-back {
   z-index: 0;
@@ -473,6 +517,28 @@
   .hero__arch-back {
     transform: translateX(-50%) translate(18px, 18px);
   }
+
+  .hero__sol {
+    top: -6px;
+    left: calc(50% + min(43vw, 280px) - 70px);
+    width: clamp(110px, 24vw, 200px);
+  }
+
+  .hero__pasta--a {
+    top: 8%;
+    left: 6%;
+  }
+
+  .hero__pasta--b {
+    bottom: 12%;
+    left: 3%;
+  }
+
+  .hero__pasta--c {
+    top: 4%;
+    right: 3%;
+    left: auto;
+  }
 }
 
 @media (max-width: 900px) {
@@ -611,6 +677,20 @@
   animation: arco-sombra 900ms var(--ease-out) 520ms both;
 }
 
+/* las pastas flotan, cada una a su ritmo */
+.hero__pasta {
+  animation: pasta-flota 6s ease-in-out calc(var(--i, 0) * -1.3s) infinite alternate;
+}
+
+@keyframes pasta-flota {
+  from {
+    transform: translateY(0) rotate(var(--giro));
+  }
+  to {
+    transform: translateY(-12px) rotate(calc(var(--giro) + 7deg));
+  }
+}
+
 @keyframes arco-sombra {
   from {
     opacity: 0;
@@ -675,6 +755,7 @@
   .hero__linea-texto,
   .hero__arch,
   .hero__arch-back,
+  .hero__pasta,
   .index__cambia {
     animation: none;
   }

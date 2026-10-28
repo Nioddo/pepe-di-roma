@@ -27,9 +27,7 @@
   position: sticky;
   top: calc(var(--header-h) + 12px);
   padding: clamp(24px, 2.6vw, 34px);
-  border-radius: var(--arch-md);
-  border-top-left-radius: 120px;
-  border-top-right-radius: 120px;
+  border-radius: var(--radius-lg);
   background: var(--red);
   color: var(--white);
 }
@@ -42,7 +40,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 18px 0 18px;
+  margin: 0 0 18px;
   font-size: clamp(28px, 2.6vw, 36px);
 }
 
@@ -128,8 +126,14 @@
 }
 
 .caja .field input,
-.caja .field textarea {
+.caja .field select {
   border-color: var(--white);
+}
+
+/* el único modo es retirar: se dice una vez, sin botón para cambiarlo */
+.caja__modalidad {
+  margin-bottom: 14px;
+  font-weight: 600;
 }
 
 /* sobre el rojo, el error se lee en blanco y el campo se marca con un borde grueso */
@@ -138,7 +142,7 @@
 }
 
 .caja .field[data-invalid] input,
-.caja .field[data-invalid] textarea {
+.caja .field[data-invalid] select {
   border-color: var(--red-press);
   box-shadow: 0 0 0 3px var(--white);
 }

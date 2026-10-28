@@ -297,25 +297,6 @@
   }
 }
 
-/* la foto del plato al lado de su selector */
-.editor-plato__foto {
-  display: flex;
-  align-items: flex-start;
-  gap: 18px;
-}
-
-.editor-plato__foto > div:last-child {
-  flex: 1;
-  min-width: 0;
-}
-
-.editor-plato__vista {
-  flex: none;
-  width: 92px;
-  height: 108px;
-  border-radius: var(--arch-sm);
-}
-
 @media (prefers-reduced-motion: reduce) {
   .orden__btn:active:not(:disabled) {
     transform: none;

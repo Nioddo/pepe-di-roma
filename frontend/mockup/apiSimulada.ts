@@ -102,10 +102,14 @@ function validarReserva(r: Registro, excluir?: number): Response | null {
 function armarPedido(body: Registro, id: number): { pedido: Registro; items: Registro[] } | Response {
   const cliente = db.usuarios.find((u) => u.id === Number(body.clienteId));
   if (cliente && cliente.rol !== 'CLIENTE') return fallo('El personal del local no puede hacer pedidos desde la web', 403);
-  if (!telefonoValido(body.telefono)) return fallo('El telefono debe tener entre 8 y 15 numeros');
+  if (body.telefono != null && !telefonoValido(body.telefono)) return fallo('El telefono debe tener entre 8 y 15 numeros');
+  const nombre = typeof body.nombre === 'string' ? body.nombre.trim() : '';
+  if (!nombre || nombre.length > 60) return fallo('El nombre de quien retira es obligatorio (hasta 60 caracteres)');
+  if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(String(body.horaRetiro ?? ''))) return fallo('La hora de retiro debe tener el formato HH:MM');
+  const modalidad = body.modalidad ?? 'TAKEAWAY';
   const lineas = (body.items as { platoId: number; cantidad: number }[] | undefined) ?? [];
   if (!lineas.length) return fallo('El pedido debe tener al menos un item');
-  if (body.modalidad === 'DELIVERY' && !String(body.direccion ?? '').trim()) {
+  if (modalidad === 'DELIVERY' && !String(body.direccion ?? '').trim()) {
     return fallo('La direccion es obligatoria para los pedidos con delivery');
   }
   let siguienteItem = siguienteId(db['items-pedido']);
@@ -119,16 +123,18 @@ function armarPedido(body: Registro, id: number): { pedido: Registro; items: Reg
   const pedido: Registro = {
     id,
     clienteId: body.clienteId,
-    modalidad: body.modalidad,
+    modalidad,
     metodoPago: body.metodoPago,
-    direccion: body.modalidad === 'DELIVERY' ? body.direccion : null,
+    direccion: modalidad === 'DELIVERY' ? body.direccion : null,
     estado: 'PENDIENTE',
     precioTotal: items.reduce((s, i) => s + Number(i.precioUnitario) * Number(i.cantidad), 0),
-    tiempoEstimadoMin: 15 + unidades * 5 + (body.modalidad === 'DELIVERY' ? 20 : 0),
+    tiempoEstimadoMin: 15 + unidades * 5 + (modalidad === 'DELIVERY' ? 20 : 0),
     pagoRecibido: false,
-    telefono: body.telefono,
+    telefono: body.telefono ?? null,
     indicaciones: typeof body.indicaciones === 'string' && body.indicaciones.trim() ? body.indicaciones.trim() : null,
-    creadoEn: body.creadoEn ?? ahora()
+    creadoEn: body.creadoEn ?? ahora(),
+    nombre,
+    horaRetiro: body.horaRetiro
   };
   return { pedido, items };
 }

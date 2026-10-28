@@ -55,7 +55,7 @@ export function MyOrders() {
     contenido = (
       <EmptyState
         title="Todavía no hiciste pedidos"
-        text="Armá tu primer pedido para retirar en el local o recibir en tu casa."
+        text="Armá tu primer pedido, elegí la hora y lo retirás en el local."
         action={<ButtonLink to="/pedido">Hacé tu primer pedido</ButtonLink>}
       />
     );
@@ -74,7 +74,13 @@ export function MyOrders() {
                 <Badge tono={ESTADO_PEDIDO[p.estado].tono}>{textoEstadoPedido(p.estado, p.modalidad)}</Badge>
                 <span>{formatearFechaHora(p.creadoEn)}</span>
                 <span>{formatearPrecio(p.precioTotal)}</span>
-                {p.estado !== 'CANCELADO' && p.estado !== 'ENTREGADO' && <span>Listo en unos {p.tiempoEstimadoMin} min</span>}
+                {p.horaRetiro ? (
+                  <span>
+                    Retira {p.nombre} a las {p.horaRetiro} h
+                  </span>
+                ) : (
+                  p.estado !== 'CANCELADO' && p.estado !== 'ENTREGADO' && <span>Listo en unos {p.tiempoEstimadoMin} min</span>
+                )}
                 <span>
                   {METODO_PAGO[p.metodoPago]}
                   {p.pagoRecibido ? ' · Pagado' : ''}

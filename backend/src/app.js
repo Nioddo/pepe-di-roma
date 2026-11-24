@@ -1,12 +1,14 @@
 const express = require('express');
 const apiRoutes = require('./routes');
 const notFoundHandler = require('./middlewares/notFoundHandler');
+const { identificar } = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(identificar);
 
 app.get('/', (req, res) => {
     res.json({
@@ -22,7 +24,8 @@ app.get('/', (req, res) => {
                 '/api/pedidos',
                 '/api/items-pedido',
                 '/api/contenido',
-                '/api/calificaciones'
+                '/api/calificaciones',
+                '/api/promociones'
             ]
         }
     });

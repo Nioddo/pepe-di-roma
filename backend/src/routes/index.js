@@ -8,6 +8,7 @@ const pedidoRoutes = require('./pedidoRoutes');
 const itemPedidoRoutes = require('./itemPedidoRoutes');
 const contenidoRoutes = require('./contenidoRoutes');
 const calificacionRoutes = require('./calificacionRoutes');
+const promocionRoutes = require('./promocionRoutes');
 
 const router = express.Router();
 
@@ -20,5 +21,6 @@ router.use('/pedidos', pedidoRoutes);
 router.use('/items-pedido', itemPedidoRoutes);
 router.use('/contenido', contenidoRoutes);
 router.use('/calificaciones', calificacionRoutes);
+router.use('/promociones', promocionRoutes);
 
 module.exports = router;

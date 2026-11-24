@@ -29,7 +29,7 @@ El backend no habilita CORS, así que Vite reenvía todo lo que empieza con `/ap
 | Cliente | cliente@pepediroma.com.ar | 38123456 |
 | Admin | admin@pepediroma.com.ar | 30111222 |
 
-El backend no guarda contraseñas: se ingresa con email y DNI.
+El backend no guarda contraseñas: se ingresa con email y DNI (`POST /api/usuarios/login`). Cada pedido lleva el header `x-usuario-id` y el backend valida el rol: la carta, el salón, los textos y las opiniones solo se modifican como personal; Usuarios y Promociones, solo como ADMIN; un cliente solo toca sus propias reservas y pedidos.
 
 ## Scripts
 
@@ -112,6 +112,7 @@ Solo **Reservar** y **Hacer pedido** (y sus listados, Mis reservas y Mis pedidos
 | Salón | Mesas (número, capacidad, lugar) arrastrándolas en el plano o con el teclado; tamaño del plano |
 | Textos y fotos | Todos los textos y fotos del sitio |
 | Opiniones | Responder, ocultar, corregir, eliminar |
+| Promociones (solo ADMIN) | Mail con asunto y mensaje a todas las cuentas registradas (requiere configurar `backend/.env`, ver `.env.example`) |
 | Usuarios (solo ADMIN) | Crear, editar email, DNI y rol, eliminar |
 
 ### Reglas de reserva

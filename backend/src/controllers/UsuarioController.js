@@ -12,8 +12,13 @@ const obtenerPorId = asyncHandler((req, res) => {
     return successResponse(res, usuario);
 });
 
+const login = asyncHandler((req, res) => {
+    const usuario = UsuarioService.login(req.body);
+    return successResponse(res, usuario);
+});
+
 const crear = asyncHandler((req, res) => {
-    const usuario = UsuarioService.crear(req.body);
+    const usuario = UsuarioService.crear(req.body, req.usuario);
     return successResponse(res, usuario, 201);
 });
 
@@ -28,6 +33,7 @@ const eliminar = asyncHandler((req, res) => {
 });
 
 module.exports = {
+    login,
     obtenerTodos,
     obtenerPorId,
     crear,

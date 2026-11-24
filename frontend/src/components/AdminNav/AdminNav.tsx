@@ -18,6 +18,7 @@ const SECCIONES: Seccion[] = [
   { to: '/admin/salon', texto: 'Salón' },
   { to: '/admin/contenido', texto: 'Textos y fotos' },
   { to: '/admin/opiniones', texto: 'Opiniones' },
+  { to: '/admin/promociones', texto: 'Promociones', soloAdmin: true },
   { to: '/admin/usuarios', texto: 'Usuarios', soloAdmin: true }
 ];
 

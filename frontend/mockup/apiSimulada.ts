@@ -257,6 +257,19 @@ export function instalarApiSimulada(): void {
 
     const metodo = (init?.method ?? 'GET').toUpperCase();
     const body = init?.body ? (JSON.parse(String(init.body)) as Registro) : ({} as Registro);
-    return manejar(metodo, ruta[1], ruta[2] ? Number(ruta[2]) : null, body, modo);
+    if (metodo === 'POST' && /\/api\/usuarios\/login/.test(url)) {
+      const u = db.usuarios.find(
+        (x) => String(x.email).toLowerCase() === String(body.email).toLowerCase() && x.dni === body.dni
+      );
+      return u ? ok(u) : fallo('El email o el DNI no son correctos', 401);
+    }
+    if (ruta[1] === 'promociones') {
+      const destinatarios = [...new Set(db.usuarios.map((u) => String(u.email).toLowerCase()))];
+      if (metodo === 'GET') return ok({ total: destinatarios.length });
+      if (!String(body.asunto ?? '').trim()) return fallo('El asunto es obligatorio y no puede superar los 120 caracteres', 400);
+      if (!String(body.mensaje ?? '').trim()) return fallo('El mensaje es obligatorio y no puede superar los 5000 caracteres', 400);
+      return ok({ total: destinatarios.length, enviados: destinatarios.length, fallidos: [] }, 201);
+    }
+    return manejar(metodo, ruta[1],ruta[2] ? Number(ruta[2]) : null, body, modo);
   };
 }

@@ -123,6 +123,21 @@ export interface Calificacion {
 
 /* ---------- Cuerpos que acepta la API ---------- */
 
+export interface PromocionInput {
+  asunto: string;
+  mensaje: string;
+  titulo?: string;
+  imagen?: string;
+  botonTexto?: string;
+  botonLink?: string;
+}
+
+export interface ResultadoPromocion {
+  total: number;
+  enviados: number;
+  fallidos: string[];
+}
+
 export interface UsuarioInput {
   email: string;
   dni: string;

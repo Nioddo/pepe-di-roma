@@ -5,7 +5,7 @@ const { requireLogin, creaParaSiMismo, reservaPropia } = require('../middlewares
 const router = express.Router();
 
 router.get('/', ReservaController.obtenerTodas);
-router.get('/:id', ReservaController.obtenerPorId);
+router.get('/:id', reservaPropia, ReservaController.obtenerPorId);
 router.post('/', requireLogin, creaParaSiMismo, ReservaController.crear);
 router.put('/:id', reservaPropia, ReservaController.modificar);
 router.delete('/:id', reservaPropia, ReservaController.eliminar);

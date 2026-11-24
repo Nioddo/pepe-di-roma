@@ -3,6 +3,7 @@ const MesaRepository = require('../repositories/MesaRepository');
 const UsuarioRepository = require('../repositories/UsuarioRepository');
 const Messages = require('../enums/Messages');
 const EstadoReserva = require('../enums/EstadoReserva');
+const Rol = require('../enums/Rol');
 const { telefonoValido } = require('../utils/telefono');
 const { BadRequestError, NotFoundError, ConflictError } = require('../exceptions/AppError');
 
@@ -135,8 +136,19 @@ function validarDisponibilidad({ mesaId, fecha, horaInicio, idAExcluir = null })
     }
 }
 
-function obtenerTodas() {
-    return ReservaRepository.findAll();
+function ocultarDatosPersonales(reserva) {
+    return { ...reserva, clienteId: null, nombre: null, telefono: null };
+}
+
+// El personal ve todo; el resto solo ve sus datos y, de las demas, lo necesario para saber que mesa esta ocupada.
+function obtenerTodas(solicitante = null) {
+    const reservas = ReservaRepository.findAll();
+    if (solicitante && (solicitante.rol === Rol.ADMIN || solicitante.rol === Rol.EMPLEADO)) {
+        return reservas;
+    }
+    return reservas.map((reserva) =>
+        solicitante && reserva.clienteId === solicitante.id ? reserva : ocultarDatosPersonales(reserva)
+    );
 }
 
 function obtenerPorId(id) {

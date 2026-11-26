@@ -219,6 +219,13 @@ Para el personal, cada bloque de la portada tiene un atajo **"Editar"** (en tint
 - Crear cuentas (por ejemplo, empleados), corregir email y DNI, cambiar el rol y eliminar (con confirmación).
 - El admin no puede borrarse a sí mismo ni quitarse el rol de administrador.
 
+#### Promociones (nueva, solo ADMIN)
+- Un mail con una promoción, novedad o aviso a **todas las cuentas registradas** (sin repetir direcciones). Arriba dice a cuántas se envía.
+- Formulario con **asunto** (hasta 120 caracteres) y **mensaje** (hasta 5000; una línea en blanco separa párrafos).
+- A la derecha, **"Así lo van a ver"**: la vista previa del mail se arma mientras se escribe. En el teléfono pasa abajo del formulario.
+- Al enviar pide **confirmación** ("No se puede deshacer"); después avisa con un aviso cuántas cuentas lo recibieron, o cuáles fallaron.
+- En el mockup el envío es simulado; en la app real sale por SMTP configurado en `backend/.env`.
+
 ## 5 bis. Datos reales del local (Informe de relevamiento)
 
 El informe de `diseño/identidad` reemplazó datos que el boceto no tenía o que había que suponer:

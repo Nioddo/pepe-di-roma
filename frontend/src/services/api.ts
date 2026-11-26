@@ -2,6 +2,8 @@
 // procesa la respuesta { success, data | message } del backend y lanza un
 // ApiError legible cuando algo falla.
 
+import { leerSesion } from '../utils/sesion';
+
 const API_URL: string = import.meta.env.VITE_API_URL ?? '/api';
 
 const SIN_CONEXION =
@@ -29,14 +31,22 @@ interface RespuestaError {
 
 type RespuestaApi<T> = RespuestaOk<T> | RespuestaError;
 
+// Cada pedido lleva quién es el usuario con sesión; el backend decide qué puede hacer según su rol.
+function identidad(): Record<string, string> {
+  const usuario = leerSesion();
+  return usuario ? { 'x-usuario-id': String(usuario.id) } : {};
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   let response: Response;
 
   try {
     response = await fetch(`${API_URL}${path}`, {
+      cache: 'no-store',
       ...options,
       headers: {
         'Content-Type': 'application/json',
+        ...identidad(),
         ...options.headers
       }
     });

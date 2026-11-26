@@ -3,7 +3,7 @@ const { successResponse } = require('../responses/apiResponse');
 const { asyncHandler } = require('../utils/asyncHandler');
 
 const obtenerTodas = asyncHandler((req, res) => {
-    const reservas = ReservaService.obtenerTodas();
+    const reservas = ReservaService.obtenerTodas(req.usuario);
     return successResponse(res, reservas);
 });
 

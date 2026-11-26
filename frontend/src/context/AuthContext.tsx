@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
-import { createUsuario, findUsuarioByEmail } from '../services/usuariosService';
+import { createUsuario, loginUsuario } from '../services/usuariosService';
 import { guardarSesion, leerSesion } from '../utils/sesion';
 import type { Usuario } from '../types';
 
@@ -23,10 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const ingresar = useCallback(
     async (email: string, dni: string) => {
-      const encontrado = await findUsuarioByEmail(email);
-      if (!encontrado) throw new Error('No encontramos una cuenta con ese email.');
-      if (encontrado.dni !== dni.trim()) throw new Error('El DNI no coincide con el de esa cuenta.');
-      return abrirSesion(encontrado);
+      return abrirSesion(await loginUsuario(email, dni));
     },
     [abrirSesion]
   );

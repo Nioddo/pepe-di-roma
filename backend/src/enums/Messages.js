@@ -89,6 +89,20 @@ const Messages = Object.freeze({
     DIFUSION_SIN_CONEXION: 'No se pudo conectar con la casilla de correo. Revisa el usuario y la contraseña en backend/.env',
     DIFUSION_MUY_PESADO: 'El mail es demasiado pesado. Proba con una foto mas liviana',
 
+    PROMOCION_ASUNTO_INVALID: 'El asunto es obligatorio y no puede superar los 120 caracteres',
+    PROMOCION_MENSAJE_INVALID: 'El mensaje es obligatorio y no puede superar los 5000 caracteres',
+    PROMOCION_TITULO_INVALID: 'El titulo no puede superar los 120 caracteres',
+    PROMOCION_IMAGEN_INVALID: 'La imagen tiene que ser un link que empiece con https://',
+    PROMOCION_BOTON_INVALID: 'El boton necesita un texto (hasta 40 caracteres) y un link que empiece con https://',
+    PROMOCION_SIN_DESTINATARIOS: 'No hay cuentas registradas a las que enviar el mensaje',
+    PROMOCION_MAIL_NO_CONFIGURADO: 'El envio de mails no esta configurado: completar MAIL_HOST, MAIL_USER y MAIL_PASS en backend/.env',
+    PROMOCION_ENVIO_FALLIDO: 'No se pudo enviar ningun mail. Revisa la configuracion del servidor de correo',
+
+    AUTH_REQUERIDA: 'Hace falta iniciar sesion para realizar esta accion',
+    AUTH_SIN_PERMISO: 'No tenes permiso para realizar esta accion',
+    AUTH_CREDENCIALES_INVALID: 'El email o el DNI no son correctos',
+    AUTH_ROL_RESERVADO: 'Solo un administrador puede crear cuentas de empleado o administrador',
+
     ITEM_PEDIDO_NOT_FOUND: 'El item de pedido solicitado no existe',
     ITEM_PEDIDO_PEDIDO_REQUIRED: 'El pedidoId es obligatorio',
     ITEM_PEDIDO_PEDIDO_INMUTABLE: 'Un item no se puede mover a otro pedido',

@@ -13,6 +13,7 @@ try {
 
 const apiRoutes = require('./routes');
 const notFoundHandler = require('./middlewares/notFoundHandler');
+const { identificar } = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
@@ -20,6 +21,7 @@ const PORT = process.env.PORT || 3000;
 
 // el mail de difusión viaja con su foto embebida: necesita más que los 100 kb por defecto
 app.use(express.json({ limit: '8mb' }));
+app.use(identificar);
 
 app.get('/', (req, res) => {
     res.json({
@@ -36,7 +38,8 @@ app.get('/', (req, res) => {
                 '/api/items-pedido',
                 '/api/contenido',
                 '/api/calificaciones',
-                '/api/difusion'
+                '/api/difusion',
+                '/api/promociones'
             ]
         }
     });

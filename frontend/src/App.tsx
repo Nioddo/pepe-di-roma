@@ -23,6 +23,7 @@ import { AdminContent } from './pages/AdminContent/AdminContent';
 import { AdminReviews } from './pages/AdminReviews/AdminReviews';
 import { AdminUsers } from './pages/AdminUsers/AdminUsers';
 import { AdminMailing } from './pages/AdminMailing/AdminMailing';
+import { AdminPromotions } from './pages/AdminPromotions/AdminPromotions';
 import { Survey } from './pages/Survey/Survey';
 import { AdminHistory } from './pages/AdminHistory/AdminHistory';
 import { AdminMetrics } from './pages/AdminMetrics/AdminMetrics';
@@ -69,6 +70,7 @@ export function AppRoutes() {
           <Route path="contenido" element={<AdminContent />} />
           <Route path="opiniones" element={<AdminReviews />} />
           <Route path="difusion" element={<RequireAuth rol="ADMIN"><AdminMailing /></RequireAuth>} />
+          <Route path="promociones" element={<RequireAuth rol="ADMIN"><AdminPromotions /></RequireAuth>} />
           <Route path="usuarios" element={<RequireAuth rol="ADMIN"><AdminUsers /></RequireAuth>} />
         </Route>
 

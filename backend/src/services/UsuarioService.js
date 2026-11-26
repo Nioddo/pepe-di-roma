@@ -4,7 +4,7 @@ const PedidoRepository = require('../repositories/PedidoRepository');
 const CalificacionRepository = require('../repositories/CalificacionRepository');
 const Messages = require('../enums/Messages');
 const Rol = require('../enums/Rol');
-const { BadRequestError, NotFoundError, ConflictError } = require('../exceptions/AppError');
+const { BadRequestError, NotFoundError, ConflictError, ForbiddenError, UnauthorizedError } = require('../exceptions/AppError');
 
 const FORMATO_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const FORMATO_DNI = /^\d{7,8}$/;
@@ -68,7 +68,23 @@ function obtenerPorId(id) {
     return usuario;
 }
 
-function crear(body) {
+function login(body) {
+    if (!body || typeof body !== 'object') {
+        throw new BadRequestError(Messages.INVALID_DATA);
+    }
+
+    const email = validarEmail(body.email);
+    const dni = validarDni(body.dni);
+    const usuario = UsuarioRepository.findByEmail(email);
+
+    if (!usuario || usuario.dni !== dni) {
+        throw new UnauthorizedError(Messages.AUTH_CREDENCIALES_INVALID);
+    }
+
+    return usuario;
+}
+
+function crear(body, solicitante = null) {
     if (!body || typeof body !== 'object') {
         throw new BadRequestError(Messages.INVALID_DATA);
     }
@@ -76,6 +92,10 @@ function crear(body) {
     const email = validarEmail(body.email);
     const dni = validarDni(body.dni);
     const rol = body.rol === undefined ? Rol.CLIENTE : validarRol(body.rol);
+
+    if (rol !== Rol.CLIENTE && (!solicitante || solicitante.rol !== Rol.ADMIN)) {
+        throw new ForbiddenError(Messages.AUTH_ROL_RESERVADO);
+    }
 
     validarEmailDisponible(email);
     validarDniDisponible(dni);
@@ -122,6 +142,7 @@ function eliminar(id) {
 }
 
 module.exports = {
+    login,
     obtenerTodos,
     obtenerPorId,
     crear,

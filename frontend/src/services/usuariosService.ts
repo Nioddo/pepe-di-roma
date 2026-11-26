@@ -23,10 +23,6 @@ export function deleteUsuario(id: number): Promise<Usuario> {
   return api.delete<Usuario>(`${RUTA}/${id}`);
 }
 
-// El backend no expone un endpoint de login: se busca la cuenta por email
-// y se valida con el DNI, que es el dato que guarda cada usuario.
-export async function findUsuarioByEmail(email: string): Promise<Usuario | undefined> {
-  const usuarios = await getUsuarios();
-  const buscado = email.trim().toLowerCase();
-  return usuarios.find((u) => u.email.toLowerCase() === buscado);
+export function loginUsuario(email: string, dni: string): Promise<Usuario> {
+  return api.post<Usuario>(`${RUTA}/login`, { email: email.trim(), dni: dni.trim() });
 }

@@ -3,7 +3,7 @@ const { successResponse } = require('../responses/apiResponse');
 const { asyncHandler } = require('../utils/asyncHandler');
 
 const obtenerTodos = asyncHandler((req, res) => {
-    const pedidos = PedidoService.obtenerTodos();
+    const pedidos = PedidoService.obtenerTodos(req.usuario);
     return successResponse(res, pedidos);
 });
 

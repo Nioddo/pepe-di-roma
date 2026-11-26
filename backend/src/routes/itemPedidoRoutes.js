@@ -1,7 +1,10 @@
 const express = require('express');
 const ItemPedidoController = require('../controllers/ItemPedidoController');
+const { requirePersonal } = require('../middlewares/auth');
 
 const router = express.Router();
+
+router.use(requirePersonal);
 
 router.get('/', ItemPedidoController.obtenerTodos);
 router.get('/:id', ItemPedidoController.obtenerPorId);

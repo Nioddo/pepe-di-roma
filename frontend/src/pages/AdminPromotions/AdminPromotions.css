@@ -1,0 +1,115 @@
+.admin-promos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 64px);
+  align-items: start;
+}
+
+.admin-promos__form {
+  display: grid;
+  gap: 18px;
+  padding: clamp(20px, 2.4vw, 30px);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+}
+
+.admin-promos__destino {
+  color: var(--muted);
+}
+
+.admin-promos__pie {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.admin-promos__vista {
+  padding: clamp(20px, 2.4vw, 30px);
+  border-radius: var(--radius-lg);
+  background: var(--rosa);
+}
+
+.admin-promos__vista-titulo {
+  margin-bottom: 14px;
+  font-size: var(--small);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.admin-promos__mail {
+  border-radius: var(--radius);
+  background: var(--white);
+  line-height: 1.55;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.admin-promos__boton-campos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+}
+
+.admin-promos__marca {
+  padding: 18px clamp(18px, 2vw, 28px);
+  font-family: var(--f-display);
+  font-size: 26px;
+  color: var(--red);
+}
+
+.admin-promos__asunto {
+  padding: 12px clamp(18px, 2vw, 28px);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.admin-promos__banner {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 260px;
+  object-fit: cover;
+}
+
+.admin-promos__aviso {
+  padding: 0 clamp(18px, 2vw, 28px) 12px;
+}
+
+.admin-promos__texto {
+  padding: clamp(18px, 2vw, 28px);
+}
+
+.admin-promos__titulo {
+  margin-bottom: 14px;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.admin-promos__texto p + p {
+  margin-top: 12px;
+}
+
+.admin-promos__cta {
+  display: inline-block;
+  margin-top: 22px;
+  padding: 13px 26px;
+  border-radius: 8px;
+  background: var(--red);
+  color: var(--white);
+  font-weight: 700;
+}
+
+.admin-promos__vacio {
+  color: var(--muted);
+}
+
+@media (max-width: 520px) {
+  .admin-promos__boton-campos {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  .admin-promos {
+    grid-template-columns: 1fr;
+  }
+}

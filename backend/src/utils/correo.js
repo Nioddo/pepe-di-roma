@@ -1,22 +1,28 @@
 const nodemailer = require('nodemailer');
 
-// La casilla desde la que sale el correo se configura en backend/.env (ver .env.example).
+// La casilla desde la que sale el correo se configura en backend/.env (ver .env.example);
+// es la misma que usa utils/mailer.js para Promociones.
 // Sin esos datos el resto del sistema funciona igual: solo queda apagado el envío.
 
 function leerConfiguracion() {
-    const { SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS, MAIL_FROM } = process.env;
-    if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
+    // las mismas variables que usa utils/mailer.js (Promociones); SMTP_* queda como nombre alternativo
+    const env = process.env;
+    const host = env.MAIL_HOST || env.SMTP_HOST;
+    const usuario = env.MAIL_USER || env.SMTP_USER;
+    const clave = env.MAIL_PASS || env.SMTP_PASS;
+    const seguro = env.MAIL_SECURE || env.SMTP_SECURE;
+    if (!host || !usuario || !clave) {
         return null;
     }
 
-    const puerto = Number(SMTP_PORT) || 587;
+    const puerto = Number(env.MAIL_PORT || env.SMTP_PORT) || 465;
     return {
-        host: SMTP_HOST,
+        host,
         port: puerto,
         // 465 habla TLS desde el primer byte; 587 arranca en claro y sube con STARTTLS
-        secure: SMTP_SECURE ? SMTP_SECURE === 'true' : puerto === 465,
-        auth: { user: SMTP_USER, pass: SMTP_PASS },
-        remitente: MAIL_FROM || SMTP_USER
+        secure: seguro ? seguro !== 'false' : puerto === 465,
+        auth: { user: usuario, pass: clave },
+        remitente: env.MAIL_FROM || usuario
     };
 }
 

@@ -193,8 +193,12 @@ function recalcularTotales(pedidoId) {
     });
 }
 
-function obtenerTodos() {
-    return PedidoRepository.findAll().map(conItems);
+// El personal ve todos los pedidos; un cliente, solo los suyos.
+function obtenerTodos(solicitante = null) {
+    const esPersonal = solicitante && (solicitante.rol === Rol.ADMIN || solicitante.rol === Rol.EMPLEADO);
+    const pedidos = PedidoRepository.findAll();
+    const visibles = esPersonal ? pedidos : pedidos.filter((pedido) => solicitante && pedido.clienteId === solicitante.id);
+    return visibles.map(conItems);
 }
 
 function obtenerPorId(id) {

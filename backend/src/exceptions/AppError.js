@@ -14,6 +14,12 @@ class BadRequestError extends AppError {
     }
 }
 
+class UnauthorizedError extends AppError {
+    constructor(message) {
+        super(message, 401);
+    }
+}
+
 class NotFoundError extends AppError {
     constructor(message) {
         super(message, 404);
@@ -32,10 +38,18 @@ class ConflictError extends AppError {
     }
 }
 
+class ServiceUnavailableError extends AppError {
+    constructor(message) {
+        super(message, 503);
+    }
+}
+
 module.exports = {
     AppError,
     BadRequestError,
+    UnauthorizedError,
     NotFoundError,
     ConflictError,
-    ForbiddenError
+    ForbiddenError,
+    ServiceUnavailableError
 };

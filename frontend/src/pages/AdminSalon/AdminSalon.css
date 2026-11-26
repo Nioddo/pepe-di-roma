@@ -36,76 +36,355 @@
   margin-left: auto;
 }
 
-/* ---------- el plano (componente Sala): cada lugar libre es una baldosa ---------- */
-.plano__celda {
-  align-items: stretch;
-  justify-items: stretch;
-  border-radius: 10px;
+/* el guardado es automático: una línea quieta que lo confirma */
+.salon-editor__estado {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--small);
+}
+
+.salon-editor__luz {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ok);
+}
+
+.salon-editor__estado[data-estado='guardando'] .salon-editor__luz {
+  background: var(--rosa-deep);
+  animation: luz-guarda 900ms ease-in-out infinite alternate;
+}
+
+.salon-editor__estado[data-estado='error'] {
+  color: var(--red-dark);
+}
+
+.salon-editor__estado[data-estado='error'] .salon-editor__luz {
+  background: var(--red);
+}
+
+@keyframes luz-guarda {
+  to {
+    background: var(--red);
+  }
+}
+
+/* ---------- la paleta: todo lo que se puede sumar al plano ---------- */
+.paleta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.paleta__titulo {
+  margin-right: 4px;
+  font-family: var(--f-display);
+  font-size: 20px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.paleta__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 6px 14px 6px 10px;
+  border: 2px solid var(--rosa-deep);
+  border-radius: var(--pill);
+  background: var(--white);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--small);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform var(--t-press) var(--ease-out),
+    border-color var(--t-ui) ease;
+}
+
+.paleta__item:active {
+  transform: scale(0.97);
+}
+
+.paleta__item:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .paleta__item:not(:disabled):hover {
+    border-color: var(--red);
+  }
+}
+
+/* el dibujito de cada cosa, igual a como se ve en el plano */
+.paleta__dibujo {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 18px;
+}
+
+.paleta__dibujo::before {
+  content: '';
+  width: 22px;
+  height: 14px;
+  border-radius: 3px;
+  background: var(--rosa-deep);
+}
+
+.paleta__dibujo--mesa::before {
+  border: 2px solid #e3b4b4;
+  background: var(--white);
+}
+
+.paleta__dibujo--bano::before {
+  border: 3px solid var(--rosa-deep);
+  border-radius: 0;
+  background: var(--white);
+}
+
+.paleta__dibujo--columna::before {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: #e3b4b4;
+}
+
+.paleta__dibujo--cartel::before {
+  border: 2px solid var(--red);
+  border-radius: var(--pill);
+  background: var(--white);
+}
+
+.paleta__dibujo--estanteria::before {
+  width: 8px;
+  height: 18px;
+}
+
+.paleta__dibujo--planta::before {
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--rosa-deep);
+  border-radius: 50%;
   background: var(--rosa);
-  transition: background-color var(--t-ui) ease;
 }
 
-/* la baldosa donde caería la mesa que se arrastra */
-.plano__celda[data-destino] {
-  background: #f0bcbc;
+.paleta__dibujo--ventana::before {
+  width: 6px;
+  height: 18px;
+  border: 2px solid #e3b4b4;
+  border-radius: 0;
+  background: var(--white);
 }
 
-.plano__mesa {
+.paleta__dibujo--entrada::before {
+  border: 2px dashed var(--red);
+  background: transparent;
+}
+
+.paleta__dibujo--pared::before {
+  height: 4px;
+  border-radius: 0;
+}
+
+/* ---------- el escenario: el terreno rosado donde se apoya el plano ---------- */
+.escenario {
+  padding: 16px 34px 34px 16px;
+  overflow-x: auto;
+  border-radius: var(--radius);
+  background: var(--rosa);
+}
+
+/* el terreno mide siempre el ancho máximo: el plano ocupa la parte que le toca */
+.escenario__terreno {
   position: relative;
-  z-index: 1;
+  min-width: 620px;
+}
+
+.escenario__plano {
+  margin-bottom: 0;
+}
+
+/* ---------- cada cosa del plano se agarra y se arrastra ---------- */
+.pieza {
   touch-action: none;
   cursor: grab;
   user-select: none;
 }
 
-/* lo que se levanta es la mesa, no la baldosa */
-.plano__mesa[data-arrastrando] {
+.pieza[data-arrastrando] {
   z-index: 5;
   cursor: grabbing;
-  transition: none;
+  opacity: 0.86;
 }
 
-.plano__mesa[data-arrastrando] .mesa__tapa {
-  box-shadow: 0 18px 36px -12px rgb(134 10 18 / 0.45);
-}
-
-.plano__vacia {
-  display: grid;
-  place-items: center;
+.pieza__boton {
+  display: block;
   width: 100%;
+  height: 100%;
+  padding: 0;
   border: 0;
-  border-radius: inherit;
   background: transparent;
-  color: var(--red-dark);
-  font-size: var(--small);
-  font-weight: 600;
-  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  cursor: inherit;
 }
 
-.plano__vacia:disabled {
-  cursor: default;
+.pieza .table-btn {
+  cursor: inherit;
 }
 
-.plano__vacia span {
-  opacity: 0;
-  transition: opacity var(--t-ui) ease;
+/* en el editor nada se achica al tocarlo: se está por arrastrar */
+.pieza .table-btn:active {
+  transform: none;
 }
 
-.plano__vacia:not(:disabled):focus-visible span {
-  opacity: 1;
+.pieza[data-elegida] {
+  z-index: 2;
+  border-radius: 4px;
+  outline: 2px solid var(--red);
+  outline-offset: 3px;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .plano__vacia:not(:disabled):hover {
-    background: #f3c9c9;
+  .pieza:not([data-elegida]):hover {
+    border-radius: 4px;
+    outline: 2px solid var(--borde-mesa);
+    outline-offset: 3px;
   }
 
-  .plano__vacia:not(:disabled):hover span {
-    opacity: 1;
+  .plano-salon__item--mesa.pieza:hover {
+    outline: 0;
   }
 }
 
-.plano__ayuda {
+/* la esquina de la que se tira para cambiarle el tamaño */
+.pieza__tirador {
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--white);
+  border-radius: 50%;
+  background: var(--red);
+  cursor: nwse-resize;
+  touch-action: none;
+}
+
+/* el dedo necesita más lugar que el punto que se ve */
+.pieza__tirador::after {
+  content: '';
+  position: absolute;
+  inset: -13px;
+}
+
+/* ---------- los bordes del salón: se estiran con el cursor ---------- */
+.bordes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.bordes__tirador {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.bordes__tirador::before {
+  content: '';
+  border-radius: var(--pill);
+  background: var(--red);
+  transition: transform var(--t-ui) var(--ease-out);
+}
+
+.bordes__tirador--x {
+  top: 50%;
+  right: -30px;
+  width: 28px;
+  height: 88px;
+  margin-top: -44px;
+  cursor: ew-resize;
+}
+
+.bordes__tirador--x::before {
+  width: 6px;
+  height: 48px;
+}
+
+.bordes__tirador--y {
+  bottom: -30px;
+  left: 50%;
+  width: 88px;
+  height: 28px;
+  margin-left: -44px;
+  cursor: ns-resize;
+}
+
+.bordes__tirador--y::before {
+  width: 48px;
+  height: 6px;
+}
+
+.bordes__tirador--xy {
+  right: -30px;
+  bottom: -30px;
+  width: 32px;
+  height: 32px;
+  cursor: nwse-resize;
+}
+
+.bordes__tirador--xy::before {
+  width: 14px;
+  height: 14px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bordes__tirador--x:hover::before {
+    transform: scaleY(1.25);
+  }
+
+  .bordes__tirador--y:hover::before {
+    transform: scaleX(1.25);
+  }
+
+  .bordes__tirador--xy:hover::before {
+    transform: scale(1.25);
+  }
+}
+
+/* la medida, mientras se estira */
+.bordes__medida {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 6;
+  padding: 4px 10px;
+  border-radius: var(--pill);
+  background: var(--ink);
+  color: var(--white);
+  font-size: var(--small);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.plano-ayuda {
   display: flex;
   align-items: flex-start;
   gap: 8px;
@@ -114,7 +393,7 @@
   font-size: var(--small);
 }
 
-.plano__ayuda svg {
+.plano-ayuda svg {
   flex: none;
   margin-top: 2px;
 }
@@ -126,5 +405,19 @@
 
   .salon-editor__panel {
     position: static;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .salon-editor__estado[data-estado='guardando'] .salon-editor__luz {
+    animation: none;
+  }
+
+  .paleta__item:active {
+    transform: none;
+  }
+
+  .bordes__tirador::before {
+    transition: none;
   }
 }

@@ -1,159 +1,106 @@
 /* =================== EL PLANO DEL LOCAL ===================
-   Visto desde arriba, como un plano de arquitecto: paredes gruesas en rosa opaco, la cocina
-   y el baño arriba, la estantería contra la pared, una columna en el medio,
-   una ventana a la derecha y el hueco de la puerta abajo. Las mesas son mesas: tapa y sillas. */
+   Visto desde arriba, como un plano de arquitecto: la pared gruesa en rosa opaco y, adentro,
+   todo ubicado libremente por el admin (cocina, baños, carteles, columnas, mesas).
+   Las medidas van en unidades del plano (--u): el dibujo entero escala con el ancho disponible. */
 
-.sala {
-  --muro: 6px;
-  /* lo fijo del local (paredes, columna) va en el rosa opaco de la marca, no en tinta */
+.plano-salon {
+  /* lo fijo del local (paredes, columnas) va en el rosa opaco de la marca, no en tinta */
   --pared: var(--rosa-deep);
-  --pad: clamp(12px, 2vw, 22px);
-  --gap: clamp(10px, 1.6vw, 18px);
-  /* el color de afuera del local: es el que se ve en el hueco de la puerta */
-  --fuera: var(--white);
   --borde-mesa: #e3b4b4;
+  margin-bottom: 20px;
+  container-type: inline-size;
+}
+
+.plano-salon__lienzo {
+  /* una unidad del plano en píxeles de pantalla */
+  --u: calc(100cqw / var(--ancho));
   position: relative;
-  display: grid;
-  grid-template-columns: clamp(20px, 2.4vw, 28px) minmax(0, 1fr) minmax(64px, 22%);
-  grid-template-areas:
-    'cocina cocina bano'
-    'estante piso piso';
-  gap: var(--gap);
-  margin-bottom: 34px;
-  padding: var(--pad);
-  border: var(--muro) solid var(--pared);
+  width: 100%;
+  border: clamp(4px, 0.7cqw, 6px) solid var(--pared);
   border-radius: 8px;
   background: var(--white);
 }
 
-.panel .sala {
-  --fuera: var(--rosa);
-}
-
-.sala__cocina,
-.sala__estante {
-  display: grid;
-  place-items: center;
-  background: var(--rosa-deep);
-  color: var(--muted);
-  font-size: var(--small);
-  font-weight: 600;
-}
-
-.sala__cocina {
-  grid-area: cocina;
-  min-height: 46px;
-  border-radius: 8px;
-}
-
-/* el baño es un cuarto aparte en la esquina, con su puerta hacia el salón */
-.sala__bano {
-  position: relative;
-  display: grid;
-  grid-area: bano;
-  place-items: center;
-  min-height: calc(46px + var(--pad));
-  margin: calc(-1 * var(--pad)) calc(-1 * var(--pad)) 0 0;
-  border-bottom: 4px solid var(--pared);
-  border-left: 4px solid var(--pared);
-  color: var(--muted);
-  font-size: var(--small);
-  font-weight: 600;
-}
-
-.sala__bano::after {
+.plano-salon__item {
   position: absolute;
-  bottom: -4px;
-  left: 14px;
-  width: 26px;
-  height: 4px;
-  background: var(--white);
-  content: '';
 }
 
-/* la estantería va pegada a la pared de la izquierda */
-.sala__estante {
-  grid-area: estante;
-  margin-left: calc(-1 * var(--pad));
-  border-radius: 0 6px 6px 0;
+.plano-salon__item--mesa {
+  z-index: 1;
 }
 
-.sala__estante span {
-  font-size: 11px;
+/* ---------- lo que no es una mesa ---------- */
+.elem {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: max(10px, calc(var(--u) * 13));
+  font-weight: 600;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.elem__texto {
+  padding: 2px 4px;
+}
+
+.elem[data-parado] .elem__texto {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
 }
 
-.sala__piso {
-  display: grid;
-  grid-area: piso;
-  gap: var(--gap);
+.elem--cocina,
+.elem--barra,
+.elem--estanteria {
+  border-radius: calc(var(--u) * 8);
+  background: var(--rosa-deep);
 }
 
-.sala__celda {
-  display: grid;
-  place-items: center;
-  min-height: clamp(84px, 9vw, 116px);
+/* el baño es un cuarto aparte: paredes propias */
+.elem--bano {
+  border: max(3px, calc(var(--u) * 5)) solid var(--pared);
+  background: var(--white);
 }
 
-/* la columna se para en el cruce de cuatro lugares, centrada en el pasillo */
-.sala__columna {
-  z-index: 2;
-  align-self: start;
-  justify-self: start;
-  width: 20px;
-  height: 20px;
+.elem--columna {
   border-radius: 3px;
+  background: var(--borde-mesa);
+}
+
+.elem--pared {
   background: var(--pared);
-  transform: translate(calc(-50% - var(--gap) / 2), calc(-50% - var(--gap) / 2));
-  pointer-events: none;
 }
 
-/* la puerta: un hueco en la pared de abajo, con el cartel afuera */
-.sala__entrada {
-  position: absolute;
-  bottom: calc(-1 * var(--muro));
-  left: 58%;
-  width: clamp(56px, 16%, 92px);
-  height: var(--muro);
-  background: var(--fuera);
+.elem--planta {
+  border: max(2px, calc(var(--u) * 6)) solid var(--pared);
+  border-radius: 50%;
+  background: var(--rosa);
 }
 
-.sala__entrada span {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 50%;
+/* la ventana: dos líneas con el vidrio al medio, como en un plano */
+.elem--ventana {
+  border: 2px solid var(--borde-mesa);
+  background: var(--white);
+}
+
+.elem--cartel {
+  border: 2px solid var(--red);
+  border-radius: var(--pill);
+  background: var(--white);
   color: var(--red);
-  font-size: var(--small);
-  font-weight: 600;
-  white-space: nowrap;
-  transform: translateX(-50%);
 }
 
-.sala__entrada span::before {
+.elem--entrada {
+  border: 2px dashed var(--red);
+  border-radius: 6px;
+  color: var(--red);
+}
+
+.elem--entrada .elem__texto::before {
   content: '↑ ';
-}
-
-/* la ventana: un tramo de la pared de la derecha, con el vidrio al medio */
-.sala__ventana {
-  position: absolute;
-  top: 50%;
-  right: calc(-1 * var(--muro));
-  width: var(--muro);
-  height: clamp(56px, 20%, 104px);
-  background: var(--fuera);
-  transform: translateY(-50%);
-}
-
-.sala__ventana::before {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 2px;
-  background: var(--pared);
-  content: '';
-  transform: translateX(-50%);
 }
 
 /* =================== LA MESA ===================
@@ -163,10 +110,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: calc(var(--u) * 4);
   width: 100%;
   height: 100%;
-  padding: 4px;
+  padding: 0;
   border: 0;
   border-radius: 10px;
   background: transparent;
@@ -181,29 +128,31 @@
 
 .mesa__sillas {
   display: flex;
+  flex: none;
   justify-content: center;
-  gap: 6px;
-  min-height: 7px;
+  gap: calc(var(--u) * 7);
+  height: calc(var(--u) * 8);
 }
 
 .mesa__sillas i {
-  width: 16px;
-  height: 7px;
-  border-radius: 4px;
+  width: calc(var(--u) * 17);
+  height: 100%;
+  border-radius: calc(var(--u) * 4);
   background: var(--borde-mesa);
   transition: background-color var(--t-ui) ease;
 }
 
 .mesa__tapa {
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  width: min(100%, calc(52px + var(--lado, 1) * 22px));
-  padding: 8px 6px;
+  gap: 1px;
+  width: 100%;
+  min-height: 0;
   border: 2px solid var(--borde-mesa);
-  border-radius: 8px;
+  border-radius: max(5px, calc(var(--u) * 9));
   background: var(--white);
   transition:
     background-color var(--t-ui) ease,
@@ -213,14 +162,27 @@
 
 .table-btn__n {
   font-family: var(--f-display);
-  font-size: clamp(24px, 2.6vw, 36px);
+  font-size: max(15px, calc(var(--u) * 34));
   line-height: 1;
 }
 
 .table-btn__cap {
-  font-size: var(--small);
+  font-size: max(10px, calc(var(--u) * 12.5));
+  line-height: 1.1;
   color: var(--muted);
   white-space: nowrap;
+}
+
+/* en pantallas chicas la mesa queda del tamaño de un dedo: alcanza con el número */
+@container (max-width: 560px) {
+  .table-btn__cap,
+  .elem--columna .elem__texto {
+    display: none;
+  }
+
+  .elem {
+    font-size: 10px;
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -300,39 +262,6 @@
   background: var(--red);
 }
 
-@media (max-width: 560px) {
-  .sala {
-    --muro: 4px;
-  }
-
-  .sala__celda {
-    min-height: 78px;
-  }
-
-  .mesa__sillas {
-    gap: 4px;
-  }
-
-  .mesa__sillas i {
-    width: 11px;
-    height: 6px;
-  }
-
-  .mesa__tapa {
-    padding: 6px 4px;
-  }
-
-  .table-btn__cap {
-    font-size: 11px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .table-btn:active {
-    transform: none;
-  }
-}
-
 /* Movimiento: las mesas aparecen una tras otra, como si se armara el salón,
    y la mesa elegida "late" una vez para confirmar la elección */
 /* "backwards": la animación no se queda aplicada al terminar, así no pisa el arrastre del editor */
@@ -363,8 +292,18 @@
   }
 }
 
-.sala__cocina,
-.sala__estante,
-.sala__bano {
+.plano-salon__item .elem {
   animation: mesa-aparece 420ms var(--ease-out) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .table-btn:active {
+    transform: none;
+  }
+
+  .table-btn,
+  .table-btn[data-estado='elegida'],
+  .plano-salon__item .elem {
+    animation: none;
+  }
 }

@@ -9,6 +9,23 @@ export interface Usuario {
   rol: Rol;
 }
 
+/** Un envío de mails a clientes ya hecho. */
+export interface EnvioDifusion {
+  id: number | null;
+  asunto: string;
+  fecha: string;
+  enviados: number;
+  /** Direcciones a las que no se pudo entregar. */
+  fallidos: string[];
+}
+
+export interface EstadoDifusion {
+  /** Si el servidor tiene una casilla de correo conectada. */
+  configurado: boolean;
+  remitente: string | null;
+  envios: EnvioDifusion[];
+}
+
 export type CartaId = 'RISTORANTE' | 'PER_PORTARE_VIA' | 'COLAZIONE';
 
 export interface Plato {

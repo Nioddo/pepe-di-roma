@@ -4,23 +4,23 @@ import { useToast } from '../../context/ToastContext';
 import { useConfirm } from '../../context/ConfirmContext';
 import { useApi } from '../../hooks/useApi';
 import { createSeccion, deleteSeccion, getCarta, updateSeccion } from '../../services/seccionesService';
-import { createPlato, deletePlato, updatePlato } from '../../services/platosService';
+import { deletePlato, updatePlato } from '../../services/platosService';
 import { mensajeDeError } from '../../services/api';
 import { useCartas } from '../../hooks/useSitio';
 import { cantidadesPorCarta, cartaDesdeParametro } from '../../utils/carta';
 import { formatearPrecio, plural } from '../../utils/formato';
 import { resolverImagen } from '../../utils/imagenes';
-import { hayErrores, validarPrecio, validarRequerido, type Errores } from '../../utils/validacion';
 import { enfocarPrimerError } from '../../utils/foco';
 import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { CartaTabs } from '../../components/Carta/CartaTabs';
-import { Check, TextField } from '../../components/Field/Field';
+import { TextField } from '../../components/Field/Field';
 import { Button } from '../../components/Button/Button';
 import { Badge } from '../../components/Badge/Badge';
 import { ArchImage } from '../../components/ArchImage/ArchImage';
-import { FotoAmpliable, FotoPicker } from '../../components/Foto/Foto';
+import { FotoAmpliable } from '../../components/Foto/Foto';
 import { Icon } from '../../components/Icon/Icon';
 import { EditorPlato } from './EditorPlato';
+import { PrecioEnLinea } from './PrecioEnLinea';
 import { EditorSeccion } from './EditorSeccion';
 import { DataTable, RowActions, type Columna } from '../../components/DataTable/DataTable';
 import { EmptyState } from '../../components/EmptyState/EmptyState';
@@ -28,7 +28,6 @@ import { SkeletonList } from '../../components/Skeleton/Skeleton';
 import type { CartaId, Plato, SeccionConPlatos } from '../../types';
 import './AdminMenu.css';
 
-type CampoPlato = 'nombre' | 'precio';
 type Etiqueta = 'vegano' | 'sinTacc' | 'picante' | 'destacado';
 
 const PANEL = 'panel-admin-menu';
@@ -38,8 +37,6 @@ const ETIQUETAS: { clave: Etiqueta; texto: string; tono: 'veg' | 'tacc' | 'brand
   { clave: 'picante', texto: 'Picante', tono: 'brand' },
   { clave: 'destacado', texto: 'Estrella', tono: 'warn' }
 ];
-
-const PLATO_VACIO = { nombre: '', precio: '', medida: '', descripcion: '', foto: '', vegano: false, sinTacc: false, picante: false, destacado: false };
 
 export function AdminMenu() {
   const toast = useToast();
@@ -56,16 +53,28 @@ export function AdminMenu() {
   const [editandoPlato, setEditandoPlato] = useState<number | null>(null);
   const [editandoSeccion, setEditandoSeccion] = useState(false);
 
+  /** El formulario de plato nuevo y el de sección nueva están plegados hasta que se piden. */
+  const [agregando, setAgregando] = useState(false);
+  const [nuevaSeccion, setNuevaSeccion] = useState(false);
+  const [busqueda, setBusqueda] = useState('');
+
   const setSeccionId = (id: number | null) => {
     setSeccionIdBase(id);
     setEditandoPlato(null);
     setEditandoSeccion(false);
+    setAgregando(false);
+    setBusqueda('');
   };
 
-  const [plato, setPlato] = useState(PLATO_VACIO);
-  const [erroresPlato, setErroresPlato] = useState<Errores<CampoPlato>>({});
-  const [creandoPlato, setCreandoPlato] = useState(false);
-  const formPlato = useRef<HTMLFormElement>(null);
+  /** Buscar recorre toda la carta elegida, no solo la sección abierta. */
+  const consulta = busqueda.trim().toLowerCase();
+  const buscando = consulta.length > 1;
+  const seccionDe = (p: Plato) => secciones.find((s) => s.platos.includes(p.id)) ?? seccion;
+  const encontrados = buscando
+    ? [...new Map(secciones.flatMap((s) => s.platosDetalle).map((p) => [p.id, p])).values()].filter((p) =>
+        `${p.nombre} ${p.descripcion ?? ''}`.toLowerCase().includes(consulta)
+      )
+    : [];
 
   const [titulo, setTitulo] = useState('');
   const [subtitulo, setSubtitulo] = useState('');
@@ -93,49 +102,6 @@ export function AdminMenu() {
     }
   };
 
-  const cambiarPlato = (campo: keyof typeof PLATO_VACIO, valor: string | boolean) => {
-    setPlato((p) => ({ ...p, [campo]: valor }));
-    if (campo === 'nombre' || campo === 'precio') setErroresPlato((e) => ({ ...e, [campo]: '' }));
-  };
-
-  const crearPlato = async (evento: FormEvent) => {
-    evento.preventDefault();
-    if (!seccion) return;
-    const repetido = seccion.platosDetalle.some((p) => p.nombre.toLowerCase() === plato.nombre.trim().toLowerCase());
-    const nuevos: Errores<CampoPlato> = {
-      nombre: validarRequerido(plato.nombre, 'Escribí el nombre del plato.') || (repetido ? `Ya hay un plato con ese nombre en ${seccion.titulo}.` : ''),
-      precio: validarPrecio(plato.precio)
-    };
-    setErroresPlato(nuevos);
-    if (hayErrores(nuevos)) {
-      enfocarPrimerError(formPlato.current);
-      return;
-    }
-
-    setCreandoPlato(true);
-    try {
-      const creado = await createPlato({
-        nombre: plato.nombre.trim(),
-        precio: Number(plato.precio),
-        medida: plato.medida.trim() || null,
-        descripcion: plato.descripcion.trim() || null,
-        imageUrl: plato.foto || null,
-        vegano: plato.vegano,
-        sinTacc: plato.sinTacc,
-        picante: plato.picante,
-        destacado: plato.destacado
-      });
-      await updateSeccion(seccion.id, { platos: [...seccion.platos, creado.id] });
-      toast.success(`Agregaste "${creado.nombre}" a ${seccion.titulo}.`);
-      setPlato(PLATO_VACIO);
-      recargar();
-    } catch (err) {
-      toast.error(mensajeDeError(err));
-    } finally {
-      setCreandoPlato(false);
-    }
-  };
-
   const crearSeccion = async (evento: FormEvent) => {
     evento.preventDefault();
     const limpio = titulo.trim();
@@ -154,6 +120,7 @@ export function AdminMenu() {
       toast.success(`Creaste la sección "${limpio}" en ${cartaInfo(carta).nombre}.`);
       setTitulo('');
       setSubtitulo('');
+      setNuevaSeccion(false);
       setSeccionId(nueva.id);
       recargar();
     } catch (err) {
@@ -172,6 +139,12 @@ export function AdminMenu() {
       }
       const texto = ETIQUETAS.find((e) => e.clave === etiqueta)?.texto.toLowerCase();
       return `${p.nombre}: ${texto} ${valor ? 'activado' : 'desactivado'}.`;
+    });
+
+  const cambiarPrecio = (p: Plato, precio: number) =>
+    ejecutar(`precio-${p.id}`, async () => {
+      await updatePlato(p.id, { precio });
+      return `"${p.nombre}" ahora cuesta ${formatearPrecio(precio)}.`;
     });
 
   /** Sube o baja un plato dentro de su sección (es el orden en que se lee la carta). */
@@ -250,12 +223,13 @@ export function AdminMenu() {
               {p.nombre}
               {p.medida && <span className="admin-dish__medida"> {p.medida}</span>}
             </span>
+            {buscando && <span className="admin-dish__seccion">{seccionDe(p)?.titulo}</span>}
             {p.descripcion && <span className="admin-dish__desc">{p.descripcion}</span>}
           </div>
         </div>
       )
     },
-    { clave: 'precio', titulo: 'Precio', numerica: true, render: (p) => formatearPrecio(p.precio) },
+    { clave: 'precio', titulo: 'Precio', numerica: true, render: (p) => <PrecioEnLinea nombre={p.nombre} precio={p.precio} onGuardar={(precio) => cambiarPrecio(p, precio)} /> },
     {
       clave: 'etiquetas',
       titulo: 'Etiquetas',
@@ -286,6 +260,7 @@ export function AdminMenu() {
         const ultimo = (seccion?.platosDetalle.length ?? 1) - 1;
         return (
           <RowActions>
+            {!buscando && (
             <div className="orden" role="group" aria-label={`Orden de ${p.nombre}`}>
               <button type="button" className="orden__btn" aria-label={`Subir ${p.nombre}`} disabled={i === 0 || ocupado !== null} onClick={() => moverPlato(p, -1)}>
                 <Icon name="up" size={16} />
@@ -294,6 +269,7 @@ export function AdminMenu() {
                 <Icon name="down" size={16} />
               </button>
             </div>
+            )}
             <Button
               variant="secondary"
               size="sm"
@@ -310,6 +286,35 @@ export function AdminMenu() {
       }
     }
   ];
+
+  const tabla = (filas: Plato[], caption: string) => (
+    <DataTable
+      columnas={columnas}
+      filas={filas}
+      getKey={(p) => p.id}
+      caption={caption}
+      captionOculta
+      minWidth={860}
+      detalle={(p) => {
+        const donde = seccionDe(p);
+        return (
+          editandoPlato === p.id &&
+          donde && (
+            <EditorPlato
+              plato={p}
+              seccion={donde}
+              secciones={data?.secciones ?? []}
+              onCerrar={() => setEditandoPlato(null)}
+              onGuardado={() => {
+                setEditandoPlato(null);
+                recargar();
+              }}
+            />
+          )
+        );
+      }}
+    />
+  );
 
   let cuerpo;
   if (loading) {
@@ -341,27 +346,77 @@ export function AdminMenu() {
             <p className="admin-menu__vacio">Esta carta todavía no tiene secciones.</p>
           )}
 
-          <form ref={formSeccion} className="admin-menu__nueva" onSubmit={crearSeccion} noValidate>
-            <p className="admin-menu__rotulo">Nueva sección</p>
-            <TextField
-              label="Nombre"
-              value={titulo}
-              error={errorSeccion}
-              onChange={(e) => {
-                setTitulo(e.target.value);
-                setErrorSeccion('');
+          {nuevaSeccion ? (
+            <form
+              ref={formSeccion}
+              className="admin-menu__nueva"
+              onSubmit={crearSeccion}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') setNuevaSeccion(false);
               }}
-            />
-            <TextField label="Aclaración (opcional)" hint='Por ejemplo: "Pastas rellenas".' value={subtitulo} onChange={(e) => setSubtitulo(e.target.value)} />
-            <Button type="submit" variant="secondary" size="sm" block loading={creandoSeccion}>
-              Agregar sección
+              noValidate
+            >
+              <p className="admin-menu__rotulo">Sección nueva en {cartaInfo(carta).nombre}</p>
+              <TextField
+                label="Nombre"
+                autoFocus
+                value={titulo}
+                error={errorSeccion}
+                onChange={(e) => {
+                  setTitulo(e.target.value);
+                  setErrorSeccion('');
+                }}
+              />
+              <TextField label="Aclaración (opcional)" hint='Por ejemplo: "Pastas rellenas".' value={subtitulo} onChange={(e) => setSubtitulo(e.target.value)} />
+              <div className="admin-menu__nueva-pie">
+                <Button type="button" variant="ghost" size="sm" onClick={() => setNuevaSeccion(false)}>
+                  Cancelar
+                </Button>
+                <Button type="submit" size="sm" loading={creandoSeccion}>
+                  Crear sección
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <Button variant="secondary" size="sm" block onClick={() => setNuevaSeccion(true)}>
+              Nueva sección
             </Button>
-          </form>
+          )}
         </aside>
 
         {/* detalle: la sección elegida */}
         <section className="admin-menu__detalle" aria-labelledby="seccion-elegida">
-          {seccion ? (
+          <div className="admin-menu__buscar">
+            <TextField
+              label={`Buscar un plato en ${cartaInfo(carta).nombre}`}
+              type="search"
+              placeholder="Nombre o ingrediente…"
+              autoComplete="off"
+              value={busqueda}
+              onChange={(e) => {
+                setBusqueda(e.target.value);
+                setEditandoPlato(null);
+                setAgregando(false);
+              }}
+            />
+          </div>
+
+          {buscando ? (
+            <>
+              <div className="admin-menu__cabecera">
+                <div>
+                  <h2 id="seccion-elegida">{encontrados.length ? plural(encontrados.length, 'plato') : 'Sin resultados'}</h2>
+                  <p className="muted" role="status">
+                    {encontrados.length ? `Con "${busqueda.trim()}" en ${cartaInfo(carta).nombre}.` : `Ningún plato de ${cartaInfo(carta).nombre} tiene "${busqueda.trim()}".`}
+                  </p>
+                </div>
+                <Button variant="secondary" size="sm" onClick={() => setBusqueda('')}>
+                  Borrar búsqueda
+                </Button>
+              </div>
+              {encontrados.length > 0 && tabla(encontrados, 'Platos encontrados')}
+            </>
+          ) : seccion ? (
             <>
               <div className="admin-menu__cabecera">
                 <div>
@@ -420,74 +475,41 @@ export function AdminMenu() {
                 </div>
               )}
 
-              <form ref={formPlato} className="admin-menu__alta" onSubmit={crearPlato} noValidate>
-                <p className="admin-menu__rotulo">Agregar plato a {seccion.titulo}</p>
-                <div className="admin-menu__campos">
-                  <TextField label="Nombre" value={plato.nombre} error={erroresPlato.nombre} onChange={(e) => cambiarPlato('nombre', e.target.value)} />
-                  <TextField
-                    label="Precio"
-                    type="number"
-                    inputMode="numeric"
-                    min={1}
-                    step={1}
-                    hint="En pesos, sin puntos."
-                    value={plato.precio}
-                    error={erroresPlato.precio}
-                    onChange={(e) => cambiarPlato('precio', e.target.value)}
+              <div className="admin-menu__barra">
+                <Button
+                  aria-expanded={agregando}
+                  onClick={() => {
+                    setAgregando((v) => !v);
+                    setEditandoPlato(null);
+                  }}
+                >
+                  Agregar plato
+                </Button>
+                <p className="admin-menu__pista">
+                  <Icon name="lapiz" size={14} />
+                  Tocá un precio para cambiarlo, o una etiqueta para prenderla o apagarla.
+                </p>
+              </div>
+
+              {agregando && (
+                <div className="admin-menu__editor-seccion">
+                  <EditorPlato
+                    key={`alta-${seccion.id}`}
+                    seccion={seccion}
+                    secciones={data?.secciones ?? []}
+                    onCerrar={() => setAgregando(false)}
+                    onGuardado={() => {
+                      setAgregando(false);
+                      recargar();
+                    }}
                   />
-                  <TextField label="Medida (opcional)" hint='"-pocillo-", "x505ml"…' value={plato.medida} onChange={(e) => cambiarPlato('medida', e.target.value)} />
-                  <div className="admin-menu__ancho">
-                    <FotoPicker label="Foto" conEnlace={false} value={plato.foto} onChange={(v) => cambiarPlato('foto', v)} />
-                  </div>
-                  <div className="admin-menu__ancho">
-                    <TextField
-                      label="Descripción (opcional)"
-                      hint="Va debajo del nombre en la carta."
-                      value={plato.descripcion}
-                      onChange={(e) => cambiarPlato('descripcion', e.target.value)}
-                    />
-                  </div>
                 </div>
-                <div className="admin-menu__pie">
-                  <fieldset>
-                    <legend>Etiquetas</legend>
-                    <div className="checks">
-                      {ETIQUETAS.map((et) => (
-                        <Check key={et.clave} label={et.texto} checked={plato[et.clave]} onChange={(e) => cambiarPlato(et.clave, e.target.checked)} />
-                      ))}
-                    </div>
-                  </fieldset>
-                  <Button type="submit" loading={creandoPlato}>
-                    Agregar plato
-                  </Button>
-                </div>
-              </form>
+              )}
 
               {seccion.platosDetalle.length > 0 ? (
-                <DataTable
-                  columnas={columnas}
-                  filas={seccion.platosDetalle}
-                  getKey={(p) => p.id}
-                  caption={`Platos de ${seccion.titulo}`}
-                  captionOculta
-                  minWidth={860}
-                  detalle={(p) =>
-                    editandoPlato === p.id && (
-                      <EditorPlato
-                        plato={p}
-                        seccion={seccion}
-                        secciones={data?.secciones ?? []}
-                        onCerrar={() => setEditandoPlato(null)}
-                        onGuardado={() => {
-                          setEditandoPlato(null);
-                          recargar();
-                        }}
-                      />
-                    )
-                  }
-                />
+                tabla(seccion.platosDetalle, `Platos de ${seccion.titulo}`)
               ) : (
-                <p className="empty-inline">Esta sección no tiene platos. Agregá el primero con el formulario.</p>
+                <p className="empty-inline">Esta sección no tiene platos. Sumá el primero con "Agregar plato".</p>
               )}
             </>
           ) : (

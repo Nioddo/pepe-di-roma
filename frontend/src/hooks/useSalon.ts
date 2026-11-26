@@ -1,10 +1,10 @@
+import { useMemo } from 'react';
 import { useContenido } from '../context/ContenidoContext';
-import type { Mesa } from '../types';
+import { leerPlano } from '../utils/plano';
 
-/** Tamaño del plano: lo define el admin en Gestión → Salón, y crece si una mesa queda afuera. */
-export function useSalon(mesas: Mesa[]) {
+/** El plano del salón que armó el admin en Gestión → Salón: tamaño y todo lo que no es una mesa. */
+export function usePlano() {
   const { texto } = useContenido();
-  const columnas = Math.max(1, Number(texto('salon.columnas')) || 3, ...mesas.map((m) => m.posicionX + 1));
-  const filas = Math.max(1, Number(texto('salon.filas')) || 2, ...mesas.map((m) => m.posicionY + 1));
-  return { columnas, filas, cocina: texto('salon.cocina') };
+  const json = texto('salon.plano');
+  return useMemo(() => leerPlano(json), [json]);
 }

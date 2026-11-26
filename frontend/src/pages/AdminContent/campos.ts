@@ -174,8 +174,7 @@ export const GRUPOS: Grupo[] = [
       { clave: 'contacto.horario', label: 'Horario' },
       { clave: 'contacto.horarioExtendido', label: 'Horario extendido', ayuda: 'Por ejemplo, los días que cierran más tarde.' },
       { clave: 'sitio.lema', label: 'Lema' },
-      { clave: 'footer.texto', label: 'Texto del pie', tipo: 'largo' },
-      { clave: 'salon.cocina', label: 'Texto de la barra en el plano del salón', ayuda: 'Vacío para no mostrar la barra.' }
+      { clave: 'footer.texto', label: 'Texto del pie', tipo: 'largo' }
     ]
   },
   {
@@ -194,5 +193,5 @@ export const GRUPOS: Grupo[] = [
   }
 ];
 
-/** Claves que se editan en otra pantalla (el tamaño del plano está en Salón). */
-export const CLAVES_EN_OTRA_PANTALLA = new Set(['salon.columnas', 'salon.filas']);
+/** Claves que se editan en otra pantalla (el plano se arma en Salón). */
+export const CLAVES_EN_OTRA_PANTALLA = new Set(['salon.plano']);

@@ -1,0 +1,297 @@
+/* =================== EL TABLERO DE COMANDAS ===================
+   Tres columnas que son el recorrido del pedido: entra, se cocina, se entrega.
+   Cada comanda muestra lo que hay que leer y un solo botón rojo: el paso que sigue. */
+
+.comandas__resumen {
+  margin: 0 auto 6px 0;
+  color: var(--red);
+  font-family: var(--f-display);
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.comandas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(12px, 1.4vw, 20px);
+}
+
+.comandas__etapa,
+.comandas__cerrados {
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  background: var(--rosa);
+}
+
+.comandas__cerrados {
+  margin-top: clamp(12px, 1.4vw, 20px);
+}
+
+.comandas__titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 2px 4px 14px;
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* el número del paso, con el mismo círculo de borde rojo que las fechas de Mis pedidos */
+.comandas__paso {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 2px solid var(--red);
+  border-radius: 50%;
+  color: var(--red);
+  font-size: 16px;
+}
+
+.comandas__cuenta {
+  margin-left: auto;
+  color: var(--red);
+  font-variant-numeric: tabular-nums;
+}
+
+.comandas__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.comandas__lista--fila {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.comandas__vacio {
+  margin: 0;
+  padding: 22px 4px 26px;
+  color: var(--muted);
+  font-size: var(--small);
+}
+
+.comandas__editor {
+  margin-bottom: clamp(12px, 1.4vw, 20px);
+  padding: 16px 0;
+  border-radius: var(--radius-lg);
+  background: var(--rosa);
+}
+
+/* ---------- la comanda ---------- */
+.comanda {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  padding: 16px;
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  background: var(--white);
+  transition: border-color var(--t-ui) ease;
+}
+
+.comanda[data-editando] {
+  border-color: var(--red);
+}
+
+.comanda[data-estado='ENTREGADO'],
+.comanda[data-estado='CANCELADO'] {
+  color: var(--muted);
+}
+
+.comanda p {
+  margin: 0;
+}
+
+.comanda__cabeza {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* la hora de retiro manda: es lo que ordena la cocina */
+.comanda__hora {
+  font-family: var(--f-display);
+  font-size: 30px;
+  line-height: 1;
+}
+
+.comanda__rotulo,
+.comanda__numero span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-family: var(--f-text);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.comanda__numero {
+  color: var(--red);
+  font-family: var(--f-display);
+  font-size: 20px;
+  line-height: 1;
+  text-align: right;
+}
+
+.comanda__numero span {
+  margin: 4px 0 0;
+  font-weight: 400;
+}
+
+.comanda__cliente {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-size: var(--small);
+}
+
+.comanda__cliente strong {
+  font-size: var(--body);
+}
+
+.comanda__cliente span {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.comanda__cliente a {
+  width: fit-content;
+  color: var(--red-dark);
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+
+.comanda__items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 12px 0;
+  border-block: 2px dashed var(--rosa-deep);
+  list-style: none;
+}
+
+.comanda__items li {
+  display: grid;
+  grid-template-columns: 2.4em minmax(0, 1fr);
+  line-height: 1.35;
+}
+
+.comanda__items b {
+  color: var(--red);
+  font-variant-numeric: tabular-nums;
+}
+
+/* lo que el cliente pidió aparte: no se puede pasar por alto */
+.comanda__nota {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--warn-field);
+  color: var(--warn);
+  font-size: var(--small);
+  font-weight: 600;
+}
+
+.comanda__nota svg {
+  flex: none;
+  margin-top: 2px;
+}
+
+.comanda__cobro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.comanda__cobro p {
+  display: flex;
+  flex-direction: column;
+}
+
+.comanda__cobro strong {
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+.comanda__cobro span {
+  color: var(--muted);
+  font-size: var(--small);
+}
+
+.comanda__avance .btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* lo que casi nunca se usa queda como texto, lejos del botón rojo */
+.comanda__mas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+}
+
+.comanda__mas button {
+  min-height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: var(--small);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--rosa-deep);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  transition: color var(--t-ui) ease;
+}
+
+.comanda__mas button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.comanda__mas button[aria-expanded='true'] {
+  color: var(--red);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .comanda__mas button:not(:disabled):hover {
+    color: var(--red-dark);
+    text-decoration-color: var(--red);
+  }
+}
+
+@media (max-width: 1040px) {
+  .comandas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .comandas__lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .comanda,
+  .comanda__mas button {
+    transition: none;
+  }
+}

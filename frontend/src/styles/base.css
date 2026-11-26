@@ -154,6 +154,13 @@ h3 {
   background-size: 240px 240px;
 }
 
+/* banda de título de cada pantalla: las pastas de la carta dibujadas en línea y repetidas, tono sobre tono */
+.paper-pastas {
+  background-color: var(--rosa);
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='260'%20height='260'%20viewBox='0%200%20260%20260'%3E%3Cg%20fill='none'%20stroke='%23F7D6D6'%20stroke-width='3.5'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cg%20transform='translate(44%2044)%20rotate(-18)'%3E%3Cpath%20d='M-26-16l8%204%208-4%205%2010h10l5-10%208%204%208-4v32l-8-4-8%204-5-10H-5l-5%2010-8-4-8%204z'/%3E%3Cpath%20d='M-5-6v12M5-6v12'/%3E%3C/g%3E%3Cg%20transform='translate(134%2034)%20rotate(14)'%3E%3Cpath%20d='M-28%209l10-18h46L18%209z'/%3E%3Cpath%20d='M-19%203h40M-15-3h40'/%3E%3C/g%3E%3Cg%20transform='translate(220%2058)%20rotate(-8)'%3E%3Cpath%20d='M-16%202a16%2016%200%200%201%2032%200'/%3E%3Cpath%20d='M-22%202c0%2010%2010%2015%2022%2015s22-5%2022-15c-6%205-13%207-22%207s-16-2-22-7z'/%3E%3C/g%3E%3Cg%20transform='translate(84%20118)%20rotate(28)'%3E%3Cpath%20d='M-30%200c5-14%2010-14%2015%200s10%2014%2015%200%2010-14%2015%200%2010%2014%2015%200'/%3E%3Cpath%20d='M-30%200c5%2014%2010%2014%2015%200s10-14%2015%200%2010%2014%2015%200%2010-14%2015%200'/%3E%3C/g%3E%3Cg%20transform='translate(180%20134)%20rotate(-22)'%3E%3Cpath%20d='M-22-22l5.5%204%205.5-4%205.5%204%205.5-4%205.5%204%205.5-4%205.5%204%205.5-4%204%205.500-4%205.500%204%205.500-4%205.500%204%205.500-4%205.500%204%205.500-4%205.500%204%205.500-5.500-4-5.500%204-5.500-4-5.500%204-5.500-4-5.500%204-5.500-4-5.500%204-4-5.500%204-5.500-4-5.500%204-5.500-4-5.500%204-5.500-4-5.500%204-5.500z'/%3E%3Ccircle%20r='10'/%3E%3C/g%3E%3Cg%20transform='translate(36%20196)%20rotate(10)'%3E%3Cpath%20d='M-22%208c0-16%2010-26%2022-26s22%2010%2022%2026c-6%206-14%208-22%208s-16-2-22-8z'/%3E%3Cpath%20d='M0%2016v-34M-8%2015l-6-27M8%2015l6-27M-16%2012l-4-12M16%2012l4-12'/%3E%3C/g%3E%3Cg%20transform='translate(116%20212)%20rotate(-30)'%3E%3Cpath%20d='M-20%2012a20%2020%200%200%201%2040%200h-11a9%209%200%200%200-18%200z'/%3E%3C/g%3E%3Cg%20transform='translate(214%20216)%20rotate(20)'%3E%3Cpath%20d='M-26-16l8%204%208-4%205%2010h10l5-10%208%204%208-4v32l-8-4-8%204-5-10H-5l-5%2010-8-4-8%204z'/%3E%3Cpath%20d='M-5-6v12M5-6v12'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 260px 260px;
+}
+
 /* =================== PÁGINAS =================== */
 .page {
   padding-block: clamp(32px, 4.4vw, 56px) var(--section);

@@ -80,6 +80,15 @@ const Messages = Object.freeze({
     CALIFICACION_VISIBLE_INVALID: 'El campo visible debe ser booleano',
     CALIFICACION_RESPUESTA_INVALID: 'La respuesta debe ser un texto de hasta 500 caracteres',
 
+    DIFUSION_ASUNTO_REQUIRED: 'El asunto del mail es obligatorio (hasta 120 caracteres)',
+    DIFUSION_CUERPO_REQUIRED: 'El mail no tiene contenido',
+    DIFUSION_DESTINATARIOS_REQUIRED: 'Elegi al menos una persona a quien mandarle el mail',
+    DIFUSION_DESTINATARIO_INVALID: 'Uno de los destinatarios no existe',
+    DIFUSION_PRUEBA_INVALID: 'La direccion para la prueba no es un email valido',
+    DIFUSION_SIN_CONFIGURAR: 'El envio de mails todavia no esta configurado: falta completar backend/.env (ver .env.example)',
+    DIFUSION_SIN_CONEXION: 'No se pudo conectar con la casilla de correo. Revisa el usuario y la contraseña en backend/.env',
+    DIFUSION_MUY_PESADO: 'El mail es demasiado pesado. Proba con una foto mas liviana',
+
     ITEM_PEDIDO_NOT_FOUND: 'El item de pedido solicitado no existe',
     ITEM_PEDIDO_PEDIDO_REQUIRED: 'El pedidoId es obligatorio',
     ITEM_PEDIDO_PEDIDO_INMUTABLE: 'Un item no se puede mover a otro pedido',

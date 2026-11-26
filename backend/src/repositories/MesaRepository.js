@@ -1,13 +1,14 @@
 const Mesa = require('../models/Mesa');
 const { createIdGenerator } = require('../utils/idGenerator');
 
+// posicionX / posicionY: esquina de arriba a la izquierda de la mesa, en unidades del plano (100 ≈ 1 metro)
 const mesas = [
-    new Mesa(1, 1, 4, 0, 0),
-    new Mesa(2, 2, 4, 1, 0),
-    new Mesa(3, 3, 4, 2, 0),
-    new Mesa(4, 4, 4, 0, 1),
-    new Mesa(5, 5, 6, 1, 1),
-    new Mesa(6, 6, 6, 2, 1)
+    new Mesa(1, 1, 4, 110, 150),
+    new Mesa(2, 2, 4, 360, 150),
+    new Mesa(3, 3, 4, 610, 150),
+    new Mesa(4, 4, 4, 110, 380),
+    new Mesa(5, 5, 6, 348, 380),
+    new Mesa(6, 6, 6, 598, 380)
 ];
 
 const nextId = createIdGenerator(mesas.length + 1);

@@ -29,8 +29,9 @@
   justify-content: center;
   width: 84px;
   height: 84px;
+  border: 2px solid var(--red);
   border-radius: 50%;
-  background: var(--white);
+  background: transparent;
   text-align: center;
 }
 

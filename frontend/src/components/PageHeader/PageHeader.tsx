@@ -40,7 +40,7 @@ export function PageHeader({ title, lead, compact = false, inline = false, actio
   if (inline) return <div className="page-header page-header--inline">{contenido}</div>;
 
   return (
-    <header className={`page-band${compact ? ' page-band--app' : ' paper'}`}>
+    <header className={`page-band${compact ? ' page-band--app' : ' paper-pastas'}`}>
       <div className="wrap page-header">{contenido}</div>
     </header>
   );

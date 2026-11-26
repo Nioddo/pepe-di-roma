@@ -137,7 +137,7 @@ En la primera versión del rediseño todo quedaba en un mismo plano blanco y no 
 - En tablet el mapa pasa abajo a todo el ancho; en el teléfono la foto sale y queda el mapa. *impeccable (adapt)*
 
 ### Gestión: el admin edita todo
-Todas las pantallas de gestión comparten una **franja en tinta** con siete pestañas (Pedidos, Reservas, Carta, Salón, Textos y fotos, Opiniones, Usuarios): marca que se está en la trastienda y permite saltar de una a otra. En el teléfono se desliza de costado.
+Todas las pantallas de gestión comparten una **franja en tinta** con sus pestañas (Pedidos, Reservas, Historial, Métricas, Carta, Salón, Textos y fotos, Opiniones, Mails, Usuarios): marca que se está en la trastienda y permite saltar de una a otra. En el teléfono se desliza de costado.
 
 La edición se hace **en el lugar**: "Editar" abre el formulario debajo de la misma fila, lleva el foco a su título y se cierra con Escape o Cancelar. No hay modales para editar: el modal queda solo para confirmar borrados. *impeccable (modo Operate: el modal como primera opción suele ser pereza)*
 
@@ -145,25 +145,32 @@ Para el personal, cada bloque de la portada tiene un atajo **"Editar"** (en tint
 
 #### Carta
 - **Maestro–detalle**: a la izquierda las secciones de la carta elegida, a la derecha la sección con su tabla. *impeccable*
-- **Editar un plato**: nombre, precio, medida, descripción, foto (del catálogo real o un enlace, con vista previa en arco), etiquetas, si es **producto estrella** y en qué sección va (puede pasar a otra carta).
-- **Etiquetas como interruptores** en la tabla: vegano, sin TACC, picante y **Estrella**. La Estrella decide qué platos salen en "Productos estrella" de la portada.
-- **Orden**: flechas para subir y bajar cada plato dentro de su sección y cada sección dentro de la carta.
-- **Editar una sección**: título, aclaración, grupo, nota al pie y carta.
-- Alta y baja de platos y secciones, siempre con confirmación al borrar.
+- **Buscador** arriba de todo: encuentra un plato por nombre o ingrediente en toda la carta elegida y dice en qué sección está. Antes había que adivinar la sección. *impeccable (reconocer antes que recordar)*
+- **El precio se cambia en la fila**: se toca, se escribe y Enter guarda (Escape cancela). Es el cambio más frecuente y ya no obliga a abrir el formulario completo. *Emil (lo que se hace seguido tiene que costar un gesto)*
+- **"Agregar plato" es un botón**, no un formulario siempre abierto: la pantalla arranca mostrando la carta, no campos vacíos. Lo mismo con "Nueva sección". *taste (una sola cosa dominante por pantalla)*
+- **Editar un plato** muestra al lado **"Así sale en la carta"**: el renglón tal como lo va a leer el cliente (tipografía de la carta, puntos, precio, descripción y marcas), actualizado mientras se escribe.
+- Campos del plato: nombre, precio, medida, descripción, foto (del catálogo real o un enlace), etiquetas, si es **producto estrella** y en qué sección va (puede pasar a otra carta).
+- **Etiquetas como interruptores** en la tabla, dos por renglón para que la fila no crezca: vegano, sin TACC, picante y **Estrella**.
+- **Orden**: flechas para subir y bajar cada plato y cada sección. **Editar una sección**: título, aclaración, grupo, nota al pie y carta. Bajas siempre con confirmación.
 
 #### Pedidos
-- **El estado se cambia desde su propia columna**, con un selector que tiene los cinco estados y toma el color del estado. También quedan los botones rápidos (Confirmar → Enviar o "Listo para retirar" → Entregado).
-- **Editar**: estado, modalidad, forma de pago, dirección, si está pagado y **qué lleva** (sumar, quitar o cambiar cantidades); el total se recalcula con los precios del día.
+- **Tablero de comandas** en lugar de tabla: tres columnas numeradas, **Nuevos → En cocina → Para entregar**, con el contador de cada una. Un pedido avanza de izquierda a derecha, como el papel en la cocina. *impeccable (el objeto de trabajo es la comanda, no la fila)*
+- Cada comanda dice lo que el personal necesita de un vistazo: a qué hora se retira o adónde va, quién, qué lleva, cuánto y si está pago.
+- **Un solo botón rojo por comanda: el paso que sigue** (Confirmar, Listo para retirar o Enviar, Entregado). "Cobrar", "Editar" y "Cancelar pedido" quedan en segundo plano. *taste (una acción principal) · Emil (respuesta al presionar)*
+- Las indicaciones del cliente van resaltadas en amarillo dentro de la comanda. Filtro "En curso / Hoy" y enlace al Historial para lo anterior.
+- **Editar** sigue igual: estado, modalidad, pago, dirección, pagado y qué lleva; el total se recalcula.
 
 #### Reservas
 - Asignar mesa desde la fila, confirmar, cancelar y eliminar.
 - **Editar**: cliente, fecha, horario, personas, mesa (avisa si está ocupada a esa hora) y estado. Respeta la regla: hasta 4 personas la reserva necesita mesa.
 
 #### Salón (nueva)
-- **El plano se edita a mano**: cada mesa se **arrastra** a otra baldosa (mouse, lápiz o dedo, con captura del puntero; un segundo dedo no roba el arrastre). Si se suelta sobre otra mesa, cambian de lugar. *Emil (el transform se aplica directo al elemento, sin re-renderizar el plano en cada cuadro)*
-- **Con teclado**: se enfoca la mesa y las flechas la mueven de a una baldosa. Cada movimiento se anuncia al lector de pantalla.
-- **Panel lateral**: número, capacidad, columna y fila de la mesa elegida; agregar mesa (va al primer lugar libre) y eliminar (con confirmación; el backend no deja borrar una mesa con reservas activas).
-- **Tamaño del plano** (columnas y filas): no deja achicar si quedaría una mesa afuera. El mapa de Reservar usa este mismo plano.
+- **Plano libre, sin cuadrícula**: cada cosa se **arrastra** a cualquier lugar (mouse, lápiz o dedo, con captura del puntero; un segundo dedo no roba el arrastre). *Emil (el transform se aplica directo al elemento, sin re-renderizar el plano en cada cuadro)*
+- **El salón se estira**: tirando del borde derecho, del de abajo o de la esquina cambia el ancho y el alto. También se pueden escribir las medidas (en centímetros aproximados).
+- **Se agrega lo que tenga el local**: mesa, cartel, columna, baño, cocina, barra, estantería, planta, ventana, entrada y pared. Cada elemento se mueve, se agranda, se rota, se renombra o se borra.
+- **Con teclado**: se enfoca un elemento y las flechas lo mueven; cada movimiento se anuncia al lector de pantalla.
+- **Panel lateral**: los datos de lo elegido (número y capacidad si es mesa; texto y tamaño si es otro elemento). El backend no deja borrar una mesa con reservas activas.
+- Los cambios se guardan solos y el mapa de **Reservar** dibuja este mismo plano.
 
 #### Textos y fotos (nueva)
 - **Todo lo que dice el sitio fuera de la carta**: portada, "Productos estrella", Nuestras cartas, Sobre nosotros y su carrusel, la banda Reservar, las fotos de Ingresar y Registrarse, contacto, pie, nombres y pies de las tres cartas, y el cuadro "Tempo di cottura" con el tiempo de cada pasta.
@@ -198,6 +205,15 @@ Para el personal, cada bloque de la portada tiene un atajo **"Editar"** (en tint
 - **Al elegir un día**, al costado aparecen sus reservas (por hora) y sus pedidos, y cada uno **se abre en el lugar** con todo el detalle: teléfono, mesa, cuenta, qué llevó, pago, envío e indicaciones.
 - Se navega con los botones de mes o con el **teclado**: flechas para cambiar de día, arriba y abajo para cambiar de semana. El día elegido queda en la dirección (`?dia=2026-10-10`), así se puede compartir.
 - En el teléfono cada día muestra puntos en vez de texto, y el detalle pasa abajo del calendario.
+
+#### Mails a clientes (nueva, solo ADMIN)
+- **Tres pasos numerados**: el mensaje, a quién y enviar. *impeccable*
+- **Se arma con campos, no con HTML**: asunto, título, mensaje, promo destacada y vigencia (opcionales), foto del catálogo y botón (ver la carta, reservar, hacer un pedido o ninguno). "Traer un plato de la carta" completa título, foto y descripción con datos reales.
+- **"Así le llega"**: vista previa en vivo dentro de una bandeja (remitente y asunto arriba), en ancho de compu o de celular. Es el mismo HTML que sale: lo que se ve es lo que llega.
+- **El mail**: marca arriba, foto a todo el ancho, título en Anton, la promo en una banda roja, botón en píldora y pie con dirección, horario, teléfono e Instagram tomados de "Textos y fotos", más el aviso de cómo dejar de recibirlos. Tablas y estilos en línea para que se vea igual en Gmail, Outlook y el teléfono. Sin degradados ni sombras. *taste · unslop*
+- **Destinatarios**: todos los clientes o una lista elegida. Cada cliente recibe su propio mail, sin ver las direcciones de los demás.
+- **"Enviarme una prueba"** antes de mandarlo a todos; el envío general pide confirmación porque no se puede deshacer. Debajo quedan los últimos envíos.
+- Si el servidor no tiene casilla conectada, la pantalla lo avisa y deja armar y ver el mail igual. No se inventa texto de promociones: los campos arrancan vacíos.
 
 #### Usuarios (nueva, solo ADMIN)
 - Crear cuentas (por ejemplo, empleados), corregir email y DNI, cambiar el rol y eliminar (con confirmación).
@@ -320,6 +336,17 @@ Hicieron falta para que la carta y la regla de reservas se guarden de verdad:
   - las 6 mesas del boceto (cuatro de 4 y dos de 6);
   - las cuentas de prueba del boceto: `cliente@pepediroma.com.ar` (DNI 38123456) y `admin@pepediroma.com.ar` (DNI 30111222);
   - reservas y pedidos hechos con platos reales.
+
+### Difusión por mail
+- **`/api/difusion`** (nuevo): `GET` dice si hay casilla conectada, el remitente y los últimos envíos; `POST` manda el mail a los usuarios indicados (`usuarioIds`) o una prueba a una dirección (`prueba`).
+- Sale por **SMTP con nodemailer**. La casilla se configura en `backend/.env` (hay un `backend/.env.example` con las instrucciones para Gmail y otros proveedores); el archivo no se sube al repositorio. Sin configurar, el servidor arranca igual y responde 503 con el motivo.
+- El local no publica un mail propio (el relevamiento no lo trae), así que la casilla remitente queda a completar por el dueño.
+- **`salon.plano`** en Contenido guarda el plano libre (medidas y elementos); las mesas guardan su posición en el plano.
+
+## 9 bis. Ajustes de esta ronda en el sitio
+- **Bandas de título** de cada pantalla: el patrón de arcos se reemplazó por **pastas dibujadas en línea** (las figuras de la carta impresa), repetidas en un tono apenas más oscuro que el rosa. **La portada conserva el papel de arcos** en Productos estrella y en las costumbres. *taste (la idea sale del sujeto, no de la categoría)*
+- **Portada**: el título pasó a dos golpes, "Pastas hechas" en tinta y "a la vista" en una banda roja inclinada, con el horario real debajo y si el local **está abierto ahora**. *taste (titular de dos líneas, primera pantalla que responde qué es y cuándo)*
+- **Mis reservas y Mis pedidos**: el número va en un **círculo de borde rojo sin fondo** (antes, disco blanco). El mismo círculo numera los pasos de Mails y las columnas de Pedidos.
 
 ## 10. Correcciones sobre las cartas impresas
 

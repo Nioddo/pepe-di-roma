@@ -22,6 +22,7 @@ import { AdminSalon } from './pages/AdminSalon/AdminSalon';
 import { AdminContent } from './pages/AdminContent/AdminContent';
 import { AdminReviews } from './pages/AdminReviews/AdminReviews';
 import { AdminUsers } from './pages/AdminUsers/AdminUsers';
+import { AdminMailing } from './pages/AdminMailing/AdminMailing';
 import { Survey } from './pages/Survey/Survey';
 import { AdminHistory } from './pages/AdminHistory/AdminHistory';
 import { AdminMetrics } from './pages/AdminMetrics/AdminMetrics';
@@ -67,6 +68,7 @@ export function AppRoutes() {
           <Route path="salon" element={<AdminSalon />} />
           <Route path="contenido" element={<AdminContent />} />
           <Route path="opiniones" element={<AdminReviews />} />
+          <Route path="difusion" element={<RequireAuth rol="ADMIN"><AdminMailing /></RequireAuth>} />
           <Route path="usuarios" element={<RequireAuth rol="ADMIN"><AdminUsers /></RequireAuth>} />
         </Route>
 

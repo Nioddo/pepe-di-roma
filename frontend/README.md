@@ -49,7 +49,7 @@ src/
 ├── components/    Componentes reutilizables (cada uno con su CSS)
 ├── content/       Lo fijo de las cartas (ids y siluetas de "Tempo di cottura")
 ├── context/       Sesión, notificaciones (toast), confirmación (modal) y textos del sitio
-├── hooks/         useApi (carga + errores), useReveal, useSitio y useSalon
+├── hooks/         useApi (carga + errores), useReveal, useSitio y useSalon (usePlano: el plano libre del salón)
 ├── pages/         Una carpeta por pantalla
 ├── services/      Toda la comunicación con la API
 ├── styles/        Tokens del sistema de diseño, base y layout compartido
@@ -108,10 +108,11 @@ Solo **Reservar** y **Hacer pedido** (y sus listados, Mis reservas y Mis pedidos
 | Reservas | Próximas, de hoy o sin confirmar. Nombre, teléfono, cliente, fecha, horario, personas, mesa y estado |
 | Historial | Calendario del mes; cada día con sus reservas y pedidos y el detalle de cada uno |
 | Métricas | Ventas, platos más pedidos, días y horarios con más reservas, plato con peor y mejor opinión, cómo compran y clientes frecuentes, por mes |
-| Carta | Platos (todo, incluida la foto y si es producto estrella), secciones, orden, altas y bajas |
-| Salón | Mesas (número, capacidad, lugar) arrastrándolas en el plano o con el teclado; tamaño del plano |
+| Carta | Buscador, precio editable en la fila, platos (todo, con vista previa del renglón de la carta), secciones, orden, altas y bajas |
+| Salón | Plano libre: mesas y elementos (carteles, columnas, baños, barra…) arrastrables; el salón se estira desde sus bordes |
 | Textos y fotos | Todos los textos y fotos del sitio |
 | Opiniones | Responder, ocultar, corregir, eliminar |
+| Mails (solo ADMIN) | Armar el mail de novedades o promos con vista previa, mandar una prueba y enviarlo a los clientes. Requiere la casilla en `backend/.env` (ver `backend/.env.example`) |
 | Usuarios (solo ADMIN) | Crear, editar email, DNI y rol, eliminar |
 
 ### Reglas de reserva

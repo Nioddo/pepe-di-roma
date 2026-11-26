@@ -146,7 +146,26 @@ const DEFECTOS: Record<string, Record<string, unknown>> = {
   reservas: { estado: 'PENDIENTE', duracionMin: DURACION_MIN, mesaId: null }
 };
 
+// Mails a clientes: en la maqueta no sale nada, pero la pantalla se comporta como con la casilla conectada.
+const enviosSimulados: Registro[] = [];
+
+function difusion(metodo: string, body: Registro): Response {
+  if (metodo === 'GET') return ok({ configurado: true, remitente: 'Pepe Di Roma (envío simulado)', envios: enviosSimulados });
+  if (metodo !== 'POST') return fallo('La ruta solicitada no existe', 404);
+  if (body.prueba) return ok({ id: null, asunto: body.asunto, fecha: ahora(), enviados: 1, fallidos: [] }, 201);
+  const envio = {
+    id: enviosSimulados.length + 1,
+    asunto: body.asunto,
+    fecha: ahora(),
+    enviados: Array.isArray(body.usuarioIds) ? body.usuarioIds.length : 0,
+    fallidos: []
+  };
+  enviosSimulados.unshift(envio);
+  return ok(envio, 201);
+}
+
 function manejar(metodo: string, recurso: string, id: number | null, body: Registro, modo: ModoRevision): Response {
+  if (recurso === 'difusion') return difusion(metodo, body);
   const tabla = db[recurso];
   if (!tabla) return fallo('La ruta solicitada no existe', 404);
 

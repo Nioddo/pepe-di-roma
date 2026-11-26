@@ -112,9 +112,19 @@ const VALORES = {
     'sitio.lema': 'Amore eterno per la pasta',
     'footer.texto': 'Restaurante italiano y fábrica de pastas en Villa Devoto. Desayuno, almuerzo, merienda y cena, y pasta fresca para llevar.',
 
-    'salon.columnas': '3',
-    'salon.filas': '2',
-    'salon.cocina': 'Cocina a la vista',
+    // el plano libre del salón (lo arma el admin en Gestión → Salón): tamaño y todo lo que no es una mesa
+    'salon.plano': JSON.stringify({
+        ancho: 880,
+        alto: 600,
+        elementos: [
+            { id: 'cocina', tipo: 'cocina', x: 52, y: 20, w: 600, h: 60, texto: 'Cocina a la vista' },
+            { id: 'bano', tipo: 'bano', x: 716, y: 0, w: 164, h: 104, texto: 'Baño' },
+            { id: 'estanteria', tipo: 'estanteria', x: 0, y: 128, w: 32, h: 420, texto: 'Estantería' },
+            { id: 'columna', tipo: 'columna', x: 456, y: 300, w: 24, h: 24, texto: '' },
+            { id: 'ventana', tipo: 'ventana', x: 868, y: 248, w: 12, h: 132, texto: '' },
+            { id: 'entrada', tipo: 'entrada', x: 500, y: 560, w: 120, h: 36, texto: 'Entrada' }
+        ]
+    }),
 
     'cottura.titulo': 'Tempo di cottura',
     'cottura.seccion': 'Paste Semplice',

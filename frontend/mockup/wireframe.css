@@ -32,6 +32,7 @@ html[data-wireframe] img {
 }
 
 html[data-wireframe] .paper,
+html[data-wireframe] .paper-pastas,
 html[data-wireframe] .arch-image__fallback {
   background-image: none;
 }

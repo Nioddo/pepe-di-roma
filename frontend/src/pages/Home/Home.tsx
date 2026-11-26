@@ -4,10 +4,11 @@ import { useApi } from '../../hooks/useApi';
 import { useContenido } from '../../context/ContenidoContext';
 import { useAuth } from '../../context/AuthContext';
 import { esPersonal } from '../../utils/sesion';
-import { useCartas, useFoto, useFotosLocal } from '../../hooks/useSitio';
+import { useCartas, useContacto, useFoto, useFotosLocal } from '../../hooks/useSitio';
 import { getCarta } from '../../services/seccionesService';
 import { resolverImagen } from '../../utils/imagenes';
 import { formatearPrecio } from '../../utils/formato';
+import { estadoDelLocal } from '../../utils/horario';
 import { ButtonLink, Button } from '../../components/Button/Button';
 import { ArchImage } from '../../components/ArchImage/ArchImage';
 import { Icon } from '../../components/Icon/Icon';
@@ -196,6 +197,8 @@ export function Home() {
   const { texto } = useContenido();
   const { usuario } = useAuth();
   const fotoHero = useFoto('portada.foto');
+  const contacto = useContacto();
+  const estado = useMemo(() => estadoDelLocal(contacto.horario, contacto.horarioExtendido), [contacto.horario, contacto.horarioExtendido]);
   const raiz = useRef<HTMLDivElement>(null);
   const titulo = useRef<HTMLHeadingElement>(null);
 
@@ -228,6 +231,13 @@ export function Home() {
               )}
               <EditarAqui to="/admin/contenido#portada" que="la portada" />
             </div>
+            {estado && (
+              <p className="hero__estado reveal" data-abierto={estado.abierto}>
+                <span className="hero__punto" aria-hidden="true" />
+                <strong>{estado.abierto ? 'Abierto ahora' : 'Cerrado ahora'}</strong>
+                <span>{estado.detalle}</span>
+              </p>
+            )}
           </div>
         </div>
         <div className="hero__media">

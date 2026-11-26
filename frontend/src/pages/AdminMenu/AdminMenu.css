@@ -99,6 +99,12 @@
   border-top: 2px solid var(--rosa-deep);
 }
 
+.admin-menu__nueva-pie {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .admin-menu__nueva .field input {
   border-color: var(--white);
 }
@@ -123,35 +129,6 @@
 
 .admin-menu__cabecera .muted {
   margin-top: 6px;
-}
-
-.admin-menu__alta {
-  margin-bottom: 28px;
-  padding: clamp(18px, 2vw, 24px);
-  border: 2px solid var(--rosa-deep);
-  border-radius: var(--radius-lg);
-}
-
-.admin-menu__campos {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 16px;
-}
-
-.admin-menu__ancho {
-  grid-column: 1 / -1;
-}
-
-.admin-menu__pie {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.admin-menu__pie fieldset {
-  margin-bottom: 0;
 }
 
 .admin-dish {
@@ -186,9 +163,10 @@
   line-height: 1.45;
 }
 
+/* dos por renglón: la fila no crece con cuatro etiquetas apiladas */
 .flags {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
   gap: 6px;
 }
 
@@ -237,10 +215,6 @@
   .admin-menu__secciones {
     position: static;
     max-height: none;
-  }
-
-  .admin-menu__campos {
-    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -300,5 +274,184 @@
 @media (prefers-reduced-motion: reduce) {
   .orden__btn:active:not(:disabled) {
     transform: none;
+  }
+}
+
+/* ---------- buscar, agregar y la pista de edición rápida ---------- */
+.admin-menu__buscar {
+  max-width: 460px;
+  margin-bottom: 22px;
+}
+
+.admin-menu__buscar .field {
+  margin-bottom: 0;
+}
+
+.admin-menu__barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  margin-bottom: 18px;
+}
+
+.admin-menu__pista {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--small);
+}
+
+.admin-menu__pista svg {
+  flex: none;
+  color: var(--red);
+}
+
+.admin-dish__seccion {
+  display: block;
+  color: var(--red-dark);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ---------- el precio se edita en la fila ---------- */
+.precio-linea {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  margin-right: -10px;
+  padding: 4px 10px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: text;
+  transition: border-color var(--t-ui) ease;
+}
+
+.precio-linea svg {
+  color: var(--red);
+  opacity: 0.45;
+  transition: opacity var(--t-ui) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .precio-linea:hover {
+    border-color: var(--rosa-deep);
+  }
+
+  .precio-linea:hover svg {
+    opacity: 1;
+  }
+}
+
+.precio-linea__form {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 40px;
+  margin-right: -10px;
+  padding: 0 10px;
+  border: 2px solid var(--red);
+  border-radius: 10px;
+  background: var(--white);
+  font-weight: 600;
+}
+
+.precio-linea__form[data-invalido] {
+  background: var(--rosa);
+}
+
+.precio-linea__form input {
+  width: 7ch;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.precio-linea__form input::-webkit-inner-spin-button,
+.precio-linea__form input::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+/* ---------- el renglón de la carta, dentro del formulario del plato ---------- */
+.renglon-carta {
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  background: var(--rosa);
+}
+
+.renglon-carta__rotulo {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.renglon-carta__linea {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  color: var(--carta-red);
+  font-family: var(--f-carta);
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.renglon-carta__nombre {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.renglon-carta__nombre small {
+  font-size: 15px;
+}
+
+.renglon-carta__puntos {
+  flex: 1;
+  min-width: 24px;
+  border-bottom: 2px dotted var(--carta-red);
+  opacity: 0.5;
+}
+
+.renglon-carta__precio {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.renglon-carta__desc {
+  max-width: 60ch;
+  margin-top: 4px;
+  color: var(--ink);
+  font-size: var(--small);
+  line-height: 1.45;
+}
+
+.renglon-carta__marcas {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .precio-linea,
+  .precio-linea svg {
+    transition: none;
   }
 }

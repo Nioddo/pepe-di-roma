@@ -11,6 +11,10 @@ function errorHandler(err, req, res, next) {
         return errorResponse(res, Messages.INVALID_DATA, 400);
     }
 
+    if (err.type === 'entity.too.large') {
+        return errorResponse(res, Messages.DIFUSION_MUY_PESADO, 413);
+    }
+
     console.error('[ERROR NO CONTROLADO]', err);
     return errorResponse(res, Messages.INTERNAL_ERROR, 500);
 }

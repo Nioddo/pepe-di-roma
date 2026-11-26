@@ -17,11 +17,13 @@
 }
 
 .hero__copy {
-  max-width: min(580px, 44vw);
+  max-width: min(640px, 46vw);
 }
 
+/* el título manda: más grande que el resto de los h1 del sitio */
 .hero h1 {
-  margin-bottom: 22px;
+  margin-bottom: clamp(26px, 2.6vw, 38px);
+  font-size: clamp(56px, 6.9vw, 112px);
 }
 
 .hero h1:focus {
@@ -38,6 +40,57 @@
   display: flex;
   flex-wrap: wrap;
   gap: 13px;
+}
+
+/* abierto o cerrado en este momento, leído del horario real del local */
+.hero__estado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin: 26px 0 0;
+  font-size: var(--body);
+}
+
+.hero__estado strong {
+  font-weight: 600;
+}
+
+.hero__estado span:last-child {
+  color: var(--muted);
+}
+
+.hero__punto {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--red);
+  border-radius: 50%;
+}
+
+.hero__estado[data-abierto='true'] .hero__punto {
+  background: var(--red);
+}
+
+/* el punto late despacio mientras el local está abierto */
+.hero__estado[data-abierto='true'] .hero__punto::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: var(--red);
+  animation: punto-late 2.4s var(--ease-out) infinite;
+}
+
+@keyframes punto-late {
+  from {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.8);
+  }
 }
 
 /* el arco entra por la derecha a escala enorme: muestra su curva y corre fuera por abajo */
@@ -102,10 +155,20 @@
   left: 58%;
 }
 
-/* el segundo renglón del título se corre y se pone rojo: la foto y el título se contestan en diagonal */
+/* el segundo renglón es la etiqueta de la caja: una faja roja pegada un poco torcida, con la letra en blanco */
 .hero__linea:nth-child(2) {
-  padding-left: clamp(28px, 5vw, 88px);
-  color: var(--red);
+  margin-top: 0.1em;
+  padding-left: clamp(20px, 3.6vw, 64px);
+  color: var(--white);
+}
+
+.hero__linea:nth-child(2) .hero__linea-texto {
+  display: inline-block;
+  padding: 0.09em 0.2em 0.05em;
+  border-radius: 0.09em;
+  background: var(--red);
+  transform: rotate(-2.5deg);
+  transform-origin: 0 100%;
 }
 
 /* el par real de la marca: un arco rojo plano corrido detrás */
@@ -659,6 +722,26 @@
   }
 }
 
+/* la etiqueta no sube detrás de la máscara: se pega, de izquierda a derecha y enderezándose */
+.hero__linea:nth-child(2) {
+  overflow: visible;
+}
+
+.hero__linea:nth-child(2) .hero__linea-texto {
+  animation: etiqueta-pega 760ms var(--ease-out) 320ms both;
+}
+
+@keyframes etiqueta-pega {
+  from {
+    clip-path: inset(0 100% 0 0);
+    transform: rotate(-7deg);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    transform: rotate(-2.5deg);
+  }
+}
+
 /* la foto se descubre de abajo hacia arriba dentro del arco, y el arco rojo se corre detrás */
 .hero__arch {
   animation: arco-descubre 1100ms var(--ease-out) 120ms both;
@@ -753,11 +836,17 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero__linea-texto,
+  .hero__linea:nth-child(2) .hero__linea-texto,
   .hero__arch,
   .hero__arch-back,
   .hero__pasta,
+  .hero__punto::after,
   .index__cambia {
     animation: none;
+  }
+
+  .hero__estado[data-abierto='true'] .hero__punto::after {
+    display: none;
   }
 
   .index__image,

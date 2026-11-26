@@ -1,0 +1,235 @@
+/* Mails a clientes: a la izquierda se arma, a la derecha se ve como llega */
+
+.mailing {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  align-items: start;
+  gap: clamp(28px, 4vw, 56px);
+}
+
+.mailing__paso {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  font-size: clamp(22px, 2vw, 28px);
+}
+
+/* el número del paso: círculo de borde rojo, igual que en Mis reservas */
+.mailing__paso > span {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--red);
+  border-radius: 50%;
+  color: var(--red);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.mailing__paso--suelto {
+  margin-bottom: 0;
+}
+
+.mailing__vista {
+  position: sticky;
+  top: calc(var(--header-h) + 16px);
+}
+
+.mailing__vista-cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.mailing__vista-cabeza fieldset {
+  margin: 0;
+}
+
+.mailing__vista-cabeza legend {
+  position: absolute;
+  width: 1px;
+  height: 1px; /* taste-skill-ignore: oculta la leyenda, no es una línea */
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* la bandeja: remitente y asunto arriba, el mail abajo */
+.bandeja {
+  overflow: hidden;
+  border: 2px solid var(--rosa-deep);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+}
+
+.bandeja__datos {
+  margin: 0;
+  padding: 14px 18px;
+  border-bottom: 2px solid var(--rosa-deep);
+  font-size: var(--small);
+}
+
+.bandeja__datos > div {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr);
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.bandeja__datos dt {
+  color: var(--muted);
+}
+
+.bandeja__datos dd {
+  margin: 0;
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bandeja__datos dd[data-vacio] {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.bandeja__marco {
+  display: flex;
+  justify-content: center;
+  background: var(--rosa);
+}
+
+.bandeja__marco iframe {
+  display: block;
+  width: 100%;
+  height: min(640px, 70vh);
+  border: 0;
+  transition: width var(--t-ui) var(--ease-out);
+}
+
+.bandeja__marco[data-ancho='celu'] iframe {
+  width: 375px;
+  max-width: 100%;
+}
+
+.mailing__envio {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(28px, 4vw, 56px);
+  margin-top: clamp(36px, 5vw, 64px);
+  padding: clamp(22px, 2.6vw, 34px);
+  border-radius: var(--radius-lg);
+  background: var(--rosa);
+}
+
+.mailing__envio .field input {
+  border-color: var(--white);
+}
+
+.mailing__lista ul {
+  display: grid;
+  gap: 2px;
+  max-height: 280px;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  border-radius: var(--radius);
+  background: var(--white);
+  list-style: none;
+}
+
+.mailing__lista .check {
+  display: flex;
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 10px;
+  overflow-wrap: anywhere;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .mailing__lista .check:hover {
+    background: var(--rosa);
+  }
+}
+
+.mailing__atajos {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.mailing__prueba {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.mailing__prueba .field {
+  margin-bottom: 0;
+}
+
+.mailing__nota {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: var(--small);
+}
+
+.mailing__historial {
+  margin-top: clamp(36px, 5vw, 64px);
+}
+
+.mailing__historial ul {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mailing__historial li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 8px 24px;
+  padding: 14px 0;
+  border-bottom: 2px solid var(--rosa-deep);
+}
+
+.mailing__historial li span {
+  color: var(--muted);
+  font-size: var(--small);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 1080px) {
+  .mailing {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mailing__vista {
+    position: static;
+  }
+}
+
+@media (max-width: 760px) {
+  .mailing__envio {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mailing__prueba,
+  .mailing__historial li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bandeja__marco iframe {
+    transition: none;
+  }
+}

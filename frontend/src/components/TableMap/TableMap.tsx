@@ -1,5 +1,6 @@
-import { useSalon } from '../../hooks/useSalon';
-import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
+import type { CSSProperties, HTMLAttributes, ReactNode, Ref } from 'react';
+import { usePlano } from '../../hooks/useSalon';
+import { acotar, tamanoMesa, type Caja, type Elemento, type Plano } from '../../utils/plano';
 import type { Mesa } from '../../types';
 import './TableMap.css';
 
@@ -12,46 +13,51 @@ const DESCRIPCION: Record<EstadoMesa, string> = {
   bloqueada: 'no disponible para este grupo'
 };
 
-interface SalaProps extends HTMLAttributes<HTMLDivElement> {
-  columnas: number;
-  filas: number;
-  cocina: string;
-  /** Una celda por lugar del plano, ubicada con celdaEn(x, y). */
+const porciento = (parte: number, total: number) => `${(parte / total) * 100}%`;
+
+/** Dónde va una caja del plano, en porcentajes: así el dibujo escala entero con el ancho. */
+export const cajaEn = (caja: Caja, plano: Pick<Plano, 'ancho' | 'alto'>): CSSProperties => ({
+  left: porciento(caja.x, plano.ancho),
+  top: porciento(caja.y, plano.alto),
+  width: porciento(caja.w, plano.ancho),
+  height: porciento(caja.h, plano.alto)
+});
+
+/** La caja de una mesa: su lugar guardado y el tamaño que le da la capacidad, siempre adentro del plano. */
+export const cajaDeMesa = (mesa: Mesa, plano: Pick<Plano, 'ancho' | 'alto'>): Caja =>
+  acotar({ x: mesa.posicionX, y: mesa.posicionY, ...tamanoMesa(mesa.capacidad) }, plano);
+
+interface PlanoSalonProps extends HTMLAttributes<HTMLDivElement> {
+  plano: Pick<Plano, 'ancho' | 'alto'>;
+  lienzoRef?: Ref<HTMLDivElement>;
   children: ReactNode;
 }
 
-/** Dónde va cada lugar del plano. Explícito, porque la columna del local ocupa la grilla. */
-export const celdaEn = (x: number, y: number): CSSProperties => ({ gridColumn: x + 1, gridRow: y + 1 });
-
 /**
- * El local visto desde arriba: paredes, cocina, baño, estantería, la columna,
- * una ventana y la puerta de entrada. Adentro, la grilla donde van las mesas.
+ * El local visto desde arriba: las paredes y, adentro, todo ubicado libremente.
  * Lo usan el mapa de reservas y el editor del salón, así los dos muestran el mismo plano.
  */
-export function Sala({ columnas, filas, cocina, children, className = '', ...piso }: SalaProps) {
+export function PlanoSalon({ plano, lienzoRef, children, className = '', style, ...resto }: PlanoSalonProps) {
   return (
-    <div className="sala">
-      <div className="sala__cocina" aria-hidden="true">
-        {cocina || 'Cocina'}
-      </div>
-      <div className="sala__bano" aria-hidden="true">
-        Baño
-      </div>
-      <div className="sala__estante" aria-hidden="true">
-        <span>Estantería</span>
-      </div>
-      <div className={`sala__piso ${className}`} style={{ gridTemplateColumns: `repeat(${columnas}, minmax(0, 1fr))` }} {...piso}>
+    <div className={`plano-salon ${className}`} style={style} {...resto}>
+      <div
+        ref={lienzoRef}
+        className="plano-salon__lienzo"
+        style={{ aspectRatio: `${plano.ancho} / ${plano.alto}`, '--ancho': plano.ancho } as CSSProperties}
+      >
         {children}
-        {/* la columna queda en el cruce del medio, entre cuatro lugares: nunca encima de una mesa */}
-        {columnas > 1 && filas > 1 && (
-          <span className="sala__columna" style={celdaEn(Math.floor(columnas / 2), Math.floor(filas / 2))} aria-hidden="true" />
-        )}
-      </div>
-      <div className="sala__ventana" aria-hidden="true" />
-      <div className="sala__entrada" aria-hidden="true">
-        <span>Entrada</span>
       </div>
     </div>
+  );
+}
+
+/** El dibujo de un elemento fijo del salón (cocina, baño, cartel, columna…). */
+export function ElementoForma({ elemento }: { elemento: Elemento }) {
+  const parado = elemento.h > elemento.w * 1.4;
+  return (
+    <span className={`elem elem--${elemento.tipo}`} data-parado={parado || undefined}>
+      {elemento.texto && <span className="elem__texto">{elemento.texto}</span>}
+    </span>
   );
 }
 
@@ -69,7 +75,7 @@ export function MesaForma({ numero, capacidad, texto }: { numero: number; capaci
   return (
     <>
       {sillas(arriba)}
-      <span className="mesa__tapa" style={{ '--lado': Math.max(1, arriba) } as CSSProperties}>
+      <span className="mesa__tapa">
         <span className="table-btn__n">{numero}</span>
         <span className="table-btn__cap">{texto}</span>
       </span>
@@ -85,26 +91,25 @@ interface TableMapProps {
 }
 
 /**
- * Plano del salón para reservar. Cada mesa se ubica según posicionX / posicionY
- * de la API. Las ocupadas o bloqueadas siguen siendo enfocables (aria-disabled)
+ * Plano del salón para reservar. Cada mesa va donde la dejó el admin (posicionX / posicionY
+ * de la API). Las ocupadas o bloqueadas siguen siendo enfocables (aria-disabled)
  * para que el lector de pantalla pueda decir por qué no se eligen.
  */
 export function TableMap({ mesas, estadoDe, onElegir }: TableMapProps) {
-  const { columnas, filas, cocina } = useSalon(mesas);
+  const plano = usePlano();
 
   return (
-    <Sala columnas={columnas} filas={filas} cocina={cocina}>
-      {Array.from({ length: columnas * filas }, (_, n) => {
-        const x = n % columnas;
-        const y = Math.floor(n / columnas);
-        const i = mesas.findIndex((m) => m.posicionX === x && m.posicionY === y);
-        const mesa = mesas[i];
-        if (!mesa) return <div key={`${x},${y}`} className="sala__celda" style={celdaEn(x, y)} />;
-
+    <PlanoSalon plano={plano} role="group" aria-label="Plano del salón">
+      {plano.elementos.map((e) => (
+        <div key={e.id} className="plano-salon__item" style={cajaEn(e, plano)} aria-hidden="true">
+          <ElementoForma elemento={e} />
+        </div>
+      ))}
+      {mesas.map((mesa, i) => {
         const estado = estadoDe(mesa);
         const inactiva = estado === 'ocupada' || estado === 'bloqueada';
         return (
-          <div key={`${x},${y}`} className="sala__celda" style={celdaEn(x, y)}>
+          <div key={mesa.id} className="plano-salon__item plano-salon__item--mesa" style={cajaEn(cajaDeMesa(mesa, plano), plano)}>
             <button
               type="button"
               className="table-btn"
@@ -122,7 +127,7 @@ export function TableMap({ mesas, estadoDe, onElegir }: TableMapProps) {
           </div>
         );
       })}
-    </Sala>
+    </PlanoSalon>
   );
 }
 

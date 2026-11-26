@@ -182,7 +182,7 @@
   {
     "id": "servicio",
     "archivo": "voz/servicio.mp3",
-    "duracion": 64.632,
+    "duracion": 87.12,
     "subtitulos": [
       {
         "desde": 0.1,
@@ -191,57 +191,67 @@
       },
       {
         "desde": 2.776,
-        "hasta": 11.875,
-        "texto": "Arriba están las constantes del negocio: cada reserva dura ciento veinte minutos, un grupo de hasta cuatro personas elige su mesa, y online se aceptan hasta doce."
+        "hasta": 14.831,
+        "texto": "Arriba están las constantes del negocio: cada reserva dura ciento veinte minutos, un grupo de hasta cuatro personas elige su mesa, online se aceptan hasta doce, y los turnos son cada treinta minutos desde las ocho y media."
       },
       {
-        "desde": 11.875,
-        "hasta": 15.084,
+        "desde": 14.831,
+        "hasta": 18.04,
         "texto": "Después vienen las validaciones, en orden."
       },
       {
-        "desde": 15.084,
-        "hasta": 21.346,
+        "desde": 18.04,
+        "hasta": 24.302,
         "texto": "La fecha tiene que tener formato válido y además existir en el calendario: un treinta y uno de febrero no pasa."
       },
       {
-        "desde": 21.346,
-        "hasta": 24.338,
+        "desde": 24.302,
+        "hasta": 27.295,
         "texto": "La hora se valida con una expresión regular."
       },
       {
-        "desde": 24.338,
-        "hasta": 28.112,
+        "desde": 27.295,
+        "hasta": 35.781,
+        "texto": "Además, validarTurno controla que el horario sea un turno real del local, que la reserva termine antes del cierre, y que no esté en el pasado."
+      },
+      {
+        "desde": 35.781,
+        "hasta": 39.555,
         "texto": "Si el grupo supera las doce personas, se rechaza."
       },
       {
-        "desde": 28.112,
-        "hasta": 35.288,
+        "desde": 39.555,
+        "hasta": 46.73,
         "texto": "Si son cuatro o menos, la mesa es obligatoria, y si no tiene capacidad suficiente, se responde con un conflicto."
       },
       {
-        "desde": 35.288,
-        "hasta": 44.038,
+        "desde": 46.73,
+        "hasta": 57.788,
+        "texto": "Y el servicio sabe quién hace el pedido: un cliente no puede elegir mesa para un grupo grande, ni crear su reserva ya confirmada; eso solo lo hace el personal, y si no, responde 403."
+      },
+      {
+        "desde": 57.788,
+        "hasta": 66.538,
         "texto": "La regla clave es validarDisponibilidad: pasa los horarios a minutos y considera que dos reservas se pisan cuando cada una empieza antes de que termine la otra."
       },
       {
-        "desde": 44.038,
-        "hasta": 46.478,
+        "desde": 66.538,
+        "hasta": 68.978,
         "texto": "Las canceladas no cuentan."
       },
       {
-        "desde": 46.478,
-        "hasta": 52.944,
+        "desde": 68.978,
+        "hasta": 75.444,
         "texto": "Si hay superposición, lanza un ConflictError con el mensaje: la mesa ya está reservada en ese horario."
       },
       {
-        "desde": 52.944,
-        "hasta": 60.192,
+        "desde": 75.444,
+        "hasta": 82.692,
         "texto": "Por último, obtenerTodas protege la privacidad: el personal ve todo, pero un cliente solo ve completas sus propias reservas."
       },
       {
-        "desde": 60.192,
-        "hasta": 64.567,
+        "desde": 82.692,
+        "hasta": 87.067,
         "texto": "En las ajenas, el nombre, el teléfono y el cliente quedan en null."
       }
     ]
@@ -271,7 +281,7 @@
   {
     "id": "errores",
     "archivo": "voz/errores.mp3",
-    "duracion": 24.552,
+    "duracion": 28.848,
     "subtitulos": [
       {
         "desde": 0.1,
@@ -290,12 +300,17 @@
       },
       {
         "desde": 15.769,
-        "hasta": 20.661,
+        "hasta": 20.06,
+        "texto": "Si el cuerpo es demasiado pesado, devuelve 413."
+      },
+      {
+        "desde": 20.06,
+        "hasta": 24.951,
         "texto": "Cualquier otra cosa es un 500 genérico, sin exponer detalles internos."
       },
       {
-        "desde": 20.661,
-        "hasta": 24.507,
+        "desde": 24.951,
+        "hasta": 28.798,
         "texto": "Por eso el frontend siempre recibe una respuesta predecible."
       }
     ]
@@ -357,7 +372,7 @@
   {
     "id": "reservar",
     "archivo": "voz/reservar.mp3",
-    "duracion": 34.248,
+    "duracion": 37.536,
     "subtitulos": [
       {
         "desde": 0.1,
@@ -366,22 +381,22 @@
       },
       {
         "desde": 7.608,
-        "hasta": 21.153,
-        "texto": "ReserveForm aplica las mismas reglas que el backend, pero para guiar al usuario: el mapa calcula qué mesas están ocupadas con la misma fórmula de superposición, y antes de enviar se validan la fecha, el horario, la mesa, el nombre y el teléfono."
+        "hasta": 24.447,
+        "texto": "ReserveForm aplica las mismas reglas que el backend, pero para guiar al usuario: el mapa calcula qué mesas están ocupadas con la misma fórmula de superposición, el selector solo ofrece los turnos del local, y antes de enviar se valida que la fecha y el horario no hayan pasado, la mesa, el nombre y el teléfono."
       },
       {
-        "desde": 21.153,
-        "hasta": 25.985,
+        "desde": 24.447,
+        "hasta": 29.278,
         "texto": "Esto es experiencia de usuario: la validación que manda es la del servidor."
       },
       {
-        "desde": 25.985,
-        "hasta": 29.639,
+        "desde": 29.278,
+        "hasta": 32.932,
         "texto": "Si el envío sale bien, se muestra un aviso de éxito."
       },
       {
-        "desde": 29.639,
-        "hasta": 34.194,
+        "desde": 32.932,
+        "hasta": 37.487,
         "texto": "Si falla, se muestra el mensaje del backend y se recargan los datos."
       }
     ]
@@ -423,26 +438,26 @@
   {
     "id": "demoMapa",
     "archivo": "voz/demoMapa.mp3",
-    "duracion": 13.68,
+    "duracion": 13.896,
     "subtitulos": [
       {
         "desde": 0.1,
-        "hasta": 4.641,
-        "texto": "Elijo el cuatro de diciembre a las nueve de la noche, y el mapa se actualiza."
+        "hasta": 4.869,
+        "texto": "Elijo el dieciocho de diciembre a las nueve de la noche, y el mapa se actualiza."
       },
       {
-        "desde": 4.591,
-        "hasta": 9.423,
+        "desde": 4.819,
+        "hasta": 9.651,
         "texto": "La mesa dos aparece ocupada, porque otro cliente ya la reservó en ese horario."
       },
       {
-        "desde": 9.423,
-        "hasta": 11.658,
+        "desde": 9.651,
+        "hasta": 11.887,
         "texto": "Las demás están libres."
       },
       {
-        "desde": 11.658,
-        "hasta": 13.617,
+        "desde": 11.887,
+        "hasta": 13.846,
         "texto": "Elijo la mesa tres."
       }
     ]

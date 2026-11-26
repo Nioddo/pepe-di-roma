@@ -6,10 +6,23 @@ const EstadoPedido = require('../enums/EstadoPedido');
 const EstadoReserva = require('../enums/EstadoReserva');
 const { platoDeCarta } = require('./cartaSeed');
 
-const HOY = '2026-10-14';
-const DESDE = '2026-08-01';
-const HASTA_RESERVAS = '2026-10-31';
 const DURACION_MIN = 120;
+
+const dosDig = (n) => String(n).padStart(2, '0');
+const aISO = (d) => `${d.getFullYear()}-${dosDig(d.getMonth() + 1)}-${dosDig(d.getDate())}`;
+
+// El historial se arma alrededor del dia en que arranca el servidor, asi siempre hay
+// pasado (para metricas e historial) y reservas proximas, sin importar cuando se corra.
+function enDias(n) {
+    const d = new Date();
+    d.setHours(12, 0, 0, 0);
+    d.setDate(d.getDate() + n);
+    return aISO(d);
+}
+
+const HOY = enDias(0);
+const DESDE = enDias(-74);
+const HASTA_RESERVAS = enDias(17);
 
 function generador(semilla) {
     let estado = semilla;
@@ -132,8 +145,8 @@ const MESAS = [
     { id: 4, capacidad: 4 }, { id: 5, capacidad: 6 }, { id: 6, capacidad: 6 }
 ];
 const OCUPADAS_BASE = [
-    { mesaId: 1, fecha: '2026-10-24', inicio: aMinutos('21:00') },
-    { mesaId: 2, fecha: '2026-10-24', inicio: aMinutos('21:00') }
+    { mesaId: 1, fecha: enDias(10), inicio: aMinutos('21:00') },
+    { mesaId: 2, fecha: enDias(10), inicio: aMinutos('21:00') }
 ];
 
 const reservas = [];
@@ -159,7 +172,7 @@ function horarioPara(semana) {
 for (const { fecha, semana } of dias(DESDE, HASTA_RESERVAS)) {
     const futura = fecha > HOY;
     const base = semana === 5 || semana === 6 ? entre(8, 11) : semana === 0 ? entre(6, 9) : entre(2, 5);
-    const cantidad = futura ? Math.round(base * (fecha <= '2026-10-21' ? 0.6 : 0.3)) : base;
+    const cantidad = futura ? Math.round(base * (fecha <= enDias(7) ? 0.6 : 0.3)) : base;
     for (let n = 0; n < cantidad; n++) {
         const persona = elegir(personas);
         const integrantes = elegirPesado([[1, 1], [2, 8], [3, 3], [4, 4], [5, 1], [6, 2], [8, 1], [10, 1]]);
@@ -206,4 +219,4 @@ for (const { fecha, semana } of dias(DESDE, HASTA_RESERVAS)) {
     }
 }
 
-module.exports = { usuarios, pedidos, items, reservas, personas, HOY };
+module.exports = { usuarios, pedidos, items, reservas, personas, HOY, enDias };

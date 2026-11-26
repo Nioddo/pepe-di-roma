@@ -4,9 +4,9 @@ const { createIdGenerator } = require('../utils/idGenerator');
 const historial = require('../data/historialSeed');
 
 const reservas = [
-    new Reserva(1, 1, '2026-10-24', '21:00', 2, 1, EstadoReserva.CONFIRMADA, 'Cliente de prueba', '+54 9 11 5000-1234'),
-    new Reserva(2, 2, '2026-10-24', '21:00', 4, 2, EstadoReserva.PENDIENTE, 'Martín Pérez', '+54 9 11 6021-7788'),
-    new Reserva(3, 1, '2026-10-31', '20:30', 8, null, EstadoReserva.PENDIENTE, 'Cliente de prueba', '+54 9 11 5000-1234'),
+    new Reserva(1, 1, historial.enDias(10), '21:00', 2, 1, EstadoReserva.CONFIRMADA, 'Cliente de prueba', '+54 9 11 5000-1234'),
+    new Reserva(2, 2, historial.enDias(10), '21:00', 4, 2, EstadoReserva.PENDIENTE, 'Martín Pérez', '+54 9 11 6021-7788'),
+    new Reserva(3, 1, historial.enDias(17), '20:30', 8, null, EstadoReserva.PENDIENTE, 'Cliente de prueba', '+54 9 11 5000-1234'),
     ...historial.reservas.map(
         (r) => new Reserva(r.id, r.clienteId, r.fecha, r.horaInicio, r.cantidadIntegrantes, r.mesaId, r.estado, r.nombre, r.telefono)
     )

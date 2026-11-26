@@ -12,7 +12,7 @@ import { C, FPS, MONO, TEXTO } from '../tema';
 const ID = 'demoRed';
 const G = grabaciones as unknown as Record<string, { archivo: string; marcas: Record<string, number> }>;
 type Reserva = { id: number; clienteId: number | null; fecha: string; horaInicio: string; mesaId: number | null; estado: string; nombre: string | null; telefono: string | null };
-const DEL_DIA = (redGet.respuesta.data as Reserva[]).filter((r) => r.fecha === '2026-12-04');
+const DEL_DIA = (redGet.respuesta.data as Reserva[]).filter((r) => r.fecha === '2026-12-18');
 
 const DT = { fondo: '#202124', panel: '#292a2d', borde: '#3c4043', texto: '#e8eaed', tenue: '#9aa0a6', clave: '#c58af9', cadena: '#f28b82', numero: '#8ab4f8', nulo: '#9aa0a6', azul: '#8ab4f8' };
 

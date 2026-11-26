@@ -15,7 +15,7 @@ const DATOS = path.join(RAIZ, 'src', 'datos');
 const FFBIN = 'C:/Users/nicolas oddo/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-9.1-full_build/bin';
 const FFMPEG = fs.existsSync(FFBIN) ? path.join(FFBIN, 'ffmpeg.exe') : 'ffmpeg';
 const FFPROBE = fs.existsSync(FFBIN) ? path.join(FFBIN, 'ffprobe.exe') : 'ffprobe';
-const FECHA = '2026-12-04';
+const FECHA = '2026-12-18';
 const HORA = '21:00';
 
 const CLIENTE = { email: 'cliente@pepediroma.com.ar', dni: '38123456' };
@@ -328,7 +328,7 @@ async function main() {
     await esperarCarga(p, p.locator('tr').filter({ hasText: CLIENTE.email }).first());
     await espera(1500);
     g.marca('tabla');
-    const fila = p.locator('tr').filter({ hasText: CLIENTE.email }).filter({ has: p.getByRole('button', { name: 'Confirmar', exact: true }) }).first();
+    const fila = p.locator('tr').filter({ hasText: CLIENTE.email }).filter({ hasText: '18/12' }).filter({ has: p.getByRole('button', { name: 'Confirmar', exact: true }) }).first();
     await g.scrollA(fila);
     await g.mover(fila.getByText(CLIENTE.email).first());
     await espera(2200);

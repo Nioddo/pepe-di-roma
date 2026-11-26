@@ -1,44 +1,44 @@
 {
   "reserva": {
     "archivo": "grabaciones/reserva.mp4",
-    "duracion": 41.47,
+    "duracion": 48.13,
     "marcas": {
-      "login": 1.97,
-      "mapa": 12.79,
-      "validacion": 23.64,
-      "exito": 33.15,
-      "fin": 41.35
+      "login": 3.3,
+      "mapa": 16.52,
+      "validacion": 28.53,
+      "exito": 38.77,
+      "fin": 47.43
     }
   },
   "concurrenciaA": {
     "archivo": "grabaciones/concurrencia-a.mp4",
-    "duracion": 49.07,
+    "duracion": 41.4,
     "marcas": {
-      "inicio": 24.5,
-      "primero": 37.79,
-      "segundo": 40.48,
-      "fin": 48.23
+      "inicio": 14.66,
+      "primero": 30.36,
+      "segundo": 33.67,
+      "fin": 41.51
     }
   },
   "concurrenciaB": {
     "archivo": "grabaciones/concurrencia-b.mp4",
-    "duracion": 50.63,
+    "duracion": 67.47,
     "marcas": {
-      "inicio": 24.39,
-      "primero": 37.69,
-      "segundo": 40.38,
-      "fin": 48.12
+      "inicio": 14.48,
+      "primero": 30.17,
+      "segundo": 33.48,
+      "fin": 41.33
     }
   },
   "cancelarAdmin": {
     "archivo": "grabaciones/cancelar-admin.mp4",
-    "duracion": 67.93,
+    "duracion": 58.13,
     "marcas": {
-      "cancelar": 13.19,
-      "admin": 23.94,
-      "tabla": 57.2,
-      "confirmar": 61.68,
-      "fin": 68.01
+      "cancelar": 14.4,
+      "admin": 25.09,
+      "tabla": 48.13,
+      "confirmar": 52.26,
+      "fin": 58.2
     }
   }
 }

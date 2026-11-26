@@ -38,7 +38,7 @@ async function generar(e) {
   const mp3 = path.join(VOZ, `${e.id}.mp3`);
   const srt = path.join(VOZ, `${e.id}.srt`);
   if (!fs.existsSync(mp3) || process.argv.includes('--forzar')) {
-    await run('uvx', ['--system-certs', 'edge-tts', '--voice', VOCES, '--rate=+4%', '--text', e.texto, '--write-media', mp3, '--write-subtitles', srt], {
+    await run('uvx', ['--system-certs', '--with', 'pip-system-certs', 'edge-tts', '--voice', VOCES, '--rate=+4%', '--text', e.texto, '--write-media', mp3, '--write-subtitles', srt], {
       env: { ...process.env, UV_SYSTEM_CERTS: '1' }
     });
   }

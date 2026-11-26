@@ -3,46 +3,54 @@
 El corazón está en ReservaService.
 
 2
-00:00:02,776 --> 00:00:11,875
-Arriba están las constantes del negocio: cada reserva dura ciento veinte minutos, un grupo de hasta cuatro personas elige su mesa, y online se aceptan hasta doce.
+00:00:02,776 --> 00:00:14,831
+Arriba están las constantes del negocio: cada reserva dura ciento veinte minutos, un grupo de hasta cuatro personas elige su mesa, online se aceptan hasta doce, y los turnos son cada treinta minutos desde las ocho y media.
 
 3
-00:00:11,875 --> 00:00:15,084
+00:00:14,831 --> 00:00:18,040
 Después vienen las validaciones, en orden.
 
 4
-00:00:15,084 --> 00:00:21,346
+00:00:18,040 --> 00:00:24,302
 La fecha tiene que tener formato válido y además existir en el calendario: un treinta y uno de febrero no pasa.
 
 5
-00:00:21,346 --> 00:00:24,338
+00:00:24,302 --> 00:00:27,295
 La hora se valida con una expresión regular.
 
 6
-00:00:24,338 --> 00:00:28,112
-Si el grupo supera las doce personas, se rechaza.
+00:00:27,295 --> 00:00:35,781
+Además, validarTurno controla que el horario sea un turno real del local, que la reserva termine antes del cierre, y que no esté en el pasado.
 
 7
-00:00:28,112 --> 00:00:35,288
-Si son cuatro o menos, la mesa es obligatoria, y si no tiene capacidad suficiente, se responde con un conflicto.
+00:00:35,781 --> 00:00:39,555
+Si el grupo supera las doce personas, se rechaza.
 
 8
-00:00:35,288 --> 00:00:44,038
-La regla clave es validarDisponibilidad: pasa los horarios a minutos y considera que dos reservas se pisan cuando cada una empieza antes de que termine la otra.
+00:00:39,555 --> 00:00:46,730
+Si son cuatro o menos, la mesa es obligatoria, y si no tiene capacidad suficiente, se responde con un conflicto.
 
 9
-00:00:44,038 --> 00:00:46,478
-Las canceladas no cuentan.
+00:00:46,730 --> 00:00:57,788
+Y el servicio sabe quién hace el pedido: un cliente no puede elegir mesa para un grupo grande, ni crear su reserva ya confirmada; eso solo lo hace el personal, y si no, responde 403.
 
 10
-00:00:46,478 --> 00:00:52,944
-Si hay superposición, lanza un ConflictError con el mensaje: la mesa ya está reservada en ese horario.
+00:00:57,788 --> 00:01:06,538
+La regla clave es validarDisponibilidad: pasa los horarios a minutos y considera que dos reservas se pisan cuando cada una empieza antes de que termine la otra.
 
 11
-00:00:52,944 --> 00:01:00,192
-Por último, obtenerTodas protege la privacidad: el personal ve todo, pero un cliente solo ve completas sus propias reservas.
+00:01:06,538 --> 00:01:08,978
+Las canceladas no cuentan.
 
 12
-00:01:00,192 --> 00:01:04,567
+00:01:08,978 --> 00:01:15,444
+Si hay superposición, lanza un ConflictError con el mensaje: la mesa ya está reservada en ese horario.
+
+13
+00:01:15,444 --> 00:01:22,692
+Por último, obtenerTodas protege la privacidad: el personal ve todo, pero un cliente solo ve completas sus propias reservas.
+
+14
+00:01:22,692 --> 00:01:27,067
 En las ajenas, el nombre, el teléfono y el cliente quedan en null.
 

@@ -3,18 +3,18 @@
 La pantalla Reservar carga en paralelo las mesas y las reservas con el hook useApi, que maneja la carga, el error y la recarga.
 
 2
-00:00:07,608 --> 00:00:21,153
-ReserveForm aplica las mismas reglas que el backend, pero para guiar al usuario: el mapa calcula qué mesas están ocupadas con la misma fórmula de superposición, y antes de enviar se validan la fecha, el horario, la mesa, el nombre y el teléfono.
+00:00:07,608 --> 00:00:24,447
+ReserveForm aplica las mismas reglas que el backend, pero para guiar al usuario: el mapa calcula qué mesas están ocupadas con la misma fórmula de superposición, el selector solo ofrece los turnos del local, y antes de enviar se valida que la fecha y el horario no hayan pasado, la mesa, el nombre y el teléfono.
 
 3
-00:00:21,153 --> 00:00:25,985
+00:00:24,447 --> 00:00:29,278
 Esto es experiencia de usuario: la validación que manda es la del servidor.
 
 4
-00:00:25,985 --> 00:00:29,639
+00:00:29,278 --> 00:00:32,932
 Si el envío sale bien, se muestra un aviso de éxito.
 
 5
-00:00:29,639 --> 00:00:34,194
+00:00:32,932 --> 00:00:37,487
 Si falla, se muestra el mensaje del backend y se recargan los datos.
 

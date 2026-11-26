@@ -88,7 +88,7 @@ export const EscenaConcurrencia: React.FC = () => {
       </div>
       {/* Indicación central */}
       <div style={{ position: 'absolute', left: 0, right: 0, top: 160, display: 'flex', justifyContent: 'center', opacity: entrada * (1 - foco), fontFamily: TEXTO, fontSize: 26, color: C.gris }}>
-        Mesa 1 · 04/12/2026 · 21:00 · dos navegadores al mismo tiempo
+        Mesa 1 · 18/12/2026 · 21:00 · dos navegadores al mismo tiempo
       </div>
       {foco > 0.5 ? (
         <div style={{ position: 'absolute', right: 120, top: 40, opacity: interpolate(t, [tAviso + 1, tAviso + 1.4], [0, 1], o) }}>

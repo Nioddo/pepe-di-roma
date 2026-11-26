@@ -11,10 +11,14 @@ Si es un AppError, como BadRequest, Unauthorized, Forbidden, NotFound o Conflict
 Si el JSON del pedido está mal formado, devuelve 400.
 
 4
-00:00:15,769 --> 00:00:20,661
-Cualquier otra cosa es un 500 genérico, sin exponer detalles internos.
+00:00:15,769 --> 00:00:20,060
+Si el cuerpo es demasiado pesado, devuelve 413.
 
 5
-00:00:20,661 --> 00:00:24,507
+00:00:20,060 --> 00:00:24,951
+Cualquier otra cosa es un 500 genérico, sin exponer detalles internos.
+
+6
+00:00:24,951 --> 00:00:28,798
 Por eso el frontend siempre recibe una respuesta predecible.
 

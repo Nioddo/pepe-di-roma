@@ -36,6 +36,21 @@ export function guardarModo(modo: ModoRevision): void {
 
 const db: Record<string, Tabla> = JSON.parse(JSON.stringify(datos));
 
+// Los datos semilla se tomaron con "hoy" = 14/10/2026. Se corren al día en que se abre el mockup
+// para que siempre haya reservas próximas, pedidos del día e historial reciente.
+const HOY_SEMILLA = Date.UTC(2026, 9, 14);
+const desplazamientoDias = (() => {
+  const d = new Date();
+  return Math.round((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - HOY_SEMILLA) / 86400000);
+})();
+const correrFecha = (iso: string): string => {
+  const [a, m, d] = iso.slice(0, 10).split('-').map(Number);
+  const f = new Date(Date.UTC(a, m - 1, d + desplazamientoDias));
+  return f.toISOString().slice(0, 10) + iso.slice(10);
+};
+for (const r of db.reservas) r.fecha = correrFecha(String(r.fecha));
+for (const p of db.pedidos) if (typeof p.creadoEn === 'string') p.creadoEn = correrFecha(p.creadoEn);
+
 // Solo para revisar el diseño: el texto dice que son ejemplos, no opiniones reales.
 const platoPorNombre = (nombre: string) => db.platos.find((p) => p.nombre === nombre)?.id ?? null;
 const MUESTRAS: Registro[] = [

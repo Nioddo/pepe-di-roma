@@ -1,16 +1,16 @@
 1
-00:00:00,100 --> 00:00:04,641
-Elijo el cuatro de diciembre a las nueve de la noche, y el mapa se actualiza.
+00:00:00,100 --> 00:00:04,869
+Elijo el dieciocho de diciembre a las nueve de la noche, y el mapa se actualiza.
 
 2
-00:00:04,591 --> 00:00:09,423
+00:00:04,819 --> 00:00:09,651
 La mesa dos aparece ocupada, porque otro cliente ya la reservó en ese horario.
 
 3
-00:00:09,423 --> 00:00:11,658
+00:00:09,651 --> 00:00:11,887
 Las demás están libres.
 
 4
-00:00:11,658 --> 00:00:13,617
+00:00:11,887 --> 00:00:13,846
 Elijo la mesa tres.
 

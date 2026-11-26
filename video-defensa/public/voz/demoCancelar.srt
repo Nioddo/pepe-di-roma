@@ -1,0 +1,12 @@
+1
+00:00:00,100 --> 00:00:03,896
+Vuelvo a Mis reservas y cancelo la reserva de la mesa tres.
+
+2
+00:00:03,846 --> 00:00:08,665
+Aparece el diálogo propio, confirmo, y el estado pasa a Cancelada.
+
+3
+00:00:08,665 --> 00:00:11,694
+La mesa queda libre para otros clientes.
+

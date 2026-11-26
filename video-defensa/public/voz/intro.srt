@@ -1,0 +1,16 @@
+1
+00:00:00,100 --> 00:00:01,288
+Hola.
+
+2
+00:00:01,238 --> 00:00:08,653
+Este es Pepe Di Roma, el sistema web de un restaurante italiano: carta, pedidos, opiniones y reservas de mesa.
+
+3
+00:00:08,653 --> 00:00:14,615
+Para esta defensa elegí un solo flujo y lo voy a recorrer de punta a punta: la reserva de mesa.
+
+4
+00:00:14,615 --> 00:00:27,752
+Lo elegí porque es el que más reglas de negocio concentra: horarios, capacidad de las mesas, tamaño del grupo, privacidad de los datos y, sobre todo, concurrencia: qué pasa cuando dos clientes quieren la misma mesa a la misma hora.
+

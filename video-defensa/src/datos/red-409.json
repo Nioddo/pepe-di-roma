@@ -1,0 +1,22 @@
+{
+  "metodo": "POST",
+  "url": "/api/reservas",
+  "status": 409,
+  "headersPedido": {
+    "content-type": "application/json",
+    "x-usuario-id": "2"
+  },
+  "pedido": {
+    "clienteId": 2,
+    "fecha": "2026-12-04",
+    "horaInicio": "21:00",
+    "cantidadIntegrantes": 2,
+    "mesaId": 1,
+    "nombre": "Martín Pérez",
+    "telefono": "1140987654"
+  },
+  "respuesta": {
+    "success": false,
+    "message": "La mesa ya esta reservada en ese horario"
+  }
+}

@@ -13,12 +13,12 @@ const obtenerPorId = asyncHandler((req, res) => {
 });
 
 const crear = asyncHandler((req, res) => {
-    const pedido = PedidoService.crear(req.body);
+    const pedido = PedidoService.crear(req.body, req.usuario);
     return successResponse(res, pedido, 201);
 });
 
 const modificar = asyncHandler((req, res) => {
-    const pedido = PedidoService.modificar(req.params.id, req.body);
+    const pedido = PedidoService.modificar(req.params.id, req.body, req.usuario);
     return successResponse(res, pedido);
 });
 

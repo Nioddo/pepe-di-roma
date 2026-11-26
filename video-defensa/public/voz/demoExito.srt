@@ -1,0 +1,8 @@
+1
+00:00:00,100 --> 00:00:02,574
+Corrijo el teléfono y confirmo.
+
+2
+00:00:02,524 --> 00:00:08,209
+El backend responde 201, aparece el aviso de éxito, y paso a Mis reservas.
+

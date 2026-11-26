@@ -1,0 +1,16 @@
+1
+00:00:00,100 --> 00:00:05,074
+Para cerrar: el flujo de reserva muestra cómo el sistema separa responsabilidades.
+
+2
+00:00:05,024 --> 00:00:16,250
+Las reglas viven en el servicio, los permisos en los middlewares, los errores en un único manejador, y el frontend se comunica por un solo cliente de API, que traduce cada respuesta en un mensaje claro.
+
+3
+00:00:16,250 --> 00:00:25,252
+La validación del cliente mejora la experiencia, pero la del servidor garantiza la consistencia, incluso cuando dos personas quieren la misma mesa al mismo tiempo.
+
+4
+00:00:25,252 --> 00:00:26,731
+Gracias.
+

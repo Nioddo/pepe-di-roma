@@ -1,0 +1,8 @@
+node_modules
+dist
+.DS_Store
+.env
+
+# Solo se versiona el video final de la defensa.
+out/*
+!out/defensa-pepe-di-roma.mp4

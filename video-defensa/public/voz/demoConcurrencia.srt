@@ -1,0 +1,24 @@
+1
+00:00:00,100 --> 00:00:02,886
+Ahora, la prueba de concurrencia.
+
+2
+00:00:02,836 --> 00:00:09,255
+Dos clientes distintos, en dos navegadores, eligen la misma mesa, el mismo día y a la misma hora.
+
+3
+00:00:09,255 --> 00:00:11,706
+Los dos ven la mesa uno libre.
+
+4
+00:00:11,706 --> 00:00:14,939
+El primero confirma, y su reserva se guarda.
+
+5
+00:00:14,939 --> 00:00:23,810
+El segundo confirma un instante después: el servidor vuelve a validar la disponibilidad, encuentra la superposición y responde 409, Conflict.
+
+6
+00:00:23,810 --> 00:00:29,423
+El aviso muestra exactamente el mensaje del backend: la mesa ya está reservada en ese horario.
+

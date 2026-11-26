@@ -1,0 +1,8 @@
+1
+00:00:00,100 --> 00:00:09,160
+ReservasService punto ts expone funciones con nombres del negocio: traer las reservas, crear una, modificarla, cambiar su estado o eliminarla.
+
+2
+00:00:09,110 --> 00:00:13,497
+Las pantallas hablan en términos del dominio, no de URLs.
+

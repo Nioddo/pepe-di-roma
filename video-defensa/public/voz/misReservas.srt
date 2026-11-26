@@ -1,0 +1,8 @@
+1
+00:00:00,100 --> 00:00:06,852
+En Mis reservas, cancelar no usa el confirm del navegador: usa un diálogo propio, basado en una promesa.
+
+2
+00:00:06,802 --> 00:00:12,247
+Si el usuario confirma, se cambia el estado a cancelada con un PUT y se recarga la lista.
+

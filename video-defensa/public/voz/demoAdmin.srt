@@ -1,0 +1,12 @@
+1
+00:00:00,100 --> 00:00:03,415
+Por último, salgo e ingreso como administrador.
+
+2
+00:00:03,365 --> 00:00:11,490
+En Gestión, Reservas, el personal sí ve el nombre, el teléfono y el email de cada cliente, y la reserva cancelada sigue registrada.
+
+3
+00:00:11,490 --> 00:00:16,514
+Confirmo la reserva pendiente de la mesa uno, y aparece el aviso de confirmación.
+

@@ -13,12 +13,12 @@ const obtenerPorId = asyncHandler((req, res) => {
 });
 
 const crear = asyncHandler((req, res) => {
-    const reserva = ReservaService.crear(req.body);
+    const reserva = ReservaService.crear(req.body, req.usuario);
     return successResponse(res, reserva, 201);
 });
 
 const modificar = asyncHandler((req, res) => {
-    const reserva = ReservaService.modificar(req.params.id, req.body);
+    const reserva = ReservaService.modificar(req.params.id, req.body, req.usuario);
     return successResponse(res, reserva);
 });
 

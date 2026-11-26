@@ -1,0 +1,16 @@
+1
+00:00:00,100 --> 00:00:03,150
+ReservaController es delgado a propósito.
+
+2
+00:00:03,100 --> 00:00:08,329
+Cada método está envuelto en asyncHandler, que manda cualquier error al manejador central.
+
+3
+00:00:08,329 --> 00:00:13,485
+Llama al servicio y responde con successResponse; crear devuelve 201.
+
+4
+00:00:13,485 --> 00:00:18,846
+El controlador no decide reglas: solo traduce entre HTTP y el servicio.
+

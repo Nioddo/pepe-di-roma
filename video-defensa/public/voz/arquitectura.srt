@@ -1,0 +1,44 @@
+1
+00:00:00,100 --> 00:00:02,477
+Primero, la arquitectura.
+
+2
+00:00:02,427 --> 00:00:09,795
+El proyecto tiene dos partes: un backend en Node con Express, y un frontend en React con TypeScript, armado con Vite.
+
+3
+00:00:09,795 --> 00:00:14,795
+El backend está organizado en capas, cada una con una responsabilidad clara.
+
+4
+00:00:14,795 --> 00:00:17,379
+Las rutas definen los endpoints.
+
+5
+00:00:17,379 --> 00:00:21,514
+Los middlewares identifican al usuario y controlan los permisos.
+
+6
+00:00:21,514 --> 00:00:26,009
+Los controladores reciben el pedido HTTP y arman la respuesta.
+
+7
+00:00:26,009 --> 00:00:28,978
+Los servicios contienen las reglas de negocio.
+
+8
+00:00:28,978 --> 00:00:33,942
+Los repositorios guardan y buscan los datos, que en esta versión viven en memoria.
+
+9
+00:00:33,942 --> 00:00:37,103
+Y los modelos definen la forma de cada entidad.
+
+10
+00:00:37,103 --> 00:00:50,829
+Una petición recorre esas capas en orden: entra por la ruta, pasa por los middlewares, el controlador delega en el servicio, el servicio valida y usa el repositorio, y la respuesta vuelve siempre con el mismo formato: success, y data o message.
+
+11
+00:00:50,829 --> 00:00:56,322
+Del lado del cliente, todas las llamadas salen de un único archivo: api punto ts.
+

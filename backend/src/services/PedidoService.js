@@ -193,11 +193,14 @@ function recalcularTotales(pedidoId) {
     });
 }
 
+function esPersonal(usuario) {
+    return Boolean(usuario) && (usuario.rol === Rol.ADMIN || usuario.rol === Rol.EMPLEADO);
+}
+
 // El personal ve todos los pedidos; un cliente, solo los suyos.
 function obtenerTodos(solicitante = null) {
-    const esPersonal = solicitante && (solicitante.rol === Rol.ADMIN || solicitante.rol === Rol.EMPLEADO);
     const pedidos = PedidoRepository.findAll();
-    const visibles = esPersonal ? pedidos : pedidos.filter((pedido) => solicitante && pedido.clienteId === solicitante.id);
+    const visibles = esPersonal(solicitante) ? pedidos : pedidos.filter((pedido) => solicitante && pedido.clienteId === solicitante.id);
     return visibles.map(conItems);
 }
 
@@ -205,9 +208,16 @@ function obtenerPorId(id) {
     return conItems(buscarPedido(id));
 }
 
-function crear(body) {
+function crear(body, solicitante = null) {
     if (!body || typeof body !== 'object') {
         throw new BadRequestError(Messages.INVALID_DATA);
+    }
+
+    // un cliente solo puede crear su pedido pendiente y sin pagar; el resto lo registra el local
+    const estadoInicial = body.estado !== undefined && body.estado !== EstadoPedido.PENDIENTE;
+    const yaPagado = body.pagoRecibido !== undefined && body.pagoRecibido !== false;
+    if (!esPersonal(solicitante) && (estadoInicial || yaPagado)) {
+        throw new ForbiddenError(Messages.PEDIDO_ESTADO_SOLO_PERSONAL);
     }
 
     const clienteId = validarClienteId(body.clienteId);
@@ -245,11 +255,19 @@ function crear(body) {
     return conItems(pedido);
 }
 
-function modificar(id, body) {
+function modificar(id, body, solicitante = null) {
     const pedido = buscarPedido(id);
 
     if (!body || typeof body !== 'object') {
         throw new BadRequestError(Messages.INVALID_DATA);
+    }
+
+    // desde la web, el cliente solo puede cancelar su pedido antes de que se empiece a preparar
+    if (!esPersonal(solicitante)) {
+        const soloCancela = Object.keys(body).every((clave) => clave === 'estado') && body.estado === EstadoPedido.CANCELADO;
+        if (!soloCancela || pedido.estado !== EstadoPedido.PENDIENTE) {
+            throw new ForbiddenError(Messages.PEDIDO_SOLO_CANCELAR);
+        }
     }
 
     const cambios = {};

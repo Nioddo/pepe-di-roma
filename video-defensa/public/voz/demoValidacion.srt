@@ -1,0 +1,8 @@
+1
+00:00:00,100 --> 00:00:03,631
+Escribo un teléfono inválido e intento confirmar.
+
+2
+00:00:03,581 --> 00:00:08,016
+El formulario me frena antes de llamar a la API, y me explica qué corregir.
+

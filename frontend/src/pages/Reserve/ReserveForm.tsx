@@ -83,9 +83,12 @@ export function ReserveForm({ usuario, mesas, reservas, editando, onError }: Res
     evento.preventDefault();
     if (regla === 'no-online') return;
 
+    const ahora = new Date();
+    const horaActual = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
+    const cambioTurno = !editando || editando.fecha !== fecha || editando.horaInicio !== hora;
     const nuevos: Errores<Campo> = {
-      fecha: !fecha ? 'Elegí una fecha.' : !editando && fecha < hoyISO() ? 'Elegí una fecha de hoy en adelante.' : '',
-      hora: hora ? '' : 'Elegí un horario.',
+      fecha: !fecha ? 'Elegí una fecha.' : (!editando || editando.fecha !== fecha) && fecha < hoyISO() ? 'Elegí una fecha de hoy en adelante.' : '',
+      hora: !hora ? 'Elegí un horario.' : cambioTurno && fecha === hoyISO() && hora < horaActual ? 'Ese horario de hoy ya pasó: elegí uno más tarde.' : '',
       mesa: regla === 'elige-mesa' && fecha && hora && !mesaId ? 'Elegí una mesa disponible en el mapa.' : '',
       nombre: validarRequerido(nombre, 'Decinos a nombre de quién va la reserva.'),
       telefono: validarTelefono(telefono)

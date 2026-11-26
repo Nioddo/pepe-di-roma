@@ -1,0 +1,12 @@
+1
+00:00:00,100 --> 00:00:08,679
+ReservaRepository es la única capa que toca los datos: un arreglo en memoria, con búsqueda por mesa y fecha, alta, modificación y baja.
+
+2
+00:00:08,629 --> 00:00:13,701
+Y todos los textos de error salen de Messages punto js, un objeto congelado.
+
+3
+00:00:13,701 --> 00:00:19,074
+Así, el mismo mensaje se reutiliza en todo el backend y llega tal cual a la pantalla.
+

@@ -1,0 +1,20 @@
+1
+00:00:00,100 --> 00:00:03,295
+Arranco por reservaRoutes punto js.
+
+2
+00:00:03,245 --> 00:00:10,865
+Acá se ve el contrato del recurso: GET para listar, GET por id, POST para crear, PUT para modificar y DELETE para eliminar.
+
+3
+00:00:10,865 --> 00:00:14,110
+Lo importante son los middlewares encadenados.
+
+4
+00:00:14,110 --> 00:00:18,209
+Para crear, hay que estar logueado y además reservar a nombre propio.
+
+5
+00:00:18,209 --> 00:00:22,848
+Para leer, modificar o borrar una reserva puntual, tiene que ser tuya.
+

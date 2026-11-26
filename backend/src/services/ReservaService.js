@@ -5,11 +5,13 @@ const Messages = require('../enums/Messages');
 const EstadoReserva = require('../enums/EstadoReserva');
 const Rol = require('../enums/Rol');
 const { telefonoValido } = require('../utils/telefono');
-const { BadRequestError, NotFoundError, ConflictError } = require('../exceptions/AppError');
+const { BadRequestError, NotFoundError, ConflictError, ForbiddenError } = require('../exceptions/AppError');
 
 const DURACION_MIN = 120;
 const MAX_ELIGE_MESA = 4;
 const MAX_ONLINE = 12;
+const APERTURA_MIN = 8 * 60 + 30;
+const TURNO_MIN = 30;
 
 const FORMATO_FECHA = /^\d{4}-\d{2}-\d{2}$/;
 const FORMATO_HORA = /^([01]\d|2[0-3]):([0-5]\d)$/;
@@ -116,6 +118,32 @@ function aMinutos(hora) {
     return horas * 60 + minutos;
 }
 
+function esPersonal(usuario) {
+    return Boolean(usuario) && (usuario.rol === Rol.ADMIN || usuario.rol === Rol.EMPLEADO);
+}
+
+function ahoraLocal() {
+    const d = new Date();
+    const dos = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${dos(d.getMonth() + 1)}-${dos(d.getDate())} ${dos(d.getHours())}:${dos(d.getMinutes())}`;
+}
+
+// Turnos de 30 minutos desde las 8:30. El local cierra a las 00 h (viernes y sabados a la 1),
+// y como la reserva dura 2 h, el ultimo turno empieza 2 h antes del cierre.
+function validarTurno(fecha, horaInicio) {
+    const [anio, mes, dia] = fecha.split('-').map(Number);
+    const diaSemana = new Date(Date.UTC(anio, mes - 1, dia)).getUTCDay();
+    const cierre = diaSemana === 5 || diaSemana === 6 ? 25 * 60 : 24 * 60;
+    const inicio = aMinutos(horaInicio);
+
+    if (inicio < APERTURA_MIN || inicio > cierre - DURACION_MIN || (inicio - APERTURA_MIN) % TURNO_MIN !== 0) {
+        throw new BadRequestError(Messages.RESERVA_FUERA_DE_HORARIO);
+    }
+    if (`${fecha} ${horaInicio}` < ahoraLocal()) {
+        throw new BadRequestError(Messages.RESERVA_FECHA_PASADA);
+    }
+}
+
 function validarDisponibilidad({ mesaId, fecha, horaInicio, idAExcluir = null }) {
     const inicio = aMinutos(horaInicio);
     const fin = inicio + DURACION_MIN;
@@ -143,7 +171,7 @@ function ocultarDatosPersonales(reserva) {
 // El personal ve todo; el resto solo ve sus datos y, de las demas, lo necesario para saber que mesa esta ocupada.
 function obtenerTodas(solicitante = null) {
     const reservas = ReservaRepository.findAll();
-    if (solicitante && (solicitante.rol === Rol.ADMIN || solicitante.rol === Rol.EMPLEADO)) {
+    if (esPersonal(solicitante)) {
         return reservas;
     }
     return reservas.map((reserva) =>
@@ -176,17 +204,26 @@ function validarTelefonoReserva(telefono) {
     return telefono.trim();
 }
 
-function crear(body) {
+function crear(body, solicitante = null) {
     if (!body || typeof body !== 'object') {
         throw new BadRequestError(Messages.INVALID_DATA);
     }
 
+    const personal = esPersonal(solicitante);
     const clienteId = validarClienteId(body.clienteId);
     const fecha = validarFecha(body.fecha);
     const horaInicio = validarHora(body.horaInicio);
+    validarTurno(fecha, horaInicio);
     const cantidadIntegrantes = validarIntegrantes(body.cantidadIntegrantes);
+    const eligeMesa = body.mesaId !== null && body.mesaId !== undefined;
+    if (!personal && cantidadIntegrantes > MAX_ELIGE_MESA && eligeMesa) {
+        throw new BadRequestError(Messages.RESERVA_MESA_LA_ASIGNA_LOCAL);
+    }
     const mesaId = validarMesaSegunGrupo(body.mesaId, cantidadIntegrantes);
     const estado = body.estado === undefined ? EstadoReserva.PENDIENTE : validarEstado(body.estado);
+    if (!personal && estado !== EstadoReserva.PENDIENTE) {
+        throw new ForbiddenError(Messages.RESERVA_ESTADO_SOLO_PERSONAL);
+    }
     const nombre = validarNombre(body.nombre);
     const telefono = validarTelefonoReserva(body.telefono);
 
@@ -206,11 +243,17 @@ function crear(body) {
     });
 }
 
-function modificar(id, body) {
+function modificar(id, body, solicitante = null) {
     const reserva = obtenerPorId(id);
 
     if (!body || typeof body !== 'object') {
         throw new BadRequestError(Messages.INVALID_DATA);
+    }
+
+    const personal = esPersonal(solicitante);
+    const cambiaEstado = body.estado !== undefined && body.estado !== reserva.estado;
+    if (!personal && cambiaEstado && body.estado !== EstadoReserva.CANCELADA) {
+        throw new ForbiddenError(Messages.RESERVA_ESTADO_SOLO_PERSONAL);
     }
 
     const cambios = {};
@@ -241,6 +284,10 @@ function modificar(id, body) {
     }
 
     const resultado = Object.assign({}, reserva, cambios);
+    // las reservas viejas se pueden seguir editando (estado, mesa); solo se valida el turno si cambia
+    if (resultado.fecha !== reserva.fecha || resultado.horaInicio !== reserva.horaInicio) {
+        validarTurno(resultado.fecha, resultado.horaInicio);
+    }
     resultado.mesaId = validarMesaSegunGrupo(resultado.mesaId, resultado.cantidadIntegrantes);
     if (cambios.mesaId !== undefined || cambios.cantidadIntegrantes !== undefined) {
         cambios.mesaId = resultado.mesaId;

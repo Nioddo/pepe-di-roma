@@ -1,0 +1,12 @@
+1
+00:00:00,100 --> 00:00:08,595
+En la pestaña de red se ve el pedido: un POST a barra api barra reservas, con el encabezado del usuario, y la respuesta con success en false.
+
+2
+00:00:08,545 --> 00:00:14,819
+Y si un cliente pide la lista de reservas, las ajenas llegan sin nombre, sin teléfono y sin cliente.
+
+3
+00:00:14,819 --> 00:00:19,543
+La privacidad se resuelve en el servidor, no escondiendo datos en la pantalla.
+

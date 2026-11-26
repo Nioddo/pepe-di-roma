@@ -1,0 +1,8 @@
+1
+00:00:00,100 --> 00:00:02,477
+Ahora, la demo en vivo.
+
+2
+00:00:02,427 --> 00:00:06,802
+Ingreso como cliente, con email y DNI, y voy a Reservar.
+

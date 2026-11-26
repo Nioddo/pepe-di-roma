@@ -1,0 +1,614 @@
+[
+  {
+    "id": "intro",
+    "archivo": "voz/intro.mp3",
+    "duracion": 27.816,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 1.288,
+        "texto": "Hola."
+      },
+      {
+        "desde": 1.238,
+        "hasta": 8.653,
+        "texto": "Este es Pepe Di Roma, el sistema web de un restaurante italiano: carta, pedidos, opiniones y reservas de mesa."
+      },
+      {
+        "desde": 8.653,
+        "hasta": 14.615,
+        "texto": "Para esta defensa elegí un solo flujo y lo voy a recorrer de punta a punta: la reserva de mesa."
+      },
+      {
+        "desde": 14.615,
+        "hasta": 27.752,
+        "texto": "Lo elegí porque es el que más reglas de negocio concentra: horarios, capacidad de las mesas, tamaño del grupo, privacidad de los datos y, sobre todo, concurrencia: qué pasa cuando dos clientes quieren la misma mesa a la misma hora."
+      }
+    ]
+  },
+  {
+    "id": "arquitectura",
+    "archivo": "voz/arquitectura.mp3",
+    "duracion": 56.376,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 2.477,
+        "texto": "Primero, la arquitectura."
+      },
+      {
+        "desde": 2.427,
+        "hasta": 9.795,
+        "texto": "El proyecto tiene dos partes: un backend en Node con Express, y un frontend en React con TypeScript, armado con Vite."
+      },
+      {
+        "desde": 9.795,
+        "hasta": 14.795,
+        "texto": "El backend está organizado en capas, cada una con una responsabilidad clara."
+      },
+      {
+        "desde": 14.795,
+        "hasta": 17.379,
+        "texto": "Las rutas definen los endpoints."
+      },
+      {
+        "desde": 17.379,
+        "hasta": 21.514,
+        "texto": "Los middlewares identifican al usuario y controlan los permisos."
+      },
+      {
+        "desde": 21.514,
+        "hasta": 26.009,
+        "texto": "Los controladores reciben el pedido HTTP y arman la respuesta."
+      },
+      {
+        "desde": 26.009,
+        "hasta": 28.978,
+        "texto": "Los servicios contienen las reglas de negocio."
+      },
+      {
+        "desde": 28.978,
+        "hasta": 33.942,
+        "texto": "Los repositorios guardan y buscan los datos, que en esta versión viven en memoria."
+      },
+      {
+        "desde": 33.942,
+        "hasta": 37.103,
+        "texto": "Y los modelos definen la forma de cada entidad."
+      },
+      {
+        "desde": 37.103,
+        "hasta": 50.829,
+        "texto": "Una petición recorre esas capas en orden: entra por la ruta, pasa por los middlewares, el controlador delega en el servicio, el servicio valida y usa el repositorio, y la respuesta vuelve siempre con el mismo formato: success, y data o message."
+      },
+      {
+        "desde": 50.829,
+        "hasta": 56.322,
+        "texto": "Del lado del cliente, todas las llamadas salen de un único archivo: api punto ts."
+      }
+    ]
+  },
+  {
+    "id": "rutas",
+    "archivo": "voz/rutas.mp3",
+    "duracion": 22.896,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 3.295,
+        "texto": "Arranco por reservaRoutes punto js."
+      },
+      {
+        "desde": 3.245,
+        "hasta": 10.865,
+        "texto": "Acá se ve el contrato del recurso: GET para listar, GET por id, POST para crear, PUT para modificar y DELETE para eliminar."
+      },
+      {
+        "desde": 10.865,
+        "hasta": 14.11,
+        "texto": "Lo importante son los middlewares encadenados."
+      },
+      {
+        "desde": 14.11,
+        "hasta": 18.209,
+        "texto": "Para crear, hay que estar logueado y además reservar a nombre propio."
+      },
+      {
+        "desde": 18.209,
+        "hasta": 22.848,
+        "texto": "Para leer, modificar o borrar una reserva puntual, tiene que ser tuya."
+      }
+    ]
+  },
+  {
+    "id": "auth",
+    "archivo": "voz/auth.mp3",
+    "duracion": 28.056,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 3.295,
+        "texto": "Esos middlewares están en auth punto js."
+      },
+      {
+        "desde": 3.245,
+        "hasta": 8.629,
+        "texto": "Identificar lee el encabezado x-usuario-id y busca al usuario en el repositorio."
+      },
+      {
+        "desde": 8.629,
+        "hasta": 13.028,
+        "texto": "RequireLogin corta con un error 401 si no hay sesión."
+      },
+      {
+        "desde": 13.028,
+        "hasta": 22.788,
+        "texto": "SoloPropio deja pasar al personal del local, pero si un cliente intenta tocar una reserva ajena, o cambiarle el dueño desde el cuerpo del pedido, responde 403."
+      },
+      {
+        "desde": 22.788,
+        "hasta": 28.004,
+        "texto": "Así, el permiso no depende de lo que muestre la pantalla: lo controla el servidor."
+      }
+    ]
+  },
+  {
+    "id": "controlador",
+    "archivo": "voz/controlador.mp3",
+    "duracion": 18.912,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 3.15,
+        "texto": "ReservaController es delgado a propósito."
+      },
+      {
+        "desde": 3.1,
+        "hasta": 8.329,
+        "texto": "Cada método está envuelto en asyncHandler, que manda cualquier error al manejador central."
+      },
+      {
+        "desde": 8.329,
+        "hasta": 13.485,
+        "texto": "Llama al servicio y responde con successResponse; crear devuelve 201."
+      },
+      {
+        "desde": 13.485,
+        "hasta": 18.846,
+        "texto": "El controlador no decide reglas: solo traduce entre HTTP y el servicio."
+      }
+    ]
+  },
+  {
+    "id": "servicio",
+    "archivo": "voz/servicio.mp3",
+    "duracion": 64.632,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 2.826,
+        "texto": "El corazón está en ReservaService."
+      },
+      {
+        "desde": 2.776,
+        "hasta": 11.875,
+        "texto": "Arriba están las constantes del negocio: cada reserva dura ciento veinte minutos, un grupo de hasta cuatro personas elige su mesa, y online se aceptan hasta doce."
+      },
+      {
+        "desde": 11.875,
+        "hasta": 15.084,
+        "texto": "Después vienen las validaciones, en orden."
+      },
+      {
+        "desde": 15.084,
+        "hasta": 21.346,
+        "texto": "La fecha tiene que tener formato válido y además existir en el calendario: un treinta y uno de febrero no pasa."
+      },
+      {
+        "desde": 21.346,
+        "hasta": 24.338,
+        "texto": "La hora se valida con una expresión regular."
+      },
+      {
+        "desde": 24.338,
+        "hasta": 28.112,
+        "texto": "Si el grupo supera las doce personas, se rechaza."
+      },
+      {
+        "desde": 28.112,
+        "hasta": 35.288,
+        "texto": "Si son cuatro o menos, la mesa es obligatoria, y si no tiene capacidad suficiente, se responde con un conflicto."
+      },
+      {
+        "desde": 35.288,
+        "hasta": 44.038,
+        "texto": "La regla clave es validarDisponibilidad: pasa los horarios a minutos y considera que dos reservas se pisan cuando cada una empieza antes de que termine la otra."
+      },
+      {
+        "desde": 44.038,
+        "hasta": 46.478,
+        "texto": "Las canceladas no cuentan."
+      },
+      {
+        "desde": 46.478,
+        "hasta": 52.944,
+        "texto": "Si hay superposición, lanza un ConflictError con el mensaje: la mesa ya está reservada en ese horario."
+      },
+      {
+        "desde": 52.944,
+        "hasta": 60.192,
+        "texto": "Por último, obtenerTodas protege la privacidad: el personal ve todo, pero un cliente solo ve completas sus propias reservas."
+      },
+      {
+        "desde": 60.192,
+        "hasta": 64.567,
+        "texto": "En las ajenas, el nombre, el teléfono y el cliente quedan en null."
+      }
+    ]
+  },
+  {
+    "id": "repositorio",
+    "archivo": "voz/repositorio.mp3",
+    "duracion": 19.128,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 8.679,
+        "texto": "ReservaRepository es la única capa que toca los datos: un arreglo en memoria, con búsqueda por mesa y fecha, alta, modificación y baja."
+      },
+      {
+        "desde": 8.629,
+        "hasta": 13.701,
+        "texto": "Y todos los textos de error salen de Messages punto js, un objeto congelado."
+      },
+      {
+        "desde": 13.701,
+        "hasta": 19.074,
+        "texto": "Así, el mismo mensaje se reutiliza en todo el backend y llega tal cual a la pantalla."
+      }
+    ]
+  },
+  {
+    "id": "errores",
+    "archivo": "voz/errores.mp3",
+    "duracion": 24.552,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 2.802,
+        "texto": "Los errores terminan en errorHandler."
+      },
+      {
+        "desde": 2.752,
+        "hasta": 11.526,
+        "texto": "Si es un AppError, como BadRequest, Unauthorized, Forbidden, NotFound o Conflict, responde con su código de estado y su mensaje."
+      },
+      {
+        "desde": 11.526,
+        "hasta": 15.769,
+        "texto": "Si el JSON del pedido está mal formado, devuelve 400."
+      },
+      {
+        "desde": 15.769,
+        "hasta": 20.661,
+        "texto": "Cualquier otra cosa es un 500 genérico, sin exponer detalles internos."
+      },
+      {
+        "desde": 20.661,
+        "hasta": 24.507,
+        "texto": "Por eso el frontend siempre recibe una respuesta predecible."
+      }
+    ]
+  },
+  {
+    "id": "api",
+    "archivo": "voz/api.mp3",
+    "duracion": 25.056,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 1.816,
+        "texto": "Paso al frontend."
+      },
+      {
+        "desde": 1.766,
+        "hasta": 4.927,
+        "texto": "Api punto ts centraliza la comunicación."
+      },
+      {
+        "desde": 4.927,
+        "hasta": 12.776,
+        "texto": "La función request agrega el encabezado x-usuario-id a partir de la sesión guardada, y pide sin caché para no mostrar datos viejos."
+      },
+      {
+        "desde": 12.776,
+        "hasta": 16.502,
+        "texto": "Si la red falla, lanza un error de sin conexión."
+      },
+      {
+        "desde": 16.502,
+        "hasta": 22.079,
+        "texto": "Si la respuesta no es exitosa, lanza un ApiError con el mismo mensaje que mandó el backend."
+      },
+      {
+        "desde": 22.079,
+        "hasta": 25,
+        "texto": "Ninguna pantalla llama a fetch directamente."
+      }
+    ]
+  },
+  {
+    "id": "reservasService",
+    "archivo": "voz/reservasService.mp3",
+    "duracion": 13.56,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 9.16,
+        "texto": "ReservasService punto ts expone funciones con nombres del negocio: traer las reservas, crear una, modificarla, cambiar su estado o eliminarla."
+      },
+      {
+        "desde": 9.11,
+        "hasta": 13.497,
+        "texto": "Las pantallas hablan en términos del dominio, no de URLs."
+      }
+    ]
+  },
+  {
+    "id": "reservar",
+    "archivo": "voz/reservar.mp3",
+    "duracion": 34.248,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 7.658,
+        "texto": "La pantalla Reservar carga en paralelo las mesas y las reservas con el hook useApi, que maneja la carga, el error y la recarga."
+      },
+      {
+        "desde": 7.608,
+        "hasta": 21.153,
+        "texto": "ReserveForm aplica las mismas reglas que el backend, pero para guiar al usuario: el mapa calcula qué mesas están ocupadas con la misma fórmula de superposición, y antes de enviar se validan la fecha, el horario, la mesa, el nombre y el teléfono."
+      },
+      {
+        "desde": 21.153,
+        "hasta": 25.985,
+        "texto": "Esto es experiencia de usuario: la validación que manda es la del servidor."
+      },
+      {
+        "desde": 25.985,
+        "hasta": 29.639,
+        "texto": "Si el envío sale bien, se muestra un aviso de éxito."
+      },
+      {
+        "desde": 29.639,
+        "hasta": 34.194,
+        "texto": "Si falla, se muestra el mensaje del backend y se recargan los datos."
+      }
+    ]
+  },
+  {
+    "id": "misReservas",
+    "archivo": "voz/misReservas.mp3",
+    "duracion": 12.312,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 6.852,
+        "texto": "En Mis reservas, cancelar no usa el confirm del navegador: usa un diálogo propio, basado en una promesa."
+      },
+      {
+        "desde": 6.802,
+        "hasta": 12.247,
+        "texto": "Si el usuario confirma, se cambia el estado a cancelada con un PUT y se recarga la lista."
+      }
+    ]
+  },
+  {
+    "id": "demoLogin",
+    "archivo": "voz/demoLogin.mp3",
+    "duracion": 6.864,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 2.477,
+        "texto": "Ahora, la demo en vivo."
+      },
+      {
+        "desde": 2.427,
+        "hasta": 6.802,
+        "texto": "Ingreso como cliente, con email y DNI, y voy a Reservar."
+      }
+    ]
+  },
+  {
+    "id": "demoMapa",
+    "archivo": "voz/demoMapa.mp3",
+    "duracion": 13.68,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 4.641,
+        "texto": "Elijo el cuatro de diciembre a las nueve de la noche, y el mapa se actualiza."
+      },
+      {
+        "desde": 4.591,
+        "hasta": 9.423,
+        "texto": "La mesa dos aparece ocupada, porque otro cliente ya la reservó en ese horario."
+      },
+      {
+        "desde": 9.423,
+        "hasta": 11.658,
+        "texto": "Las demás están libres."
+      },
+      {
+        "desde": 11.658,
+        "hasta": 13.617,
+        "texto": "Elijo la mesa tres."
+      }
+    ]
+  },
+  {
+    "id": "demoValidacion",
+    "archivo": "voz/demoValidacion.mp3",
+    "duracion": 8.088,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 3.631,
+        "texto": "Escribo un teléfono inválido e intento confirmar."
+      },
+      {
+        "desde": 3.581,
+        "hasta": 8.016,
+        "texto": "El formulario me frena antes de llamar a la API, y me explica qué corregir."
+      }
+    ]
+  },
+  {
+    "id": "demoExito",
+    "archivo": "voz/demoExito.mp3",
+    "duracion": 8.256,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 2.574,
+        "texto": "Corrijo el teléfono y confirmo."
+      },
+      {
+        "desde": 2.524,
+        "hasta": 8.209,
+        "texto": "El backend responde 201, aparece el aviso de éxito, y paso a Mis reservas."
+      }
+    ]
+  },
+  {
+    "id": "demoConcurrencia",
+    "archivo": "voz/demoConcurrencia.mp3",
+    "duracion": 29.472,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 2.886,
+        "texto": "Ahora, la prueba de concurrencia."
+      },
+      {
+        "desde": 2.836,
+        "hasta": 9.255,
+        "texto": "Dos clientes distintos, en dos navegadores, eligen la misma mesa, el mismo día y a la misma hora."
+      },
+      {
+        "desde": 9.255,
+        "hasta": 11.706,
+        "texto": "Los dos ven la mesa uno libre."
+      },
+      {
+        "desde": 11.706,
+        "hasta": 14.939,
+        "texto": "El primero confirma, y su reserva se guarda."
+      },
+      {
+        "desde": 14.939,
+        "hasta": 23.81,
+        "texto": "El segundo confirma un instante después: el servidor vuelve a validar la disponibilidad, encuentra la superposición y responde 409, Conflict."
+      },
+      {
+        "desde": 23.81,
+        "hasta": 29.423,
+        "texto": "El aviso muestra exactamente el mensaje del backend: la mesa ya está reservada en ese horario."
+      }
+    ]
+  },
+  {
+    "id": "demoRed",
+    "archivo": "voz/demoRed.mp3",
+    "duracion": 19.608,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 8.595,
+        "texto": "En la pestaña de red se ve el pedido: un POST a barra api barra reservas, con el encabezado del usuario, y la respuesta con success en false."
+      },
+      {
+        "desde": 8.545,
+        "hasta": 14.819,
+        "texto": "Y si un cliente pide la lista de reservas, las ajenas llegan sin nombre, sin teléfono y sin cliente."
+      },
+      {
+        "desde": 14.819,
+        "hasta": 19.543,
+        "texto": "La privacidad se resuelve en el servidor, no escondiendo datos en la pantalla."
+      }
+    ]
+  },
+  {
+    "id": "demoCancelar",
+    "archivo": "voz/demoCancelar.mp3",
+    "duracion": 11.76,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 3.896,
+        "texto": "Vuelvo a Mis reservas y cancelo la reserva de la mesa tres."
+      },
+      {
+        "desde": 3.846,
+        "hasta": 8.665,
+        "texto": "Aparece el diálogo propio, confirmo, y el estado pasa a Cancelada."
+      },
+      {
+        "desde": 8.665,
+        "hasta": 11.694,
+        "texto": "La mesa queda libre para otros clientes."
+      }
+    ]
+  },
+  {
+    "id": "demoAdmin",
+    "archivo": "voz/demoAdmin.mp3",
+    "duracion": 16.584,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 3.415,
+        "texto": "Por último, salgo e ingreso como administrador."
+      },
+      {
+        "desde": 3.365,
+        "hasta": 11.49,
+        "texto": "En Gestión, Reservas, el personal sí ve el nombre, el teléfono y el email de cada cliente, y la reserva cancelada sigue registrada."
+      },
+      {
+        "desde": 11.49,
+        "hasta": 16.514,
+        "texto": "Confirmo la reserva pendiente de la mesa uno, y aparece el aviso de confirmación."
+      }
+    ]
+  },
+  {
+    "id": "cierre",
+    "archivo": "voz/cierre.mp3",
+    "duracion": 26.76,
+    "subtitulos": [
+      {
+        "desde": 0.1,
+        "hasta": 5.074,
+        "texto": "Para cerrar: el flujo de reserva muestra cómo el sistema separa responsabilidades."
+      },
+      {
+        "desde": 5.024,
+        "hasta": 16.25,
+        "texto": "Las reglas viven en el servicio, los permisos en los middlewares, los errores en un único manejador, y el frontend se comunica por un solo cliente de API, que traduce cada respuesta en un mensaje claro."
+      },
+      {
+        "desde": 16.25,
+        "hasta": 25.252,
+        "texto": "La validación del cliente mejora la experiencia, pero la del servidor garantiza la consistencia, incluso cuando dos personas quieren la misma mesa al mismo tiempo."
+      },
+      {
+        "desde": 25.252,
+        "hasta": 26.731,
+        "texto": "Gracias."
+      }
+    ]
+  }
+]

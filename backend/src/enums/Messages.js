@@ -49,6 +49,10 @@ const Messages = Object.freeze({
     RESERVA_NOMBRE_REQUIRED: 'El nombre de quien reserva es obligatorio (hasta 60 caracteres)',
     RESERVA_TELEFONO_INVALID: 'El telefono debe tener entre 8 y 15 numeros',
     RESERVA_GRUPO_EXCEDIDO: 'Las reservas de mas de 12 personas no se pueden hacer online',
+    RESERVA_FECHA_PASADA: 'No se puede reservar para un dia u horario que ya paso',
+    RESERVA_FUERA_DE_HORARIO: 'El horario elegido no es un turno del local: de 8:30 a 22 h (viernes y sabados hasta 23 h), cada 30 minutos',
+    RESERVA_MESA_LA_ASIGNA_LOCAL: 'En los grupos de mas de 4 personas la mesa la asigna el local',
+    RESERVA_ESTADO_SOLO_PERSONAL: 'Solo el personal del local puede confirmar o cambiar el estado de una reserva; vos podes cancelarla',
 
     PEDIDO_NOT_FOUND: 'El pedido solicitado no existe',
     PEDIDO_CLIENTE_REQUIRED: 'El clienteId es obligatorio',
@@ -64,6 +68,8 @@ const Messages = Object.freeze({
     PEDIDO_HORA_RETIRO_INVALID: 'La hora de retiro debe tener el formato HH:MM',
     PEDIDO_SOLO_CLIENTES: 'El personal del local no puede hacer pedidos desde la web',
     PEDIDO_PAGO_INVALID: 'El campo pagoRecibido debe ser booleano',
+    PEDIDO_ESTADO_SOLO_PERSONAL: 'El estado y el pago de un pedido los registra el personal del local',
+    PEDIDO_SOLO_CANCELAR: 'Solo podes cancelar tu pedido, y mientras siga pendiente',
 
     CONTENIDO_NOT_FOUND: 'El contenido solicitado no existe',
     CONTENIDO_CLAVE_REQUIRED: 'La clave del contenido es obligatoria',
